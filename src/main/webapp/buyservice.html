@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy a Service - Telco</title>
+    <script src="js/utils.js" charset="utf-8" defer></script>
+    <script src="js/buyservice.js" charset="utf-8" defer></script>
+    <link rel="stylesheet" href="css/temp.css">
+    <!--<link rel="stylesheet" href="css/buyservice.css">--> <!-- TODO will I ever be pretty? -->
+</head>
+<body>
+
+    <div class="barService">
+        <div class="divBarService">
+            <div id="greeter"></div>
+        </div>
+
+        <div class="divBarService">
+            <input id="buttonHome" type="button" value="Home">
+        </div>
+
+        <div class="divBarService">
+            <input id="buttonLogout" type="button" value="Logout">
+        </div>
+    </div>
+
+    <div class="divService">
+        <form id="formService" action="#" class="formService">
+            <label>
+                Service Package:
+                <select name="servicePackage" required>
+                </select>
+            </label>
+
+            <label>
+                Validity Period:
+                <select name="validityPeriod" required>
+                </select>
+            </label>
+
+            <div id="optionalProducts"></div>
+
+            <input id="buttonConfirm" type="button" value="Confirm">
+        </form>
+    </div>
+
+</body>
+</html>

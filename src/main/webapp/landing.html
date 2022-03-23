@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Telco</title>
+    <script src="js/utils.js" charset="utf-8" defer></script>
+    <script src="js/landing.js" charset="utf-8" defer></script>
+    <link rel="stylesheet" href="css/temp.css">
+    <!--<link rel="stylesheet" href="css/landing.css">--> <!-- TODO will I ever be pretty? -->
+</head>
+<body>
+
+    <div class="divLanding">
+        <h1>Welcome to Telco</h1>
+    </div>
+
+    <div class="divLanding">
+        <form id="formLogin" action="#" class="formLogin">
+            <label>
+                Username:
+                <input type="text" name="username" placeholder="Username" required>
+            </label>
+            <label>
+                Password:
+                <input type="password" name="psw" placeholder="Password" required>
+            </label>
+            <p id="errorLogin"></p>
+            <input id="buttonLogin" type="button" value="Login">
+        </form>
+    </div>
+
+    <div class="divLanding">
+        <form id="formRegister" action="#" class="formRegister">
+            <label>
+                Username:
+                <input type="text" name="username" placeholder="Username" required />
+            </label>
+            <label>
+                Email:
+                <input type="email" name="email" placeholder="Email" required />
+            </label>
+            <label>
+                Password:
+                <input type="password" name="psw" placeholder="Password" required>
+            </label>
+            <p id="errorRegister"></p>
+            <input id="buttonRegister" type="button" value="Register">
+        </form>
+    </div>
+
+    <div class="divLanding">
+        <input id="buttonBrowse" type="button" value="Browse">
+    </div>
+
+</body>
+</html>
