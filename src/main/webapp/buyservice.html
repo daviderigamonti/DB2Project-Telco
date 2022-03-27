@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Buy a Service - Telco</title>
     <script src="js/utils.js" charset="utf-8" defer></script>
+    <script src="js/components.js" charset="utf-8" defer></script>
     <script src="js/buyservice.js" charset="utf-8" defer></script>
     <link rel="stylesheet" href="css/temp.css">
     <!--<link rel="stylesheet" href="css/buyservice.css">--> <!-- TODO will I ever be pretty? -->
@@ -25,16 +26,20 @@
     </div>
 
     <div class="divService">
+        <div id="message"></div>
+    </div>
+
+    <div class="divService">
         <form id="formService" action="#" class="formService">
             <label>
                 Service Package:
-                <select name="servicePackage" required>
+                <select name="servicePackage" id="servicePackage" required>
                 </select>
             </label>
 
             <label>
                 Validity Period:
-                <select name="validityPeriod" required>
+                <select name="validityPeriod" id="validityPeriod" required>
                 </select>
             </label>
 

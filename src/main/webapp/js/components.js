@@ -52,6 +52,52 @@ function Menu(home, access, reset, logout) {
     }
 }
 
+function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optionalProductsCombo,
+                     loadServices, loadInfo) {
+
+    this.service = new ObjectCombo(handler, servicePackageCombo, null);
+    this.validity = new ObjectCombo(handler, validityPeriodCombo, null);
+    this.optional = new ObjectList(handler, OptionalProduct, optionalProductsCombo, null, null);
+    this.loadServices = loadServices;
+    this.loadInfo = loadInfo;
+
+    this.init = function() {
+        this.service.combo.addEventListener("change", (e) => {
+            this.select(e.target.selectedIndex);
+        });
+        this.loadServices();
+    }
+
+    // Load service package information when selecting a new service package
+    this.select = function(index) {
+        let value = this.service.combo.options.item(index).value;
+        if(value >= 0)
+            this.loadInfo(value);
+    }
+
+    this.update = function(self, objects) {
+        // Extracts the names and ids of the objects
+        //TODO: temporary notation for attributes: name, id
+        self.service.update(self.service, objects.map(obj => { return {
+            name: obj.name,
+            id: obj.id
+        }}))
+        self.select(0);
+    }
+
+    this.updateInfo = function(self, object) {
+        // Extracts the validity periods from the object
+        //TODO: temporary notation for attributes: validityPeriod, name, id
+        self.validity.update(self.validity, object.validityPeriod.map(obj => { return {
+            name: obj.name,
+            id: obj.id
+        }}));
+        // Extracts optional products from the object
+        //TODO: temporary notation for attributes: optionalProducts
+        self.optional.update(self.optional, object.optionalProducts);
+    }
+}
+
 /**
  * Generic Page Handler for the purpose of generalizing the various handlers
  * (currently not used)
@@ -72,11 +118,9 @@ function ObjectList(handler, ListObject, list, load, opt) {
     this.list = list;
     this.load = load;
 
-    this.update = function(objects) {
-        this.show();
-        this.list.innerHTML = ""; // Empty the list
-
-        let self = this;
+    this.update = function(self, objects) {
+        self.show();
+        self.list.innerHTML = ""; // Empty the list
 
         // Initializes every single object and updates it
         objects.forEach((object) => {
@@ -99,13 +143,37 @@ function ObjectList(handler, ListObject, list, load, opt) {
 }
 
 /**
+ * ComboBox/Select element that can be dynamically filled
+ * @param {PageHandler} handler PageHandler containing the combo
+ * @param {Element} combo Element containing the combo
+ * @param {Function} load Function that loads the combo
+ */
+function ObjectCombo(handler, combo, load) {
+
+    this.combo = combo;
+    this.load = load;
+
+    this.update = function(self, objects) {
+        self.combo.innerHTML = ""; // Empty the combo
+
+        // Creates a new entry for each loaded object
+        objects.forEach((object) => {
+            let option = document.createElement("option");
+            option.text = object.name;
+            option.value = object.id;
+            self.combo.add(option);
+        });
+    };
+}
+
+/**
  * Service Package object
  * @param {PageHandler} handler Corresponding page handler
- * @param {Element} list Parent list element
+ * @param {Element} parent Parent element
  */
-function ServicePackage(handler, list) {
+function ServicePackage(handler, parent) {
 
-    this.list = list;
+    this.parent = parent;
 
     this.update = function() {
         //TODO: visualization of a service package
@@ -115,12 +183,21 @@ function ServicePackage(handler, list) {
 /**
  * Order object
  * @param {PageHandler} handler Corresponding page handler
- * @param {Element} list Parent list element
+ * @param {Element} parent Parent element
  * @param {Boolean} rejected True for rejected list visualization
  */
-function Order(handler, list, rejected) {
+function Order(handler, parent, rejected) {
 
-    this.list = list;
+    this.parent = parent;
+
+    this.update = function() {
+        //TODO: visualization of an order
+    };
+}
+
+function OptionalProduct(handler, parent) {
+
+    this.parent = parent;
 
     this.update = function() {
         //TODO: visualization of an order

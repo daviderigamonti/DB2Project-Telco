@@ -55,17 +55,18 @@ function makeCall(httpMethod, url, data, responseTag,
 }
 
 /**
- * Loads a list of objects
- * @param {ObjectList} self Reference to the list itself
+ * Loads an aggregate of objects
+ * @param {Object} self Reference to the aggregate itself
+ * @param {Function} update Update method for the aggregate
  * @param {String} httpMethod HTTP method that will be used for the call
  * @param {String} url Url that will be used for the call
  * @param {Object} data Additional data to insert
  * @param {Element} responseTag Element where the eventual response message will be visualized
  * @param {Boolean} json Flag indicating if the data parameter contains JSON content
- * @param {String} emptyMessage Message that will be visualized in case the list is empty
+ * @param {String} emptyMessage Message that will be visualized in case the returned list is empty
  */
-function loadList(self, httpMethod, url, data,
-                  responseTag, json, emptyMessage) {
+function loadObjects(self, update, httpMethod, url, data,
+                     responseTag, json, emptyMessage) {
     makeCall(httpMethod, url, data, responseTag, function(req) {
         let elements = JSON.parse(req.responseText);
         if(elements.length === 0) {
@@ -75,7 +76,7 @@ function loadList(self, httpMethod, url, data,
             }
             return;
         }
-        self.update(elements);
+        update(self, elements);
     }, json);
 }
 

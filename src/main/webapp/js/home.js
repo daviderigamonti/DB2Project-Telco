@@ -41,27 +41,32 @@
                 null, document.getElementById("buttonLogout"));
             this.menu.addEvents(this);
 
+            let handler = this;
+
             // Service packages list
             this.servicePackages = new ObjectList(this, ServicePackage,
                 document.getElementById("servicePackages"), function() {
-                    loadList(this, "GET", "LoadServicePackages",
-                        null, self.message, false,
+                    let self = this;
+                    loadObjects(self, self.update, "GET", "LoadServicePackages",
+                        null, handler.message, false,
                         'No available service packages at the moment');
                 }, null
             );
+            this.servicePackages.load();
 
             // Rejected orders list
             this.rejectedOrders = new ObjectList(this, Order,
                 document.getElementById("rejectedOrders"), function() {
-                    loadList(this, "GET", "LoadRejectedOrdersByUser?userinfo=" + userInfo(),
-                        true, self.message, false, '');
+                    let self = this;
+                    loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userinfo=" + userInfo(),
+                        false, handler.message, true, '');
                 }, true // opt is set to true to indicate the rejected attribute of the orders
             );
 
             // Select button
-            this.select = document.getElementById("buttonLogout");
+            this.select = document.getElementById("buttonSelect");
             this.select.addEventListener("click", () => {
-                //TODO: select
+                window.location.href = "buyservice.html";
             });
 
             //TODO: on load home stuff here
