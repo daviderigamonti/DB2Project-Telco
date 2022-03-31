@@ -99,13 +99,6 @@ function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optional
 }
 
 /**
- * Generic Page Handler for the purpose of generalizing the various handlers
- * (currently not used)
- */
-function PageHandler() {}
-PageHandler.prototype = {}
-
-/**
  * List containing generic objects, used for dynamic visualization and grouping of multiple objects
  * @param {PageHandler} handler PageHandler containing the list
  * @param {Function} ListObject Reference to the constructor of the stored objects
@@ -166,40 +159,82 @@ function ObjectCombo(handler, combo, load) {
     };
 }
 
-/**
- * Service Package object
- * @param {PageHandler} handler Corresponding page handler
- * @param {Element} parent Parent element
- */
+
 function ServicePackage(handler, parent) {
 
     this.parent = parent;
+    this.packageDIV = null;
+    this.id = null;
 
-    this.update = function() {
-        //TODO: visualization of a service package
+    this.update = function(service) {
+        //TODO: temporary notation for attributes: id, name
+
+        this.id = service.id;
+
+        this.packageDIV = appendElement(this.parent, "div", null, null, null)
+        appendElement(this.packageDIV, "div", null, null, service.id);
+        appendElement(this.packageDIV, "div", null, null, service.name);
+
+        // Clickable rejected order
+        this.parent.addEventListener("click", this.openPackage, false);
     };
+
+    this.openPackage = function() {
+        if(id)
+            window.location.href = "buyservice.js.js";
+        //TODO: proper redirect
+    }
 }
 
-/**
- * Order object
- * @param {PageHandler} handler Corresponding page handler
- * @param {Element} parent Parent element
- * @param {Boolean} rejected True for rejected list visualization
- */
-function Order(handler, parent, rejected) {
+function Order(handler, parent) {
 
     this.parent = parent;
 
-    this.update = function() {
+    this.update = function(order) {
         //TODO: visualization of an order
     };
+}
+
+function RejectedOrder(handler, parent) {
+
+    this.parent = parent;
+    this.orderDIV = null;
+    this.id = null;
+
+    this.update = function(order) {
+        //TODO: temporary notation for attributes: id, timestamp, status, total
+
+        this.id = order.id;
+
+        this.orderDIV = appendElement(this.parent, "div", null, null, null)
+        appendElement(this.orderDIV, "div", null, null, order.id);
+        appendElement(this.orderDIV, "div", null, null, order.timestamp);
+        appendElement(this.orderDIV, "div", null, null, order.status);
+        appendElement(this.orderDIV, "div", null, null, order.total);
+
+        // Clickable rejected order
+        this.parent.addEventListener("click", this.openOrder, false);
+    };
+
+    this.openOrder = function() {
+        if(id)
+            window.location.href = "confirmation.js";
+        //TODO: proper redirect
+    }
+
 }
 
 function OptionalProduct(handler, parent) {
 
     this.parent = parent;
 
-    this.update = function() {
-        //TODO: visualization of an order
+    this.update = function(product) {
+        //TODO: temporary notation for attributes: id, name, monthlyFee
+
+        let productString = product.name + " " + product.monthlyFee + "€/month";
+
+        let label = appendElement(this.parent, "label", null, null, productString);
+        appendElement(label, "input", "checkbox", product.id, null);
+
     };
 }

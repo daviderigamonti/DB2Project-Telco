@@ -27,7 +27,6 @@
         this.form = null;
         this.servicePackages = null;
         this.optionalProducts = null;
-        this.select = null;
 
         this.init = function() {
 
@@ -60,13 +59,14 @@
                 }
             );
             this.form.init();
+
+            this.load();
         }
 
-        this.update = function() {
-            //TODO: ??????????????????
+        this.load = function() {
+            //TODO: on load service stuff here
         }
 
     }
-    ServiceHandler.prototype = Object.create(PageHandler.prototype);
 
 })();

@@ -86,3 +86,18 @@ function loadObjects(self, update, httpMethod, url, data,
 function userInfo() {
     return null;    //TODO: get user info
 }
+
+/**
+ * Creates an HTML element given a tag, fills it with data and appends it to the parent
+ */
+function appendElement(parent, tag, type, id, data) {
+    const el = document.createElement(tag);
+    if(type)
+        el.type = type;
+    if(id)
+        el.id = id;
+    if(data)
+        el.innerHTML = data;
+    parent.appendChild(el);
+    return el;
+}

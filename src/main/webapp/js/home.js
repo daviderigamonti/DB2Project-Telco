@@ -55,13 +55,14 @@
             this.servicePackages.load();
 
             // Rejected orders list
-            this.rejectedOrders = new ObjectList(this, Order,
+            this.rejectedOrders = new ObjectList(this, RejectedOrder,
                 document.getElementById("rejectedOrders"), function() {
                     let self = this;
                     loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userinfo=" + userInfo(),
                         false, handler.message, true, '');
-                }, true // opt is set to true to indicate the rejected attribute of the orders
+                }, null
             );
+            this.rejectedOrders.load();
 
             // Select button
             this.select = document.getElementById("buttonSelect");
@@ -69,14 +70,13 @@
                 window.location.href = "buyservice.html";
             });
 
+            this.load();
+        }
+
+        this.load = function() {
             //TODO: on load home stuff here
         }
 
-        this.update = function() {
-            //TODO: ??????????????????
-        }
-
     }
-    HomeHandler.prototype = Object.create(PageHandler.prototype);
 
 })();
