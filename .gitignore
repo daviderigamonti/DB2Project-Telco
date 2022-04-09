@@ -1,3 +1,15 @@
+# INTELLIJ
 out/*
 target/*
 .idea/*
+
+# LATEX
+*.aux
+*.idx
+*.log
+*.toc
+*.acn
+*.acr
+*.mtc
+*.out
+*.synctex.gz

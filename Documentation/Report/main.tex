@@ -1,0 +1,64 @@
+%---------------------------------------------------------------------
+%   PACKAGES AND CONFIGURATION
+%---------------------------------------------------------------------
+
+\documentclass{report}
+
+\usepackage{geometry} % Edit document margins
+\usepackage{hyperref} % Table of contents hyperlinks
+
+% HELPER PACKAGES (REMOVE IN FINAL) %
+\usepackage{todonotes}
+\usepackage{blindtext}
+% HELPER PACKAGES (REMOVE IN FINAL) %
+
+% Hyperlink setup
+\hypersetup{   
+    colorlinks,
+    citecolor=blue,
+    filecolor=blue,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+%---------------------------------------------------------------------
+%	DOCUMENT
+%---------------------------------------------------------------------
+
+\begin{document}
+
+% TITLE
+\include{title}
+
+% ToC
+{
+    \hypersetup{hidelinks}
+    \tableofcontents
+}
+
+% LIST OF TODOS (REMOVE IN FINAL) %
+\listoftodos
+% LIST OF TODOS (REMOVE IN FINAL) %
+
+% SPECIFICATIONS
+\include{chapters/1.specifications}
+
+% DATA MODELS
+\include{chapters/2.data_models}
+
+% TRIGGERS
+\include{chapters/3.triggers}
+
+% ORM
+\include{chapters/4.orm}
+
+% FUNCTIONAL ANALYSIS
+\include{chapters/5.functional_analysis}
+
+% COMPONENTS
+\include{chapters/6.components}
+
+% SEQUENCE DIAGRAMS
+\include{chapters/7.sequence_diagrams}
+
+\end{document}
