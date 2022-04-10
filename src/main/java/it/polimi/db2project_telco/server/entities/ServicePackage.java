@@ -1,4 +1,4 @@
-package it.polimi.db2project_telco.entities;
+package it.polimi.db2project_telco.server.entities;
 
 import jakarta.persistence.*;
 
