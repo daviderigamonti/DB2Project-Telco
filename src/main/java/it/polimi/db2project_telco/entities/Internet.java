@@ -23,7 +23,7 @@ public class Internet implements Serializable {
     private int gigabytes;
 
     @Column(name="GB_Fee")
-    private int gigabyteFee;
+    private float gigabyteFee;
 
     @Column(name="Fixed")
     private boolean is_fixed;
@@ -52,11 +52,11 @@ public class Internet implements Serializable {
         this.gigabytes = gigabytes;
     }
 
-    public int getGigabyteFee() {
+    public float getGigabyteFee() {
         return gigabyteFee;
     }
 
-    public void setGigabyteFee(int gigabyteFee) {
+    public void setGigabyteFee(float gigabyteFee) {
         this.gigabyteFee = gigabyteFee;
     }
 

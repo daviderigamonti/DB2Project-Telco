@@ -15,15 +15,11 @@ public class OptionalProduct implements Serializable {
     @Column(name = "ID")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "Pkg_ID")
-    private ServicePackage servicePackage;
-
     @Column(name="Name")
     private String name;
 
     @Column(name="Monthly_Fee")
-    private int fee;
+    private float fee;
 
     public int getId() {
         return id;
@@ -31,14 +27,6 @@ public class OptionalProduct implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public ServicePackage getServicePackage() {
-        return servicePackage;
-    }
-
-    public void setServicePackage(ServicePackage servicePackage) {
-        this.servicePackage = servicePackage;
     }
 
     public String getName() {
@@ -49,11 +37,11 @@ public class OptionalProduct implements Serializable {
         this.name = name;
     }
 
-    public int getFee() {
+    public float getFee() {
         return fee;
     }
 
-    public void setFee(int fee) {
+    public void setFee(float fee) {
         this.fee = fee;
     }
 }

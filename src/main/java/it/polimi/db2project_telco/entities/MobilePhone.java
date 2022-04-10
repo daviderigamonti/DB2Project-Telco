@@ -26,10 +26,10 @@ public class MobilePhone implements Serializable {
     private int sms;
 
     @Column(name="Minutes_Fee")
-    private int minuteFee;
+    private float minuteFee;
 
     @Column(name="SMS_Fee")
-    private int smsFee;
+    private float smsFee;
 
     public int getId() {
         return id;
@@ -63,19 +63,19 @@ public class MobilePhone implements Serializable {
         this.sms = sms;
     }
 
-    public int getMinuteFee() {
+    public float getMinuteFee() {
         return minuteFee;
     }
 
-    public void setMinuteFee(int minuteFee) {
+    public void setMinuteFee(float minuteFee) {
         this.minuteFee = minuteFee;
     }
 
-    public int getSmsFee() {
+    public float getSmsFee() {
         return smsFee;
     }
 
-    public void setSmsFee(int smsFee) {
+    public void setSmsFee(float smsFee) {
         this.smsFee = smsFee;
     }
 }

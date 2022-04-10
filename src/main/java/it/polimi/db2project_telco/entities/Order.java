@@ -21,15 +21,15 @@ public class Order implements Serializable {
     @JoinColumn(name = "User_ID")
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Pkg_ID")
     private ServicePackage servicePackage;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Validity_Period_ID")
     private ValidityPeriod validityPeriod;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="OrderComprehendsOptional",
             joinColumns = @JoinColumn(name = "Order_ID"),
             inverseJoinColumns = @JoinColumn(name = "Optional_ID")
@@ -46,7 +46,7 @@ public class Order implements Serializable {
     private String status;
 
     @Column(name="Total")
-    private int total;
+    private float total;
 
     public int getId() {
         return id;
@@ -96,11 +96,11 @@ public class Order implements Serializable {
         this.status = status;
     }
 
-    public int getTotal() {
+    public float getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(float total) {
         this.total = total;
     }
 
