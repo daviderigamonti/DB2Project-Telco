@@ -8,4 +8,6 @@ import jakarta.persistence.PersistenceContext;
 public class ValidityPeriodService {
     @PersistenceContext(unitName = "DB2Project")
     private EntityManager em;
+
+    public ValidityPeriodService() {}
 }

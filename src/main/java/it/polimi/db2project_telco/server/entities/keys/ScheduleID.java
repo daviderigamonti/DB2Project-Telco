@@ -1,4 +1,4 @@
-package it.polimi.db2project_telco.server.entities;
+package it.polimi.db2project_telco.server.entities.keys;
 
 
 import java.io.Serializable;

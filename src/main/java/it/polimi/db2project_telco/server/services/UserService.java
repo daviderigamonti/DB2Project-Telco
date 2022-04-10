@@ -8,4 +8,6 @@ import jakarta.persistence.PersistenceContext;
 public class UserService {
     @PersistenceContext(unitName = "DB2Project")
     private EntityManager em;
+
+    public UserService() {}
 }

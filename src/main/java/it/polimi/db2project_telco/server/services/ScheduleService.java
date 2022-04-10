@@ -8,4 +8,6 @@ import jakarta.persistence.PersistenceContext;
 public class ScheduleService {
     @PersistenceContext(unitName = "DB2Project")
     private EntityManager em;
+
+    public ScheduleService() {}
 }

@@ -8,4 +8,6 @@ import jakarta.persistence.PersistenceContext;
 public class OrderService {
     @PersistenceContext(unitName = "DB2Project")
     private EntityManager em;
+
+    public OrderService() {}
 }

@@ -3,7 +3,18 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="default">
-
+    <persistence-unit name="DB2Project" transaction-type="JTA">
+        <jta-data-source>db2telco</jta-data-source>
+        <class>it.polimi.db2project_telco.server.entities.Audit</class>
+        <class>it.polimi.db2project_telco.server.entities.Employee</class>
+        <class>it.polimi.db2project_telco.server.entities.FixedPhone</class>
+        <class>it.polimi.db2project_telco.server.entities.Internet</class>
+        <class>it.polimi.db2project_telco.server.entities.MobilePhone</class>
+        <class>it.polimi.db2project_telco.server.entities.OptionalProduct</class>
+        <class>it.polimi.db2project_telco.server.entities.Order</class>
+        <class>it.polimi.db2project_telco.server.entities.ServiceActivationSchedule</class>
+        <class>it.polimi.db2project_telco.server.entities.ServicePackage</class>
+        <class>it.polimi.db2project_telco.server.entities.User</class>
+        <class>it.polimi.db2project_telco.server.entities.ValidityPeriod</class>
     </persistence-unit>
 </persistence>
