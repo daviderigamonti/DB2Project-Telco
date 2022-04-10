@@ -1,33 +1,50 @@
 package it.polimi.db2project_telco.server.entities.keys;
 
-
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class ScheduleID implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int userID;
-    private Timestamp timestamp;
+    private int user;
+    private int order;
 
-    public int getUserID() {
-        return userID;
+    public ScheduleID() {
+        this.user = 0;
+        this.order = 0;
     }
 
-    public ScheduleID(int userID, Timestamp timestamp) {
-        this.userID = userID;
-        this.timestamp = timestamp;
+    public ScheduleID(int userID, int order) {
+        this.user = userID;
+        this.order = order;
+    }
+
+    public int getUserID() {
+        return user;
     }
 
     public void setUserID(int userID) {
-        this.userID = userID;
+        this.user = userID;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public int getOrder() {
+        return order;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass())
+            return false;
+        ScheduleID scheduleID = (ScheduleID) obj;
+        return this.user == scheduleID.user &&
+                this.getOrder() == scheduleID.getOrder();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

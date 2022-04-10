@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "Users", schema = "db2telco")
+@NamedQuery(name = "User.checkCredentials", query = "SELECT u FROM User u WHERE u.username = :usr AND u.password = :psw")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -43,6 +44,14 @@ public class User implements Serializable {
     private List<ServiceActivationSchedule> schedules;
 
     public User() {
+    }
+
+    public User(String mail, String username, String password) {
+        this.mail = mail;
+        this.username = username;
+        this.name = "xx";
+        this.surname = "xx";
+        this.password = password;
     }
 
     public int getId() {

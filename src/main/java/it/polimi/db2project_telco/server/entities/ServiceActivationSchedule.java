@@ -1,13 +1,13 @@
 package it.polimi.db2project_telco.server.entities;
 
-import it.polimi.db2project_telco.server.entities.keys.AuditID;
+import it.polimi.db2project_telco.server.entities.keys.ScheduleID;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@IdClass(AuditID.class)
+@IdClass(ScheduleID.class)
 @Table(name= "ServiceActivationSchedule", schema = "db2telco")
 public class ServiceActivationSchedule implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class ServiceActivationSchedule implements Serializable {
     private User user;
 
     @Id
-    @OneToOne( fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Order_ID")
     private Order order;
 
