@@ -3,19 +3,50 @@ package it.polimi.db2project_telco.server.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name= "Users", schema = "db2telco")
+@IdClass(AuditId.class)
+@Table(name= "ServiceActivationSchedule", schema = "db2telco")
 public class ServiceActivationSchedule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "User_ID")
     private User user;
 
+    @Id
+    @OneToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name = "Order_ID")
+    private Order order;
+
+    @Column(name = "Deactivation_Date")
+    private Date deactivationDate;
+
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Date getDeactivationDate() {
+        return deactivationDate;
+    }
+
+    public void setDeactivationDate(Date deactivationDate) {
+        this.deactivationDate = deactivationDate;
+    }
 }

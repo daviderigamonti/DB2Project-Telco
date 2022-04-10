@@ -30,7 +30,11 @@ public class ServicePackage implements Serializable {
     @OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY)
     private List<ValidityPeriod> validityPeriods;
 
-    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="ServicePkgOffersOptional",
+            joinColumns = @JoinColumn(name = "Pkg_ID"),
+            inverseJoinColumns = @JoinColumn(name = "Optional_ID")
+    )
     private List<OptionalProduct> optionalProducts;
 
     public int getId() {
