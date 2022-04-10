@@ -1,22 +1,22 @@
-package it.polimi.db2project_telco.entities;
-
+package it.polimi.db2project_telco.server.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class ScheduleId implements Serializable {
+public class AuditId implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int userID;
+
     private Timestamp timestamp;
+
+    public AuditId(int userID, Timestamp timestamp) {
+        this.userID = userID;
+        this.timestamp = timestamp;
+    }
 
     public int getUserID() {
         return userID;
-    }
-
-    public ScheduleId(int userID, Timestamp timestamp) {
-        this.userID = userID;
-        this.timestamp = timestamp;
     }
 
     public void setUserID(int userID) {
