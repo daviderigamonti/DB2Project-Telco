@@ -13,10 +13,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.commons.text.StringEscapeUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
 
@@ -69,10 +68,10 @@ public class CheckLogin extends HttpServlet {
         request.getSession().setAttribute("user", user);
 
         // Send the user data back to the client
-        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+        ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write(gson.toJson(user));
+        objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name
     }
 }
