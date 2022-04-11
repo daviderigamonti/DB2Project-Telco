@@ -1,10 +1,10 @@
 package it.polimi.db2project_telco.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-
 
 @Entity
 @Table(name= "Fixed_Phone", schema = "db2telco")
@@ -17,6 +17,7 @@ public class FixedPhone implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "Pkg_ID")
+    @JsonBackReference
     private ServicePackage servicePackage;
 
     public int getId() {

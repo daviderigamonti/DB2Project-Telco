@@ -1,5 +1,7 @@
 package it.polimi.db2project_telco.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -7,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "Service_Pkgs", schema = "db2telco")
+@NamedQuery(name = "ServicePackage.findAll", query = "SELECT s FROM ServicePackage s")
 public class ServicePackage implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,15 +22,19 @@ public class ServicePackage implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<FixedPhone> fixedPhoneServices;
 
     @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<MobilePhone> mobilePhoneServices;
 
     @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
-    private List<MobilePhone> internetServices;
+    @JsonManagedReference
+    private List<Internet> internetServices;
 
     @OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ValidityPeriod> validityPeriods;
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -69,11 +76,11 @@ public class ServicePackage implements Serializable {
         this.mobilePhoneServices = mobilePhoneServices;
     }
 
-    public List<MobilePhone> getInternetServices() {
+    public List<Internet> getInternetServices() {
         return internetServices;
     }
 
-    public void setInternetServices(List<MobilePhone> internetServices) {
+    public void setInternetServices(List<Internet> internetServices) {
         this.internetServices = internetServices;
     }
 

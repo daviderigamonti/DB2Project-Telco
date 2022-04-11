@@ -100,13 +100,12 @@ function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optional
 
 /**
  * List containing generic objects, used for dynamic visualization and grouping of multiple objects
- * @param {PageHandler} handler PageHandler containing the list
  * @param {Function} ListObject Reference to the constructor of the stored objects
  * @param {Element} list Element containing the list
  * @param {Function} load Function that loads the list
  * @param {Object} opt Optional parameters for the object
  */
-function ObjectList(handler, ListObject, list, load, opt) {
+function ObjectList(ListObject, list, load, opt) {
 
     this.list = list;
     this.load = load;
@@ -117,7 +116,7 @@ function ObjectList(handler, ListObject, list, load, opt) {
 
         // Initializes every single object and updates it
         objects.forEach((object) => {
-            let p = new ListObject(handler, self.list, opt);
+            let p = new ListObject(self.list, opt);
             p.update(object);
         });
     };
@@ -137,11 +136,10 @@ function ObjectList(handler, ListObject, list, load, opt) {
 
 /**
  * ComboBox/Select element that can be dynamically filled
- * @param {PageHandler} handler PageHandler containing the combo
  * @param {Element} combo Element containing the combo
  * @param {Function} load Function that loads the combo
  */
-function ObjectCombo(handler, combo, load) {
+function ObjectCombo(combo, load) {
 
     this.combo = combo;
     this.load = load;
@@ -151,90 +149,7 @@ function ObjectCombo(handler, combo, load) {
 
         // Creates a new entry for each loaded object
         objects.forEach((object) => {
-            let option = document.createElement("option");
-            option.text = object.name;
-            option.value = object.id;
-            self.combo.add(option);
+            appendElement(self.combo, "option", {name: object.name, value: object.id});
         });
-    };
-}
-
-
-function ServicePackage(handler, parent) {
-
-    this.parent = parent;
-    this.packageDIV = null;
-    this.id = null;
-
-    this.update = function(service) {
-        //TODO: temporary notation for attributes: id, name
-
-        this.id = service.id;
-
-        this.packageDIV = appendElement(this.parent, "div", null, null, null)
-        appendElement(this.packageDIV, "div", null, null, service.id);
-        appendElement(this.packageDIV, "div", null, null, service.name);
-
-        // Clickable rejected order
-        this.parent.addEventListener("click", this.openPackage, false);
-    };
-
-    this.openPackage = function() {
-        if(id)
-            window.location.href = "buyservice.js.js";
-        //TODO: proper redirect
-    }
-}
-
-function Order(handler, parent) {
-
-    this.parent = parent;
-
-    this.update = function(order) {
-        //TODO: visualization of an order
-    };
-}
-
-function RejectedOrder(handler, parent) {
-
-    this.parent = parent;
-    this.orderDIV = null;
-    this.id = null;
-
-    this.update = function(order) {
-        //TODO: temporary notation for attributes: id, timestamp, status, total
-
-        this.id = order.id;
-
-        this.orderDIV = appendElement(this.parent, "div", null, null, null)
-        appendElement(this.orderDIV, "div", null, null, order.id);
-        appendElement(this.orderDIV, "div", null, null, order.timestamp);
-        appendElement(this.orderDIV, "div", null, null, order.status);
-        appendElement(this.orderDIV, "div", null, null, order.total);
-
-        // Clickable rejected order
-        this.parent.addEventListener("click", this.openOrder, false);
-    };
-
-    this.openOrder = function() {
-        if(id)
-            window.location.href = "confirmation.js";
-        //TODO: proper redirect
-    }
-
-}
-
-function OptionalProduct(handler, parent) {
-
-    this.parent = parent;
-
-    this.update = function(product) {
-        //TODO: temporary notation for attributes: id, name, monthlyFee
-
-        let productString = product.name + " " + product.monthlyFee + "€/month";
-
-        let label = appendElement(this.parent, "label", null, null, productString);
-        appendElement(label, "input", "checkbox", product.id, null);
-
     };
 }

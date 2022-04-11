@@ -87,17 +87,34 @@ function userInfo() {
     return null;    //TODO: get user info
 }
 
+/*
+ * If the number received as parameter is zero or less, substitute it with an infinity character
+ */
+function visInf(n) {
+    if(n != null && n <= 0)
+        return "∞";
+    return n.toString();
+}
+
 /**
  * Creates an HTML element given a tag, fills it with data and appends it to the parent
+ * Optional parameters are passed by name using javascript destructuring
  */
-function appendElement(parent, tag, type, id, data) {
+function appendElement(parent, tag,
+                       {id = null, type = null, name = null, value: value,
+                           data = null} = {}) {
     const el = document.createElement(tag);
-    if(type)
-        el.type = type;
+
+    // DOM Element.id shouldn't be assigned an empty string
     if(id)
         el.id = id;
-    if(data)
-        el.innerHTML = data;
+
+    el.type = type ?? "";
+    el.name = name ?? "";
+    el.value = value ?? "";
+    el.innerHTML = data ?? "";
+
     parent.appendChild(el);
+
     return el;
 }

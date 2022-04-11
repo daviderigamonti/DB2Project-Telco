@@ -1,10 +1,8 @@
 package it.polimi.db2project_telco.server.entities;
 
-
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-
 
 @Entity
 @Table(name= "Optional_Products", schema = "db2telco")
