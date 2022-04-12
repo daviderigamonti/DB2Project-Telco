@@ -10,7 +10,7 @@
             init();
         }
         else
-            window.location.href = DEFAULT_PAGE;
+            window.location.href = PAGES.DEFAULT;
     }, false);
 
     function init() {

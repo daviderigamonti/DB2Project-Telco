@@ -24,7 +24,7 @@ function ServicePackage(parent, {id = 0, name = "",
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
             if(this.id)
-                window.location.href = "buyservice.html";
+                window.location.href = PAGES.BUYSERVICE;
             //TODO: proper redirect
         }, false);
     };
@@ -103,7 +103,7 @@ function RejectedOrder(parent) {
         // Clickable rejected order
         this.parent.addEventListener("click", () => {
             if(this.id)
-                window.location.href = "confirmation.html";
+                window.location.href = PAGES.CONFIRMATION;
             //TODO: proper redirect
         }, false);
     };

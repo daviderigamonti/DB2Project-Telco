@@ -35,19 +35,20 @@ function Menu(home, access, reset, logout) {
     this.addEvents = function() {
         if(this.home)
             this.home.addEventListener("click", () => {
-                //TODO: home
+                window.location.href = PAGES.HOME;
             });
         if(this.access)
             this.access.addEventListener("click", () => {
-                //TODO: access
+                window.location.href = PAGES.LANDING;
+                //TODO: probably access == logout?
             });
         if(this.reset)
             this.reset.addEventListener("click", () => {
-                //TODO: reset
+                //TODO: remove and directly add inside confirmation page
             });
         if(this.logout)
             this.logout.addEventListener("click", () => {
-                //TODO: logout
+                window.location.href = PAGES.LANDING;
             });
     }
 }
@@ -108,18 +109,6 @@ function ObjectList(ListObject, list, load) {
             let p = new ListObject(self.list, object);
             p.listElement(object);
         });
-    };
-
-    this.show = () => {
-        this.list.hidden = false;
-    };
-
-    this.hide = () => {
-        this.list.hidden = true;
-    };
-
-    this.isHidden = () => {
-        return this.list.hidden;
     };
 }
 

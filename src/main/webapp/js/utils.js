@@ -9,7 +9,15 @@ const HTTP_CODES = {
     forbidden		: 403,
     unavailable		: 404
 }
-const DEFAULT_PAGE = "landing.html";
+
+const PAGES = {
+    DEFAULT         : "landing.html",
+    LANDING         : "landing.html",
+    HOME            : "home.html",
+    BUYSERVICE      : "buyservice.html",
+    CONFIRMATION    : "confirmation.html",
+}
+
 
 /**
  * Makes a call to the server, utilizing the XMLHttpRequest object
@@ -32,7 +40,7 @@ function makeCall(httpMethod, url, data, responseTag,
             else if(req.status === HTTP_CODES.unauthorized ||
                     req.status === HTTP_CODES.forbidden) {
                 // TODO: empty the current user session
-                window.location.href = DEFAULT_PAGE;
+                window.location.href = PAGES.DEFAULT;
             }
             else {
                 responseTag.className = "errorMessage";

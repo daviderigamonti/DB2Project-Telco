@@ -11,7 +11,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
                 // TODO: fill the current user session w/ JSON.parse(req.responseText);
-                window.location.href = "home.html";
+                window.location.href = PAGES.HOME;
             }, null);
         }
         else
@@ -25,7 +25,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "RegisterUser", new FormData(form), message, function(req) {
                 // TODO: something?
-                window.location.href = "landing.html";
+                window.location.href = PAGES.LANDING;
             }, null);
         }
         else
@@ -34,7 +34,7 @@
 
     // BROWSING
     document.getElementById("buttonBrowse").addEventListener("click", () => {
-        window.location.href = "home.html";
+        window.location.href = PAGES.HOME;
     });
 
 })();

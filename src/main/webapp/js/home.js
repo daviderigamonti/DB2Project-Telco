@@ -9,7 +9,7 @@
             init()
         }
         else
-            window.location.href = DEFAULT_PAGE;
+            window.location.href = PAGES.DEFAULT;
     }, false);
 
     function init() {
@@ -51,7 +51,7 @@
         // Select button
         this.select = document.getElementById("buttonSelect");
         this.select.addEventListener("click", () => {
-            window.location.href = "buyservice.html";
+            window.location.href = PAGES.BUYSERVICE;
         });
     }
 
