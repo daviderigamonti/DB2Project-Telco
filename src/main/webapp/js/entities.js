@@ -13,15 +13,14 @@ class ServicePackage {
 
     visListClickable() {
         this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {data: this.id});
         appendElement(this.packageDIV, "div", {data: this.name});
 
-        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"),
-            null, FixedPhonePkg.prototype.visList);
-        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"),
-            null, MobilePhonePkg.prototype.visList);
-        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"),
-            null, InternetPkg.prototype.visList);
+        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
+            null, FixedPhoneSvc.prototype.visList);
+        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.packageDIV, "div"),
+            null, MobilePhoneSvc.prototype.visList);
+        let internetList = new ObjectList(InternetSvc, appendElement(this.packageDIV, "div"),
+            null, InternetSvc.prototype.visList);
 
         fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
         mobilePhoneList.update(mobilePhoneList, this.mobilePhone);
@@ -40,12 +39,12 @@ class ServicePackage {
         this.packageDIV = appendElement(this.parent, "div");
         appendElement(this.packageDIV, "div", {data: this.name});
 
-        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"),
-            null, FixedPhonePkg.prototype.visList);
-        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"),
-            null, MobilePhonePkg.prototype.visList);
-        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"),
-            null, InternetPkg.prototype.visList);
+        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
+            null, FixedPhoneSvc.prototype.visList);
+        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.packageDIV, "div"),
+            null, MobilePhoneSvc.prototype.visList);
+        let internetList = new ObjectList(InternetSvc, appendElement(this.packageDIV, "div"),
+            null, InternetSvc.prototype.visList);
 
         fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
         mobilePhoneList.update(mobilePhoneList, this.mobilePhone);
@@ -58,7 +57,7 @@ class ServicePackage {
 }
 
 
-class FixedPhonePkg {
+class FixedPhoneSvc {
 
     constructor(parent) {
         this.parent = parent;
@@ -70,7 +69,7 @@ class FixedPhonePkg {
 }
 
 
-class MobilePhonePkg {
+class MobilePhoneSvc {
 
     constructor(parent, {minutes = 0, sms = 0,
             minuteFee = 0.0, smsFee = 0.0}) {
@@ -89,7 +88,7 @@ class MobilePhonePkg {
     };
 }
 
-class InternetPkg {
+class InternetSvc {
 
     constructor(parent, {is_fixed = 1, gigabytes = 0, gigabyteFee = 0.0}) {
         this.parent = parent;

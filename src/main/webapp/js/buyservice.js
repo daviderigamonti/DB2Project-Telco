@@ -31,6 +31,7 @@
         // Form for choosing the service
         this.form = new ServiceForm(
             document.getElementById("servicePackage"),
+            document.getElementById("services"),
             document.getElementById("validityPeriod"),
             document.getElementById("optionalProducts"),
             function() {
