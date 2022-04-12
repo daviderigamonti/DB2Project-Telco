@@ -132,6 +132,6 @@ function OptionalProduct(parent, {id = 0, name = "", fee = 0.0}) {
     this.listElement = function() {
         let productString = this.name + " @ " + this.fee + "€/month";
         let label = appendElement(this.parent, "label", {data: productString});
-        appendElement(label, "input", {type: "checkbox", id: this.id});
+        appendElement(label, "input", {type: "checkbox",  name: "optionalProducts", value: this.id});
     };
 }

@@ -101,7 +101,6 @@ function ObjectList(ListObject, list, load) {
     this.load = load;
 
     this.update = function(self, objects) {
-        self.show();
         self.list.innerHTML = ""; // Empty the list
 
         // Initializes every single object and updates it

@@ -36,8 +36,10 @@ public class LoadPackageByID extends HttpServlet {
         // Obtain the parameters from the request
         try {
             String temp = StringEscapeUtils.escapeJava(request.getParameter("id"));
+
             if(temp == null || temp.isEmpty())
                 throw new Exception();
+
             packageID = Integer.parseInt(temp);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed input request");

@@ -45,6 +45,20 @@
             }
         );
         this.form.init();
+
+        // Confirm button
+        this.select = document.getElementById("buttonConfirm");
+        this.select.addEventListener("click", (e) => {
+            let form = e.target.closest("form");
+            if(form.checkValidity()) {
+                // Add the order to the session
+                makeCall("POST", "CreateOrder",  new FormData(form), handler.message, (req) => {
+                    //TODO: add to local session?
+                    window.location.href = PAGES.CONFIRMATION;
+                }, false)
+            }
+
+        });
     }
 
 })();
