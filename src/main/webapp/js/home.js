@@ -35,7 +35,7 @@
                 loadObjects(self, self.update, "GET", "LoadServicePackages",
                     null, handler.message, false,
                     'No available service packages at the moment');
-            }, null
+            }, ServicePackage.prototype.visListClickable
         );
         this.servicePackages.load();
 
@@ -46,7 +46,7 @@
                     let self = this;
                     loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userID=" + getUserInfo().id,
                         false, handler.message, true, '');
-                }, null
+                }, RejectedOrder.prototype.listElement
             );
             this.rejectedOrders.load();
         }

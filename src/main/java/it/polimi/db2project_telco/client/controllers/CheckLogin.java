@@ -72,6 +72,6 @@ public class CheckLogin extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name
+        objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name + id
     }
 }

@@ -105,6 +105,7 @@ function loadObjects(self, update, httpMethod, url, data,
  */
 function setUserInfo(userInfoText = null) {
     let guest = GUEST.TRUE;
+    clearStorage();
     if(userInfoText) {
         let userInfo = JSON.parse(userInfoText);
         sessionStorage.setItem("userID", userInfo.id);

@@ -29,6 +29,16 @@
             null);
         this.menu.addEvents(this);
 
+        let handler = this;
+
+        this.summary = new Summary(Order, document.getElementById("summary"), function() {
+                let self = this;
+                loadObjects(self, self.update, "GET", "LoadTrackedOrder",
+                    null, handler.message, false, 'No order found');
+            }, Order.prototype.visSummary
+        );
+        this.summary.load();
+
         // Buy button
         this.buy = document.getElementById("buttonBuy");
         this.buy.addEventListener("click", () => {

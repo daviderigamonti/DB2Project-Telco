@@ -72,6 +72,8 @@ public class CreateOrder extends HttpServlet {
             return;
         }
 
+        //TODO: fill the order with additional info
+
         // Save the tracked order in the session
         request.getSession().setAttribute("trackedOrder", order);
 

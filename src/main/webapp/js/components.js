@@ -55,9 +55,12 @@ function Menu(home, access, reset, logout) {
 function ServiceForm(servicePackageCombo, validityPeriodCombo, optionalProductsCheck,
                      loadServices, loadInfo) {
 
-    this.service = new ObjectCombo(ServicePackage, servicePackageCombo, null);
-    this.validity = new ObjectCombo(ValidityPeriod, validityPeriodCombo, null);
-    this.optional = new ObjectList(OptionalProduct, optionalProductsCheck, null);
+    this.service = new ObjectCombo(ServicePackage, servicePackageCombo,
+        null, ServicePackage.prototype.visCombo);
+    this.validity = new ObjectCombo(ValidityPeriod, validityPeriodCombo,
+        null, ValidityPeriod.prototype.visCombo);
+    this.optional = new ObjectList(OptionalProduct, optionalProductsCheck,
+        null, OptionalProduct.prototype.visCheck);
     this.loadServices = loadServices;
     this.loadInfo = loadInfo;
 
@@ -88,13 +91,26 @@ function ServiceForm(servicePackageCombo, validityPeriodCombo, optionalProductsC
     }
 }
 
+function Summary(SummaryObject, summary, load, visualize) {
+
+    this.summary = summary;
+    this.load = load;
+
+    this.update = function(self, object) {
+        // One object only is expected
+        let p = new SummaryObject(self.summary, object);
+        visualize.call(p);
+    }
+}
+
 /**
  * List containing generic objects, used for dynamic visualization and grouping of multiple objects
  * @param {Function} ListObject Reference to the constructor of the stored objects
  * @param {Element} list Element containing the list
  * @param {Function} load Function that loads the list
+ * @param {Function} visualize Function that visualizes the single element of the list
  */
-function ObjectList(ListObject, list, load) {
+function ObjectList(ListObject, list, load, visualize) {
 
     this.list = list;
     this.load = load;
@@ -105,7 +121,7 @@ function ObjectList(ListObject, list, load) {
         // Initializes every single object and updates it
         objects.forEach((object) => {
             let p = new ListObject(self.list, object);
-            p.listElement(object);
+            visualize.call(p);
         });
     };
 }
@@ -115,8 +131,9 @@ function ObjectList(ListObject, list, load) {
  * @param {Function} ComboObject Reference to the constructor of the stored objects
  * @param {Element} combo Element containing the combo
  * @param {Function} load Function that loads the combo
+ * @param {Function} visualize Function that visualizes the single element of the list
  */
-function ObjectCombo(ComboObject, combo, load) {
+function ObjectCombo(ComboObject, combo, load, visualize) {
 
     this.combo = combo;
     this.load = load;
@@ -127,7 +144,7 @@ function ObjectCombo(ComboObject, combo, load) {
         // Creates a new entry for each loaded object
         objects.forEach((object) => {
             let p = new ComboObject(self.combo, object);
-            p.comboElement();
+            visualize.call(p);
         });
     };
 }

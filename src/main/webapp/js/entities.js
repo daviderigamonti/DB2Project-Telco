@@ -1,21 +1,27 @@
-function ServicePackage(parent, {id = 0, name = "",
-    fixedPhoneServices = [], mobilePhoneServices = [], internetServices = []}) {
+class ServicePackage {
 
-    this.parent = parent;
-    this.id = id;
-    this.name = name;
-    this.fixedPhone = fixedPhoneServices;
-    this.mobilePhone = mobilePhoneServices;
-    this.internet = internetServices;
+    constructor(parent, {id = 0, name = "",
+            fixedPhoneServices = [], mobilePhoneServices = [],
+            internetServices = []}) {
+        this.parent = parent;
+        this.id = id;
+        this.name = name;
+        this.fixedPhone = fixedPhoneServices;
+        this.mobilePhone = mobilePhoneServices;
+        this.internet = internetServices;
+    }
 
-    this.listElement = function() {
+    visListClickable() {
         this.packageDIV = appendElement(this.parent, "div");
         appendElement(this.packageDIV, "div", {data: this.id});
         appendElement(this.packageDIV, "div", {data: this.name});
 
-        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"), null);
-        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"), null);
-        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"), null);
+        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"),
+            null, FixedPhonePkg.prototype.visList);
+        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"),
+            null, MobilePhonePkg.prototype.visList);
+        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"),
+            null, InternetPkg.prototype.visList);
 
         fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
         mobilePhoneList.update(mobilePhoneList, this.mobilePhone);
@@ -23,36 +29,59 @@ function ServicePackage(parent, {id = 0, name = "",
 
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
-            if(this.id)
+            if (this.id)
                 window.location.href = PAGES.BUYSERVICE;
             //TODO: proper redirect
         }, false);
-    };
+    }
 
-    this.comboElement = function() {
+    // TODO: duplicate code -> find a way to generalize entity visualization methods
+    visSummaryServices() {
+        this.packageDIV = appendElement(this.parent, "div");
+        appendElement(this.packageDIV, "div", {data: this.name});
+
+        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"),
+            null, FixedPhonePkg.prototype.visList);
+        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"),
+            null, MobilePhonePkg.prototype.visList);
+        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"),
+            null, InternetPkg.prototype.visList);
+
+        fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
+        mobilePhoneList.update(mobilePhoneList, this.mobilePhone);
+        internetList.update(internetList, this.internet);
+    }
+
+    visCombo() {
         appendElement(this.parent, "option", {data: this.name, value: this.id});
     }
 }
 
-function FixedPhonePkg(parent) {
 
-    this.parent = parent;
+class FixedPhonePkg {
 
-    this.listElement = function() {
+    constructor(parent) {
+        this.parent = parent;
+    }
+
+    visList() {
         appendElement(this.parent, "div", {data: "Fixed phone"});
     };
 }
 
-function MobilePhonePkg(parent, {minutes = 0, sms = 0,
-    minuteFee = 0.0, smsFee = 0.0}) {
 
-    this.parent = parent;
-    this.minutes = minutes;
-    this.sms = sms;
-    this.minuteFee = minuteFee;
-    this.smsFee = smsFee;
+class MobilePhonePkg {
 
-    this.listElement = function() {
+    constructor(parent, {minutes = 0, sms = 0,
+            minuteFee = 0.0, smsFee = 0.0}) {
+        this.parent = parent;
+        this.minutes = minutes;
+        this.sms = sms;
+        this.minuteFee = minuteFee;
+        this.smsFee = smsFee;
+    }
+
+    visList() {
         let info = "Mobile Phone: " +
             visInf(this.minutes) + " minutes + " + this.minuteFee + "€/extra minute" + "\n" +
             visInf(this.sms) + " SMS + " + this.smsFee + "€/extra sms";
@@ -60,36 +89,60 @@ function MobilePhonePkg(parent, {minutes = 0, sms = 0,
     };
 }
 
-function InternetPkg(parent, {is_fixed = 1, gigabytes = 0, gigabyteFee = 0.0}) {
+class InternetPkg {
 
-    this.parent = parent;
-    this.fixed = is_fixed
-    this.gigabytes = gigabytes;
-    this.gigabyteFee = gigabyteFee;
+    constructor(parent, {is_fixed = 1, gigabytes = 0, gigabyteFee = 0.0}) {
+        this.parent = parent;
+        this.fixed = is_fixed
+        this.gigabytes = gigabytes;
+        this.gigabyteFee = gigabyteFee;
+    }
 
-    this.listElement = function() {
+    visList() {
         let info = this.fixed ? "Fixed " : "Mobile "
         info += "Internet: " + visInf(this.gigabytes) + " GB + " + this.gigabyteFee + "€/extra GB";
         appendElement(this.parent, "div", {data: info});
     };
 }
 
-function Order(parent) {
+class Order {
 
-    this.parent = parent;
+    constructor(parent, {servicePackage = null, validityPeriod = null,
+            optionalProducts = [], total = 0.0}) {
+        this.parent = parent;
+        this.servicePackage = new ServicePackage(parent, {
+            id: servicePackage.id, name: servicePackage.name,
+            fixedPhoneServices: servicePackage.fixedPhoneServices,
+            mobilePhoneServices: servicePackage.mobilePhoneServices,
+            internetServices: servicePackage.internetServices
+        });
+        this.validityPeriod = new ValidityPeriod(parent, {
+            id: validityPeriod.id, months: validityPeriod.months, fee: validityPeriod.fee
+        });
+        this.optionalProducts = optionalProducts;
+        this.total = total;
+    }
 
-    this.update = function(order) {
-        //TODO: visualization of an order
+    visSummary() {
+        this.servicePackage.visSummaryServices();
+        this.validityPeriod.visSummary();
+
+        let optionalProductsList = new ObjectList(OptionalProduct, appendElement(this.parent, "div"),
+            null, OptionalProduct.prototype.visSummary);
+        optionalProductsList.update(optionalProductsList, this.optionalProducts);
     };
 }
 
-function RejectedOrder(parent) {
+// TODO: merge with order
+class RejectedOrder {
 
-    this.parent = parent;
-    this.orderDIV = null;
-    this.id = null;
+    constructor(parent) {
+        this.parent = parent;
+        this.orderDIV = null;
+        this.id = null;
+    }
 
-    this.update = function(order) {
+    listElement(order) {
         //TODO: temporary notation for attributes: id, timestamp, status, total
 
         this.id = order.id;
@@ -109,29 +162,44 @@ function RejectedOrder(parent) {
     };
 }
 
-function ValidityPeriod(parent, {id = 0, months = 0, fee = 0.0}) {
 
-    this.parent = parent;
-    this.id = id;
-    this.months = months;
-    this.fee = fee
+class ValidityPeriod {
 
-    this.comboElement = function() {
+    constructor(parent, {id = 0, months = 0, fee = 0.0}) {
+        this.parent = parent;
+        this.id = id;
+        this.months = months;
+        this.fee = fee
+    }
+
+    visCombo() {
         let name = this.months + " months @ " + this.fee + " €/month";
         appendElement(this.parent, "option", {data: name, value: this.id});
     }
+
+    visSummary() {
+        let info = this.months + " months @ " + this.fee + " €/month";
+        appendElement(this.parent, "div", {data: info});
+    }
 }
 
-function OptionalProduct(parent, {id = 0, name = "", fee = 0.0}) {
+class OptionalProduct {
 
-    this.parent = parent;
-    this.id = id;
-    this.name = name;
-    this.fee = fee
+    constructor(parent, {id = 0, name = "", fee = 0.0}) {
+        this.parent = parent;
+        this.id = id;
+        this.name = name;
+        this.fee = fee
+    }
 
-    this.listElement = function() {
+    visCheck() {
         let productString = this.name + " @ " + this.fee + "€/month";
         let label = appendElement(this.parent, "label", {data: productString});
         appendElement(label, "input", {type: "checkbox",  name: "optionalProducts", value: this.id});
+    };
+
+    visSummary() {
+        let info = this.name + " @ " + this.fee + "€/month";
+        appendElement(this.parent, "div", {data: info});
     };
 }
