@@ -10,11 +10,10 @@
 function Greeter(greeter, name) {
 
     this.name = name;
-    this.message = `Welcome ${name}!`
+    this.message = name ? `Welcome ${name}!` : `Welcome guest, please create an account or log in`;
 
     this.show = function() {
-        if(name)
-            greeter.textContent = this.message;
+        greeter.textContent = this.message;
     }
 }
 

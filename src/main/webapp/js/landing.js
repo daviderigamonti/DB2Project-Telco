@@ -10,7 +10,7 @@
         let message = document.getElementById("errorLogin");
         if(form.checkValidity()) {
             makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
-                // TODO: fill the current user session w/ JSON.parse(req.responseText);
+                setUserInfo(req.responseText);
                 window.location.href = PAGES.HOME;
             }, null);
         }
@@ -34,6 +34,7 @@
 
     // BROWSING
     document.getElementById("buttonBrowse").addEventListener("click", () => {
+        setUserInfo();
         window.location.href = PAGES.HOME;
     });
 

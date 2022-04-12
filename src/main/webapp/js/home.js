@@ -5,11 +5,12 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(true) {   //TODO: check for user info? --- if (userInfo() != null) {
+        if(checkUserInfo())
             init()
-        }
-        else
+        else {
+            clearStorage();
             window.location.href = PAGES.DEFAULT;
+        }
     }, false);
 
     function init() {
@@ -17,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), null);
+        this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
         this.greeter.show();
 
         // Menu containing navigation buttons
@@ -38,15 +39,17 @@
         );
         this.servicePackages.load();
 
-        // Rejected orders list
-        this.rejectedOrders = new ObjectList(RejectedOrder,
-            document.getElementById("rejectedOrders"), function() {
-                let self = this;
-                loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userinfo=" + userInfo(),
-                    false, handler.message, true, '');
-            }, null
-        );
-        this.rejectedOrders.load();
+        // Rejected orders list if the user is not a guest
+        if(strcmp(getUserInfo().guest, GUEST.FALSE)) {
+            this.rejectedOrders = new ObjectList(RejectedOrder,
+                document.getElementById("rejectedOrders"), function () {
+                    let self = this;
+                    loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userID=" + getUserInfo().id,
+                        false, handler.message, true, '');
+                }, null
+            );
+            this.rejectedOrders.load();
+        }
 
         // Select button
         this.select = document.getElementById("buttonSelect");

@@ -18,6 +18,18 @@ const PAGES = {
     CONFIRMATION    : "confirmation.html",
 }
 
+const GUEST = {
+    TRUE    : "GUEST_TRUE",
+    FALSE   : "GUEST_FALSE"
+}
+
+
+/**
+ * Compares two strings using the localeCompare function
+ */
+function strcmp(a, b) {
+    return !a.localeCompare(b);
+}
 
 /**
  * Makes a call to the server, utilizing the XMLHttpRequest object
@@ -89,10 +101,44 @@ function loadObjects(self, update, httpMethod, url, data,
 }
 
 /**
- * Retrieves user info from the session
+ * Puts user info into the session storage
  */
-function userInfo() {
-    return null;    //TODO: get user info
+function setUserInfo(userInfoText = null) {
+    let guest = GUEST.TRUE;
+    if(userInfoText) {
+        let userInfo = JSON.parse(userInfoText);
+        sessionStorage.setItem("userID", userInfo.id);
+        sessionStorage.setItem("username", userInfo.username);
+        guest = GUEST.FALSE;
+    }
+    sessionStorage.setItem("guest", guest);
+}
+
+/**
+ * Retrieves user info from the session storage
+ */
+function getUserInfo() {
+    return {
+        id: sessionStorage.getItem("userID"),
+        username: sessionStorage.getItem("username"),
+        guest: sessionStorage.getItem("guest")
+    }
+}
+
+/**
+ * Returns true if the user is logged in, or has identified themselves as a guest
+ */
+function checkUserInfo() {
+    let userInfo = getUserInfo();
+    return (strcmp(userInfo.guest, GUEST.FALSE) && userInfo.id && userInfo.username) ||
+        (strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username)
+}
+
+/**
+ * Clears information from the session storage
+ */
+function clearStorage() {
+    sessionStorage.clear();
 }
 
 /*

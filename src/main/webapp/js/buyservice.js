@@ -5,12 +5,12 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(true) {   //TODO: check for user info? --- if (userInfo() != null) {
-            // Create a new page handler and initialize it
-            init();
-        }
-        else
+        if(checkUserInfo())
+            init()
+        else {
+            clearStorage();
             window.location.href = PAGES.DEFAULT;
+        }
     }, false);
 
     function init() {
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), null);
+        this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
         this.greeter.show();
 
         // Menu containing navigation buttons
