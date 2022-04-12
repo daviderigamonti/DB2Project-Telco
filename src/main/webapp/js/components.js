@@ -52,12 +52,12 @@ function Menu(home, access, reset, logout) {
     }
 }
 
-function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optionalProductsCombo,
+function ServiceForm(servicePackageCombo, validityPeriodCombo, optionalProductsCheck,
                      loadServices, loadInfo) {
 
-    this.service = new ObjectCombo(handler, servicePackageCombo, null);
-    this.validity = new ObjectCombo(handler, validityPeriodCombo, null);
-    this.optional = new ObjectList(handler, OptionalProduct, optionalProductsCombo, null, null);
+    this.service = new ObjectCombo(ServicePackage, servicePackageCombo, null);
+    this.validity = new ObjectCombo(ValidityPeriod, validityPeriodCombo, null);
+    this.optional = new ObjectList(OptionalProduct, optionalProductsCheck, null);
     this.loadServices = loadServices;
     this.loadInfo = loadInfo;
 
@@ -76,24 +76,14 @@ function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optional
     }
 
     this.update = function(self, objects) {
-        // Extracts the names and ids of the objects
-        //TODO: temporary notation for attributes: name, id
-        self.service.update(self.service, objects.map(obj => { return {
-            name: obj.name,
-            id: obj.id
-        }}))
+        self.service.update(self.service, objects);
         self.select(0);
     }
 
     this.updateInfo = function(self, object) {
-        // Extracts the validity periods from the object
-        //TODO: temporary notation for attributes: validityPeriod, name, id
-        self.validity.update(self.validity, object.validityPeriod.map(obj => { return {
-            name: obj.name,
-            id: obj.id
-        }}));
-        // Extracts optional products from the object
-        //TODO: temporary notation for attributes: optionalProducts
+        // Extracts the validity periods
+        self.validity.update(self.validity, object.validityPeriods);
+        // Extracts the optional products
         self.optional.update(self.optional, object.optionalProducts);
     }
 }
@@ -103,9 +93,8 @@ function ServiceForm(handler, servicePackageCombo, validityPeriodCombo, optional
  * @param {Function} ListObject Reference to the constructor of the stored objects
  * @param {Element} list Element containing the list
  * @param {Function} load Function that loads the list
- * @param {Object} opt Optional parameters for the object
  */
-function ObjectList(ListObject, list, load, opt) {
+function ObjectList(ListObject, list, load) {
 
     this.list = list;
     this.load = load;
@@ -116,8 +105,8 @@ function ObjectList(ListObject, list, load, opt) {
 
         // Initializes every single object and updates it
         objects.forEach((object) => {
-            let p = new ListObject(self.list, opt);
-            p.update(object);
+            let p = new ListObject(self.list, object);
+            p.listElement(object);
         });
     };
 
@@ -136,10 +125,11 @@ function ObjectList(ListObject, list, load, opt) {
 
 /**
  * ComboBox/Select element that can be dynamically filled
+ * @param {Function} ComboObject Reference to the constructor of the stored objects
  * @param {Element} combo Element containing the combo
  * @param {Function} load Function that loads the combo
  */
-function ObjectCombo(combo, load) {
+function ObjectCombo(ComboObject, combo, load) {
 
     this.combo = combo;
     this.load = load;
@@ -149,7 +139,8 @@ function ObjectCombo(combo, load) {
 
         // Creates a new entry for each loaded object
         objects.forEach((object) => {
-            appendElement(self.combo, "option", {name: object.name, value: object.id});
+            let p = new ComboObject(self.combo, object);
+            p.comboElement();
         });
     };
 }

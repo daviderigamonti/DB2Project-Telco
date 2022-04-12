@@ -101,8 +101,8 @@ function visInf(n) {
  * Optional parameters are passed by name using javascript destructuring
  */
 function appendElement(parent, tag,
-                       {id = null, type = null, name = null, value: value,
-                           data = null} = {}) {
+                       {id = null, type = null, name = null,
+                           value: value, data = null} = {}) {
     const el = document.createElement(tag);
 
     // DOM Element.id shouldn't be assigned an empty string

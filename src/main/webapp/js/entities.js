@@ -1,25 +1,25 @@
-function ServicePackage(parent) {
+function ServicePackage(parent, {id = 0, name = "",
+    fixedPhoneServices = [], mobilePhoneServices = [], internetServices = []}) {
 
     this.parent = parent;
-    this.id = null;
+    this.id = id;
+    this.name = name;
+    this.fixedPhone = fixedPhoneServices;
+    this.mobilePhone = mobilePhoneServices;
+    this.internet = internetServices;
 
-    this.update = function(service) {
-        this.id = service.id;
-
+    this.listElement = function() {
         this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {data: service.id});
-        appendElement(this.packageDIV, "div", {data: service.name});
-        let fixedPhoneDIV = appendElement(this.packageDIV, "div");
-        let mobilePhoneDIV = appendElement(this.packageDIV, "div");
-        let internetDIV = appendElement(this.packageDIV, "div");
+        appendElement(this.packageDIV, "div", {data: this.id});
+        appendElement(this.packageDIV, "div", {data: this.name});
 
-        this.fixedPhone = new ObjectList(FixedPhonePkg, fixedPhoneDIV, null);
-        this.mobilePhone = new ObjectList(MobilePhonePkg, mobilePhoneDIV, null);
-        this.internet = new ObjectList(InternetPkg, internetDIV, null);
+        let fixedPhoneList = new ObjectList(FixedPhonePkg, appendElement(this.packageDIV, "div"), null);
+        let mobilePhoneList = new ObjectList(MobilePhonePkg, appendElement(this.packageDIV, "div"), null);
+        let internetList = new ObjectList(InternetPkg, appendElement(this.packageDIV, "div"), null);
 
-        this.fixedPhone.update(this.fixedPhone, service.fixedPhoneServices);
-        this.mobilePhone.update(this.mobilePhone, service.mobilePhoneServices);
-        this.internet.update(this.internet, service.internetServices);
+        fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
+        mobilePhoneList.update(mobilePhoneList, this.mobilePhone);
+        internetList.update(internetList, this.internet);
 
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
@@ -28,37 +28,48 @@ function ServicePackage(parent) {
             //TODO: proper redirect
         }, false);
     };
+
+    this.comboElement = function() {
+        appendElement(this.parent, "option", {data: this.name, value: this.id});
+    }
 }
 
-//TODO: might wanna do a single class for every package
 function FixedPhonePkg(parent) {
 
     this.parent = parent;
 
-    this.update = function(fixedPhone) {
+    this.listElement = function() {
         appendElement(this.parent, "div", {data: "Fixed phone"});
     };
 }
 
-function MobilePhonePkg(parent) {
+function MobilePhonePkg(parent, {minutes = 0, sms = 0,
+    minuteFee = 0.0, smsFee = 0.0}) {
 
     this.parent = parent;
+    this.minutes = minutes;
+    this.sms = sms;
+    this.minuteFee = minuteFee;
+    this.smsFee = smsFee;
 
-    this.update = function(mobilePhone) {
+    this.listElement = function() {
         let info = "Mobile Phone: " +
-            visInf(mobilePhone.minutes) + " minutes + " + mobilePhone.minuteFee + "€/extra minute" + "\n" +
-            visInf(mobilePhone.sms) + " SMS + " + mobilePhone.minuteFee + "€/extra sms";
+            visInf(this.minutes) + " minutes + " + this.minuteFee + "€/extra minute" + "\n" +
+            visInf(this.sms) + " SMS + " + this.smsFee + "€/extra sms";
         appendElement(this.parent, "div", {data: info});
     };
 }
 
-function InternetPkg(parent) {
+function InternetPkg(parent, {is_fixed = 1, gigabytes = 0, gigabyteFee = 0.0}) {
 
     this.parent = parent;
+    this.fixed = is_fixed
+    this.gigabytes = gigabytes;
+    this.gigabyteFee = gigabyteFee;
 
-    this.update = function(internet) {
-        let info = internet.is_fixed ? "Fixed " : "Mobile "
-        info += "Internet: " + visInf(internet.gigabytes) + " GB + " + internet.gigabyteFee + "€/extra GB";
+    this.listElement = function() {
+        let info = this.fixed ? "Fixed " : "Mobile "
+        info += "Internet: " + visInf(this.gigabytes) + " GB + " + this.gigabyteFee + "€/extra GB";
         appendElement(this.parent, "div", {data: info});
     };
 }
@@ -98,16 +109,29 @@ function RejectedOrder(parent) {
     };
 }
 
-function OptionalProduct(parent) {
+function ValidityPeriod(parent, {id = 0, months = 0, fee = 0.0}) {
 
     this.parent = parent;
+    this.id = id;
+    this.months = months;
+    this.fee = fee
 
-    this.update = function(product) {
-        //TODO: temporary notation for attributes: id, name, monthlyFee
+    this.comboElement = function() {
+        let name = this.months + " months @ " + this.fee + " €/month";
+        appendElement(this.parent, "option", {data: name, value: this.id});
+    }
+}
 
-        let productString = product.name + " " + product.monthlyFee + "€/month";
+function OptionalProduct(parent, {id = 0, name = "", fee = 0.0}) {
 
+    this.parent = parent;
+    this.id = id;
+    this.name = name;
+    this.fee = fee
+
+    this.listElement = function() {
+        let productString = this.name + " @ " + this.fee + "€/month";
         let label = appendElement(this.parent, "label", {data: productString});
-        appendElement(label, "input", {type: "checkbox", id: product.id});
+        appendElement(label, "input", {type: "checkbox", id: this.id});
     };
 }
