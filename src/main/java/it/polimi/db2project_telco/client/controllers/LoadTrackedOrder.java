@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.client.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.Order;
 
 import jakarta.servlet.ServletException;
@@ -34,7 +35,8 @@ public class LoadTrackedOrder extends HttpServlet {
             if(order == null)
                 throw new Exception();
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Impossible to retrieve the tracked order");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Impossible to retrieve the tracked order");
             return;
         }
 

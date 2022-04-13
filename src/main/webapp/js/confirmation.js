@@ -39,11 +39,28 @@
         );
         this.summary.load();
 
-        // Buy button
-        this.buy = document.getElementById("buttonBuy");
-        this.buy.addEventListener("click", () => {
-            //TODO: buy button
+        // Buy buttons
+        this.buyS = document.getElementById("buttonBuySuccess");
+        this.buyS.addEventListener("click", (e) => {
+            buttonBuy(e, handler, "success");
         });
+        this.buy = document.getElementById("buttonBuy");
+        this.buy.addEventListener("click", (e) => {
+            buttonBuy(e, handler, null);
+        });
+        this.buyF = document.getElementById("buttonBuyFailure");
+        this.buyF.addEventListener("click", (e) => {
+            buttonBuy(e, handler, "failure");
+        });
+    }
+
+    function buttonBuy(e, handler, value = null) {
+        let form = e.target.closest("form");
+        appendElement(form, "input", {name: "outcome", value: value ?? "", hidden: true});
+        makeCall("POST", "Payment", new FormData(form), handler.message, (req) => {
+            alert(strcmp(req.responseText, "true") ? "Payment successful!" : "Payment failed!")
+            window.location.href = PAGES.HOME;
+        }, false);
     }
 
 })();

@@ -58,7 +58,6 @@
                     window.location.href = PAGES.CONFIRMATION;
                 }, false)
             }
-
         });
     }
 

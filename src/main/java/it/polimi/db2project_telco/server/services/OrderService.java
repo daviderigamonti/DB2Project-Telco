@@ -1,13 +1,12 @@
 package it.polimi.db2project_telco.server.services;
 
-import it.polimi.db2project_telco.server.entities.OptionalProduct;
-import it.polimi.db2project_telco.server.entities.Order;
-import it.polimi.db2project_telco.server.entities.ServicePackage;
-import it.polimi.db2project_telco.server.entities.ValidityPeriod;
+import it.polimi.db2project_telco.server.entities.*;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.security.Provider;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,5 +30,40 @@ public class OrderService {
         order.setOptionalProducts(optionalProducts);
 
         return order;   // The order isn't persisted inside the database
+    }
+
+    public Order insertNewOrder(Order trackedOrder) {
+
+        Order order = new Order();
+
+        // TODO: can we do it better?
+        // Set the parameters based on the references took from the database
+        order.setUser(em.getReference(User.class, trackedOrder.getUser().getId()));
+        order.setServicePackage(em.getReference(ServicePackage.class, trackedOrder.getServicePackage().getId()));
+        order.setValidityPeriod(em.getReference(ValidityPeriod.class, trackedOrder.getValidityPeriod().getId()));
+        order.setOptionalProducts(trackedOrder.getOptionalProducts()
+                .stream()
+                .map(p -> em.getReference(OptionalProduct.class, p.getId()))
+                .collect(Collectors.toList()));
+        // The order is given pending status and the current creation time
+        order.setStatus("Pending"); //TODO: substitute order status with enum
+        order.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        order.setTotal(0.0f);   //TODO: set total during order creation
+
+        em.persist(order);
+
+        return order;
+    }
+
+    public void updateOrderStatus(Order order, boolean payment) {
+
+        if(payment) {
+            order.setStatus("Valid"); //TODO: substitute order status with enum
+            order.setActivationDate(new Timestamp(System.currentTimeMillis()));
+        }
+        else
+            order.setStatus("Failed");
+
+        em.merge(order);
     }
 }

@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.Order;
 import it.polimi.db2project_telco.server.services.OrderService;
 
@@ -57,7 +58,8 @@ public class CreateOrder extends HttpServlet {
             validityPeriodID = Integer.parseInt(validityPeriod);
             optionalProductsIDs = optionalProducts.stream().map(Integer::parseInt).collect(Collectors.toList());
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incomplete or malformed parameters");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Incomplete or malformed parameters");
             return;
         }
 
@@ -67,7 +69,7 @@ public class CreateOrder extends HttpServlet {
         try {
             order = orderService.composeOrder(servicePackageID, validityPeriodID, optionalProductsIDs);
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
                     "Impossible to create an order with the given features");
             return;
         }

@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.exceptions.CredentialsException;
 import it.polimi.db2project_telco.server.services.UserService;
@@ -56,10 +57,12 @@ public class CheckLogin extends HttpServlet {
             if(user == null)
                 throw new CredentialsException("Wrong credentials");
         } catch(CredentialsException | NonUniqueResultException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    e.getMessage());
             return;
         } catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error during login procedure");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Error during login procedure");
             return;
         }
 

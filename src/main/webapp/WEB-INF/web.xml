@@ -6,4 +6,12 @@
     <welcome-file-list>
         <welcome-file>landing.html</welcome-file>
     </welcome-file-list>
+    <filter>
+        <filter-name>LoggedUser</filter-name>
+        <filter-class>it.polimi.db2project_telco.client.filters.LoggedUser</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoggedUser</filter-name>
+        <url-pattern>/Payment</url-pattern>
+    </filter-mapping>
 </web-app>

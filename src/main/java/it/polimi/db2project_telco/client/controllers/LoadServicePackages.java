@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.ServicePackage;
 import it.polimi.db2project_telco.server.services.ServicePackageService;
 
@@ -37,7 +38,8 @@ public class LoadServicePackages extends HttpServlet {
         try {
             packages = servicePackageService.findAll();
         } catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve packages");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Could not retrieve packages");
             return;
         }
 

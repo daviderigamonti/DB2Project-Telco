@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.services.UserService;
 
 import jakarta.ejb.EJB;
@@ -43,7 +44,7 @@ public class RegisterUser extends HttpServlet {
                     mail.isEmpty() || username.isEmpty() || password.isEmpty())
                 throw new Exception();
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
                     "Incomplete or malformed registration credentials");
             return;
         }
@@ -52,10 +53,12 @@ public class RegisterUser extends HttpServlet {
         try {
             userService.createUser(mail, username, password);
         } catch(EntityExistsException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username already registered");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Username already registered");
             return;
         } catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error during registration procedure");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Error during registration procedure");
             return;
         }
 

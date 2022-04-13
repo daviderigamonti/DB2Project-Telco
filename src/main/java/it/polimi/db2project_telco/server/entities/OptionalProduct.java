@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name= "Optional_Products", schema = "db2telco")
+@NamedQuery(name = "OptionalProduct.findByID", query = "SELECT u FROM User u WHERE u.username = :usr AND u.password = :psw")
 public class OptionalProduct implements Serializable {
 
     @Id

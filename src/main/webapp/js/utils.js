@@ -49,11 +49,6 @@ function makeCall(httpMethod, url, data, responseTag,
         if(req.readyState === XMLHttpRequest.DONE) {
             if(req.status === HTTP_CODES.success)
                 callBack(req);
-            else if(req.status === HTTP_CODES.unauthorized ||
-                    req.status === HTTP_CODES.forbidden) {
-                // TODO: empty the current user session
-                window.location.href = PAGES.DEFAULT;
-            }
             else {
                 responseTag.className = "errorMessage";
                 responseTag.textContent = "Error " + req.status;
@@ -157,7 +152,7 @@ function visInf(n) {
  */
 function appendElement(parent, tag,
                        {id = null, type = null, name = null,
-                           value: value, data = null} = {}) {
+                           value: value = null, data = null, hidden = null} = {}) {
     const el = document.createElement(tag);
 
     // DOM Element.id shouldn't be assigned an empty string
@@ -167,6 +162,7 @@ function appendElement(parent, tag,
     el.type = type ?? "";
     el.name = name ?? "";
     el.value = value ?? "";
+    el.hidden = hidden ?? false;
     el.innerHTML = data ?? "";
 
     parent.appendChild(el);

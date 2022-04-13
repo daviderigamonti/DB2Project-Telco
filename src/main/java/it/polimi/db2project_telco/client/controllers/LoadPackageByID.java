@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.client.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.ServicePackage;
 import it.polimi.db2project_telco.server.services.ServicePackageService;
 
@@ -42,7 +43,8 @@ public class LoadPackageByID extends HttpServlet {
 
             packageID = Integer.parseInt(temp);
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed input request");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Malformed input request");
             return;
         }
 
@@ -50,7 +52,8 @@ public class LoadPackageByID extends HttpServlet {
         try {
             pkg = servicePackageService.findByID(packageID);
         } catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve the package");
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Could not retrieve the package");
             return;
         }
 
