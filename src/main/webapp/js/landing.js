@@ -33,9 +33,15 @@
     });
 
     // BROWSING
-    document.getElementById("buttonBrowse").addEventListener("click", () => {
-        setUserInfo();
-        window.location.href = PAGES.HOME;
+    document.getElementById("buttonBrowse").addEventListener("click", (e) => {
+        let form = e.target.closest("form");
+        appendElement(form, "input", {name: "guest", value: "true", hidden: true});
+        let message = document.getElementById("errorRegister");
+        makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
+            // TODO: something?
+            setUserInfo();
+            window.location.href = PAGES.HOME;
+        }, null);
     });
 
 })();

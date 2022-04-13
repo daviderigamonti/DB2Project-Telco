@@ -5,7 +5,6 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import java.security.Provider;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;

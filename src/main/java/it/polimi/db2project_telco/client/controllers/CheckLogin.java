@@ -37,44 +37,58 @@ public class CheckLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        User user;
-        String username, password;
+        User user = null;
+        String username = null, password = null;
+        boolean guest = false;
 
         // Obtain the parameters from the request
         try {
-            username = StringEscapeUtils.escapeJava(request.getParameter("username"));
-            password = StringEscapeUtils.escapeJava(request.getParameter("password"));
-            if(username == null || password == null || username.isEmpty() || password.isEmpty())
-                throw new Exception();
+            String guestString = StringEscapeUtils.escapeJava(request.getParameter("guest"));
+            if(guestString != null && !guestString.isEmpty())
+                guest = Boolean.parseBoolean(guestString);
+
+            if(!guest) {
+                username = StringEscapeUtils.escapeJava(request.getParameter("username"));
+                password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+                if (username == null || password == null || username.isEmpty() || password.isEmpty())
+                    throw new Exception();
+            }
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incomplete or malformed credentials");
             return;
         }
 
-        // Check the credentials for the user
-        try {
-            user = userService.checkCredentials(username, password);
-            if(user == null)
-                throw new CredentialsException("Wrong credentials");
-        } catch(CredentialsException | NonUniqueResultException e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    e.getMessage());
-            return;
-        } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    "Error during login procedure");
-            return;
+        if(!guest) {
+            // Check the credentials for the user
+            try {
+                user = userService.checkCredentials(username, password);
+                if (user == null)
+                    throw new CredentialsException("Wrong credentials");
+            } catch (CredentialsException | NonUniqueResultException e) {
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        e.getMessage());
+                return;
+            } catch (Exception e) {
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "Error during login procedure");
+                return;
+            }
+
+            // Save the user data in the session
+            user.setPassword("");   // Shouldn't be tracked by the em
+            request.getSession().setAttribute("user", user);
+
+            // Send the user data back to the client
+            ObjectMapper objectMapper = new ObjectMapper();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+            objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name + id
         }
-
-        // Save the user data in the session
-        user.setPassword("");   // Shouldn't be tracked by the em
-        request.getSession().setAttribute("user", user);
-
-        // Send the user data back to the client
-        ObjectMapper objectMapper = new ObjectMapper();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name + id
+        else {
+            // Save the guest data in the session
+            request.getSession().setAttribute("guest", true);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 }

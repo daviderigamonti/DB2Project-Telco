@@ -10,8 +10,21 @@
         <filter-name>LoggedUser</filter-name>
         <filter-class>it.polimi.db2project_telco.client.filters.LoggedUser</filter-class>
     </filter>
+    <filter>
+        <filter-name>AccessUser</filter-name>
+        <filter-class>it.polimi.db2project_telco.client.filters.AccessUser</filter-class>
+    </filter>
     <filter-mapping>
         <filter-name>LoggedUser</filter-name>
         <url-pattern>/Payment</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AccessUser</filter-name>
+        <url-pattern>/CreateOrder</url-pattern>
+        <url-pattern>/LoadOrderByID</url-pattern>
+        <url-pattern>/LoadPackageByID</url-pattern>
+        <url-pattern>/LoadRejectedOrdersByUser</url-pattern>
+        <url-pattern>/LoadServicePackages</url-pattern>
+        <url-pattern>/LoadTrackedOrder</url-pattern>
     </filter-mapping>
 </web-app>

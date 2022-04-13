@@ -1,6 +1,5 @@
 package it.polimi.db2project_telco.client.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.db2project_telco.client.util.PaymentService;
 import it.polimi.db2project_telco.client.util.PaymentTest;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
@@ -8,17 +7,18 @@ import it.polimi.db2project_telco.server.entities.Order;
 import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.exceptions.PaymentException;
 import it.polimi.db2project_telco.server.services.OrderService;
+
 import jakarta.ejb.EJB;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceContextType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.TransactionScoped;
+
 import org.apache.commons.text.StringEscapeUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 

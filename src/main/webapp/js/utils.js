@@ -126,8 +126,8 @@ function getUserInfo() {
  */
 function checkUserInfo() {
     let userInfo = getUserInfo();
-    return (strcmp(userInfo.guest, GUEST.FALSE) && userInfo.id && userInfo.username) ||
-        (strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username)
+    return ((!userInfo.guest || strcmp(userInfo.guest, GUEST.FALSE)) && userInfo.id && userInfo.username) ||
+        (userInfo.guest && strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username)
 }
 
 /**
