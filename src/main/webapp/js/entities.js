@@ -28,9 +28,8 @@ class ServicePackage {
 
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
-            if (this.id)
-                window.location.href = PAGES.BUYSERVICE;
-            //TODO: proper redirect
+            if (this.id && this.id > 0)
+                window.location.href = PAGES.BUYSERVICE + "?ServicePackageID=" + this.id;
         }, false);
     }
 

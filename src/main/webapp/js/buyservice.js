@@ -37,12 +37,23 @@
             function() {
                 let self = this;
                 loadObjects(self, self.update, "GET", "LoadServicePackages", null, handler.message,
-                    false, 'No available service packages at the moment');
+                    false, 'No available service packages at the moment',
+                    () => {
+                        // After it loads the service packages check for GET parameter
+                        let combo = document.getElementById("servicePackage");
+                        let packageID = checkGETParameter();
+                        // noinspection EqualityComparisonWithCoercionJS
+                        let option = Array.apply(null, combo.options)
+                            .find(p => p.value === packageID);
+                        if(option) {
+                            option.selected = true;
+                            combo.dispatchEvent(new CustomEvent('change'));
+                        }
+                });
             },
             function(id) {
                 let self = this;
-                loadObjects(self, self.updateInfo, "GET", "LoadPackageByID?id=" + id, null, handler.message,
-                    false, 'No package found with the given id');
+                loadObjects(self, self.updateInfo, "GET", "LoadPackageByID?id=" + id, null, handler.message, false, 'No package found with the given id');
             }
         );
         this.form.init();
@@ -59,6 +70,20 @@
                 }, false)
             }
         });
+    }
+
+    function checkGETParameter() {
+        // Check if an ID for a service package has been passed through GET parameters
+        // in case that it's found, select the corresponding service package inside the form
+        let urlString = window.location.href
+        let url = new URL(urlString);
+        let idString = url.searchParams.get("ServicePackageID");
+        if(idString) {
+            let id = parseInt(idString);
+            if(id && id > 0)
+                return id.toString()
+        }
+        return null;
     }
 
 })();

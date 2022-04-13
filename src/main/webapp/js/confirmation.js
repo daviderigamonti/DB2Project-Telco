@@ -33,8 +33,7 @@
 
         this.summary = new Summary(Order, document.getElementById("summary"), function() {
                 let self = this;
-                loadObjects(self, self.update, "GET", "LoadTrackedOrder",
-                    null, handler.message, false, 'No order found');
+                loadObjects(self, self.update, "GET", "LoadTrackedOrder", null, handler.message, false, 'No order found');
             }, Order.prototype.visSummary
         );
         this.summary.load();

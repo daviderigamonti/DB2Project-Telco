@@ -79,9 +79,10 @@ function makeCall(httpMethod, url, data, responseTag,
  * @param {Element} responseTag Element where the eventual response message will be visualized
  * @param {Boolean} json Flag indicating if the data parameter contains JSON content
  * @param {String} emptyMessage Message that will be visualized in case the returned list is empty
+ * @param {Function} callback Function that will be called after loading the objects
  */
 function loadObjects(self, update, httpMethod, url, data,
-                     responseTag, json, emptyMessage) {
+                     responseTag, json, emptyMessage, callback = null) {
     makeCall(httpMethod, url, data, responseTag, function(req) {
         let elements = JSON.parse(req.responseText);
         if(elements.length === 0) {
@@ -92,6 +93,8 @@ function loadObjects(self, update, httpMethod, url, data,
             return;
         }
         update(self, elements);
+        if(callback)
+            callback();
     }, json);
 }
 
