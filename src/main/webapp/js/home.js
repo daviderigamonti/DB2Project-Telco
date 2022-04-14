@@ -39,11 +39,11 @@
 
         // Rejected orders list if the user is not a guest
         if(strcmp(getUserInfo().guest, GUEST.FALSE)) {
-            this.rejectedOrders = new ObjectList(RejectedOrder,
+            this.rejectedOrders = new ObjectList(Order,
                 document.getElementById("rejectedOrders"), function () {
                     let self = this;
                     loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userID=" + getUserInfo().id, false, handler.message, true, '');
-                }, RejectedOrder.prototype.listElement
+                }, Order.prototype.visRejectedList
             );
             this.rejectedOrders.load();
         }

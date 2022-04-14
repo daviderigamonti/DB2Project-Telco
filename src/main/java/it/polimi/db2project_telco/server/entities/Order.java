@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "Orders", schema = "db2telco")
+@NamedQuery(name = "Order.getRejectedOrdersByUser", query = "SELECT o FROM Order o WHERE o.user.id = :id AND o.status = 'Failed'")
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
 

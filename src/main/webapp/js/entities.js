@@ -105,9 +105,10 @@ class InternetSvc {
 
 class Order {
 
-    constructor(parent, {servicePackage = null, validityPeriod = null,
-            optionalProducts = [], total = 0.0}) {
+    constructor(parent, {id = 0, servicePackage = null, validityPeriod = null,
+            optionalProducts = [], timestamp = null, status = null, total = 0.0}) {
         this.parent = parent;
+        this.id = id;
         this.servicePackage = new ServicePackage(parent, {
             id: servicePackage.id, name: servicePackage.name,
             fixedPhoneServices: servicePackage.fixedPhoneServices,
@@ -118,6 +119,8 @@ class Order {
             id: validityPeriod.id, months: validityPeriod.months, fee: validityPeriod.fee
         });
         this.optionalProducts = optionalProducts;
+        this.timestamp = timestamp;
+        this.status = status;
         this.total = total;
     }
 
@@ -128,28 +131,23 @@ class Order {
         let optionalProductsList = new ObjectList(OptionalProduct, appendElement(this.parent, "div"),
             null, OptionalProduct.prototype.visSummary);
         optionalProductsList.update(optionalProductsList, this.optionalProducts);
-    };
-}
 
-// TODO: merge with order
-class RejectedOrder {
-
-    constructor(parent) {
-        this.parent = parent;
-        this.orderDIV = null;
-        this.id = null;
+        appendElement(this.parent, "div", {data: "Total: " + this.total + "€"});
     }
 
-    listElement(order) {
-        //TODO: temporary notation for attributes: id, timestamp, status, total
+    visRejectedList() {
+        let orderDIV = appendElement(this.parent, "div");
 
-        this.id = order.id;
+        appendElement(orderDIV, "div", {data: this.id});
 
-        this.orderDIV = appendElement(this.parent, "div")
-        appendElement(this.orderDIV, "div", {data: order.id});
-        appendElement(this.orderDIV, "div", {data: order.timestamp});
-        appendElement(this.orderDIV, "div", {data: order.status});
-        appendElement(this.orderDIV, "div", {data: order.total});
+        this.servicePackage.parent = orderDIV;
+        this.servicePackage.visSummaryServices();
+
+        let date = formatDateTime(tsToDate(this.timestamp));
+
+        appendElement(orderDIV, "div", {data: date});
+        appendElement(orderDIV, "div", {data: "Status: " + this.status});
+        appendElement(orderDIV, "div", {data: "Total: " + this.total + "€"});
 
         // Clickable rejected order
         this.parent.addEventListener("click", () => {
@@ -157,9 +155,8 @@ class RejectedOrder {
                 window.location.href = PAGES.CONFIRMATION;
             //TODO: proper redirect
         }, false);
-    };
+    }
 }
-
 
 class ValidityPeriod {
 

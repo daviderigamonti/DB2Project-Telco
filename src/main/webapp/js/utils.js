@@ -32,6 +32,21 @@ function strcmp(a, b) {
 }
 
 /**
+ * Returns the date given a UNIX timestamp
+ */
+function tsToDate(t) {
+    return new Date(t);
+}
+
+/**
+ * Formats Date and Time given a date
+ */
+function formatDateTime(date) {
+    return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " @ " +
+        date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
+/**
  * Makes a call to the server, utilizing the XMLHttpRequest object
  * @param {String} httpMethod HTTP method to use for the call
  * @param {String} url Url to use for the call

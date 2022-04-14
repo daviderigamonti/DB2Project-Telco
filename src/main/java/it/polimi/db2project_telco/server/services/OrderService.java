@@ -1,9 +1,12 @@
 package it.polimi.db2project_telco.server.services;
 
 import it.polimi.db2project_telco.server.entities.*;
+import it.polimi.db2project_telco.server.exceptions.OrderException;
+
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -64,5 +67,26 @@ public class OrderService {
             order.setStatus("Failed");
 
         em.merge(order);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public List<Order> getRejectedOrders(int userID) throws OrderException {
+
+        List<Order> orders;
+
+        try {
+            orders = em.createNamedQuery("Order.getRejectedOrdersByUser", Order.class)
+                    .setParameter("id", userID)
+                    .getResultList();
+        } catch(PersistenceException e) {
+            throw new OrderException("Could not verify credentials");
+        }
+
+        // Wake up the lazy entities
+        orders.forEach(Order::getServicePackage);
+
+        // TODO: in general we have the user object inside every entity we return (which contains the password), maybe use LAZY retrieval?
+
+        return orders;
     }
 }
