@@ -10,8 +10,18 @@
         let message = document.getElementById("errorLogin");
         if(form.checkValidity()) {
             makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
+
                 setUserInfo(req.responseText);
-                window.location.href = PAGES.HOME;
+
+                // Check if the user has a tracked order
+                // If it is found, redirect to confirmation page
+                makeCall("GET", "CheckTrackedOrder", null, message, function(req) {
+                    if(req.responseText != null && strcmp(req.responseText, "true"))
+                        window.location.href = PAGES.CONFIRMATION;
+                    else
+                        window.location.href = PAGES.HOME;
+                }, null);
+
             }, null);
         }
         else
