@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @MultipartConfig
 public class CreateOrder extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     @EJB(name = "it.polimi.db2project_telco.services/OrderService")
     private OrderService orderService;
 
@@ -62,8 +63,6 @@ public class CreateOrder extends HttpServlet {
                     "Incomplete or malformed parameters");
             return;
         }
-
-        //TODO: add checks if there's already another trackedOrder
 
         // Compose the order using the given preferences
         try {

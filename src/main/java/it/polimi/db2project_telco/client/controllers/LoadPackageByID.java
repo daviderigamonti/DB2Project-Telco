@@ -1,6 +1,5 @@
 package it.polimi.db2project_telco.client.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.ServicePackage;
 import it.polimi.db2project_telco.server.services.ServicePackageService;
@@ -14,11 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 
 @WebServlet("/LoadPackageByID")
 public class LoadPackageByID extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     @EJB(name = "it.polimi.db2project_telco.services/ServicePackageService")
     private ServicePackageService servicePackageService;
 

@@ -21,9 +21,14 @@
         this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
         this.greeter.show();
 
+        // If the user is not logged in, display access, otherwise display logout
+        let access = document.getElementById("buttonAccess");
+        let logout = document.getElementById("buttonLogout");
+        displayAccessOrLogout(access, logout);
+
         // Menu containing navigation buttons
-        this.menu = new Menu(document.getElementById("buttonHome"), null,
-            null, document.getElementById("buttonLogout"));
+        this.menu = new Menu(document.getElementById("buttonHome"), access,
+            null, logout);
         this.menu.addEvents(this);
 
         let handler = this;

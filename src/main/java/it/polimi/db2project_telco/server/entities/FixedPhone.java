@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name= "Fixed_Phone", schema = "db2telco")
 public class FixedPhone implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

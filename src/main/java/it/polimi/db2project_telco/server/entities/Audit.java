@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.server.entities;
 
 import it.polimi.db2project_telco.server.entities.keys.AuditID;
+
 import jakarta.persistence.*;
 
 import java.io.Serializable;

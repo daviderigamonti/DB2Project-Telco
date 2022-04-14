@@ -20,6 +20,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>AccessUser</filter-name>
+        <url-pattern>/CheckTrackedOrder</url-pattern>
         <url-pattern>/CreateOrder</url-pattern>
         <url-pattern>/LoadOrderByID</url-pattern>
         <url-pattern>/LoadPackageByID</url-pattern>

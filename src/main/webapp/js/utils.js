@@ -153,11 +153,12 @@ function getUserInfo() {
 
 /**
  * Returns true if the user is logged in, or has identified themselves as a guest
+ * If the login flag is set, it returns true only if the user has logged in
  */
-function checkUserInfo() {
+function checkUserInfo(loggedIn = false) {
     let userInfo = getUserInfo();
     return ((!userInfo.guest || strcmp(userInfo.guest, GUEST.FALSE)) && userInfo.id && userInfo.username) ||
-        (userInfo.guest && strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username)
+        (userInfo.guest && strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username && !loggedIn)
 }
 
 /**
@@ -198,4 +199,20 @@ function appendElement(parent, tag,
     parent.appendChild(el);
 
     return el;
+}
+
+/*
+ * Chooses which buttons (access/logout) to display in case the user is logged in or not
+ */
+function displayAccessOrLogout(buttonAccess, buttonLogout) {
+    if(checkUserInfo(true)) {
+        buttonAccess.remove();
+        buttonAccess = null;
+    }
+    else {
+        buttonLogout.remove();
+        buttonLogout = null;
+    }
+    // since the buttons are not primitive types, they are passed by reference,
+    // no return statement is needed
 }

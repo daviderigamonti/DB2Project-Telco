@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name= "Internet", schema = "db2telco")
 public class Internet implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

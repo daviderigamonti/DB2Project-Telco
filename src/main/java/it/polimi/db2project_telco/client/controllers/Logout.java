@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
 @WebServlet("/Logout")
 public class Logout extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -18,8 +16,14 @@ public class Logout extends HttpServlet {
 
     public void init() throws ServletException {}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        //TODO: Logout
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        // Invalidate the session
+        request.getSession().invalidate();
+
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        doGet(request, response);
     }
 }

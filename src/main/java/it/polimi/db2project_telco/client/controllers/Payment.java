@@ -26,12 +26,9 @@ import java.io.IOException;
 @MultipartConfig
 public class Payment extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     @EJB(name = "it.polimi.db2project_telco.services/OrderService")
     private OrderService orderService;
-    //@EJB(name = "it.polimi.db2project_telco.services/AuditService")
-    //private AuditService auditService;
-    //@EJB(name = "it.polimi.db2project_telco.services/ScheduleService")
-    //private ScheduleService scheduleService;
 
     public Payment() {
         super();

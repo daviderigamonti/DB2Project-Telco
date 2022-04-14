@@ -36,18 +36,27 @@ function Menu(home, access, reset, logout) {
             this.home.addEventListener("click", () => {
                 window.location.href = PAGES.HOME;
             });
-        if(this.access)
-            this.access.addEventListener("click", () => {
-                window.location.href = PAGES.LANDING;
-                //TODO: probably access == logout?
-            });
         if(this.reset)
             this.reset.addEventListener("click", () => {
-                //TODO: remove and directly add inside confirmation page
+                // Delete the tracked order, if it exists, and return to home page
+                makeCall("GET", "CheckTrackedOrder?delete=true", null, null, function(req) {
+                        window.location.href = PAGES.HOME;
+                }, null);
             });
+        // Access WILL NOT clear server-side session
+        if(this.access)
+            this.access.addEventListener("click", () => {
+                clearStorage();
+                window.location.href = PAGES.LANDING;
+            });
+        // Logout WILL clear server-side session
         if(this.logout)
             this.logout.addEventListener("click", () => {
-                window.location.href = PAGES.LANDING;
+                // Logout the user from the session, clear the storage and return to landing page
+                makeCall("GET", "Logout", null, null, function() {
+                    clearStorage();
+                    window.location.href = PAGES.LANDING;
+                }, null);
             });
     }
 }
