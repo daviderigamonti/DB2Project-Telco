@@ -41,7 +41,7 @@
                     () => {
                         // After it loads the service packages check for GET parameter
                         let combo = document.getElementById("servicePackage");
-                        let packageID = checkGETParameter();
+                        let packageID = getRequestPackageID();
                         // noinspection EqualityComparisonWithCoercionJS
                         let option = Array.apply(null, combo.options)
                             .find(p => p.value === packageID);
@@ -72,12 +72,10 @@
         });
     }
 
-    function checkGETParameter() {
+    function getRequestPackageID() {
         // Check if an ID for a service package has been passed through GET parameters
         // in case that it's found, select the corresponding service package inside the form
-        let urlString = window.location.href
-        let url = new URL(urlString);
-        let idString = url.searchParams.get("ServicePackageID");
+        let idString = checkGETParameter("ServicePackageID");
         if(idString) {
             let id = parseInt(idString);
             if(id && id > 0)

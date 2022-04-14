@@ -31,9 +31,21 @@
 
         let handler = this;
 
+        // Load an order from the id if the corresponding parameter is set in the GET request
+        let loadSummaryEndpoint = "LoadTrackedOrder";
+        let idString = checkGETParameter("orderID");
+        if(idString) {
+            let id = parseInt(idString);
+            if(id && id > 0)
+                loadSummaryEndpoint = "LoadOrderByID?orderID=" + id;
+        }
+
+
+        // Summary
         this.summary = new Summary(Order, document.getElementById("summary"), function() {
                 let self = this;
-                loadObjects(self, self.update, "GET", "LoadTrackedOrder", null, handler.message, false, 'No order found');
+                loadObjects(self, self.update, "GET", loadSummaryEndpoint, null, handler.message,
+                    false, 'No order found');
             }, Order.prototype.visSummary
         );
         this.summary.load();

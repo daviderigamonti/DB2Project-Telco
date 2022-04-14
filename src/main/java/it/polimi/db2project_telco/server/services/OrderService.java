@@ -19,6 +19,17 @@ public class OrderService {
 
     public OrderService() {}
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public Order findByID(int orderID) {
+        Order order = em.find(Order.class, orderID);
+
+        // Wake up the lazy entities
+        order.getServicePackage();
+        order.getOptionalProducts().size();
+
+        return order;
+    }
+
     public Order composeOrder(int servicePackageID, int validityPeriodID,
                                     List<Integer> optionalProductsIDs) {
         Order order = new Order();
@@ -85,7 +96,7 @@ public class OrderService {
         // Wake up the lazy entities
         orders.forEach(Order::getServicePackage);
 
-        // TODO: in general we have the user object inside every entity we return (which contains the password), maybe use LAZY retrieval?
+        // TODO: in general we have the user object inside every entity we return (which contains the password), maybe use LAZY retrieval or annotate it in such way it doesn't get serialized by JACKSON
 
         return orders;
     }

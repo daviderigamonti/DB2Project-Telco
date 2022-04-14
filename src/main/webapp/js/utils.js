@@ -85,6 +85,18 @@ function makeCall(httpMethod, url, data, responseTag,
 }
 
 /**
+ * Returns the GET parameter identified by the name
+ */
+function checkGETParameter(name) {
+    let urlString = window.location.href
+    let url = new URL(urlString);
+    let param = url.searchParams.get(name);
+    if(param)
+        return param;
+    return null;
+}
+
+/**
  * Loads an aggregate of objects
  * @param {Object} self Reference to the aggregate itself
  * @param {Function} update Update method for the aggregate

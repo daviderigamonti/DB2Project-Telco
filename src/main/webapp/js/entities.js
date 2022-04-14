@@ -150,10 +150,9 @@ class Order {
         appendElement(orderDIV, "div", {data: "Total: " + this.total + "€"});
 
         // Clickable rejected order
-        this.parent.addEventListener("click", () => {
+        orderDIV.addEventListener("click", () => {
             if(this.id)
-                window.location.href = PAGES.CONFIRMATION;
-            //TODO: proper redirect
+                window.location.href = PAGES.CONFIRMATION + "?orderID=" + this.id;
         }, false);
     }
 }
