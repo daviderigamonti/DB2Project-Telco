@@ -68,12 +68,10 @@ public class CreateOrder extends HttpServlet {
         try {
             order = orderService.composeOrder(servicePackageID, validityPeriodID, optionalProductsIDs);
         } catch (Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Impossible to create an order with the given features");
             return;
         }
-
-        //TODO: fill the order with additional info
 
         // Save the tracked order in the session
         request.getSession().setAttribute("trackedOrder", order);

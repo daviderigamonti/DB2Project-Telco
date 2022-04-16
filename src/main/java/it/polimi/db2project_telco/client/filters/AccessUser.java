@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.filters;
 
+import it.polimi.db2project_telco.client.util.PagesNames;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ public class AccessUser implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String landingPage = req.getServletContext().getContextPath() + "/landing.html";  // TODO: substitute with enum containing the pages references
+        String landingPage = req.getServletContext().getContextPath() + PagesNames.LANDING.value();
 
         HttpSession s = req.getSession();
 

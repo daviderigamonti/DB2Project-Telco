@@ -24,8 +24,10 @@ public class ServicePackageService {
         ServicePackage pkg = em.find(ServicePackage.class, packageID);
 
         // Wake up the lazy entities
-        pkg.getOptionalProducts().size();
-        pkg.getValidityPeriods().size();
+        if(pkg != null) {
+            pkg.getOptionalProducts().size();
+            pkg.getValidityPeriods().size();
+        }
 
         return pkg;
     }

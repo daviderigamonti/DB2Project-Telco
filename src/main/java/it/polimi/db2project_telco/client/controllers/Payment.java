@@ -1,10 +1,14 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import static it.polimi.db2project_telco.server.entities.util.OrderStatus.fromOutcome;
+
 import it.polimi.db2project_telco.client.util.PaymentService;
 import it.polimi.db2project_telco.client.util.PaymentTest;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.Order;
 import it.polimi.db2project_telco.server.entities.User;
+import it.polimi.db2project_telco.server.entities.util.OrderStatus;
+import it.polimi.db2project_telco.server.exceptions.OrderException;
 import it.polimi.db2project_telco.server.exceptions.PaymentException;
 import it.polimi.db2project_telco.server.services.OrderService;
 
@@ -55,7 +59,7 @@ public class Payment extends HttpServlet {
             if(testOutcomeString != null && !testOutcomeString.isEmpty()) {
                 if(testOutcomeString.equals("success"))
                     testOutcome = PaymentTest.SUCCESS;
-                else if(testOutcomeString.equals("fail"))
+                else if(testOutcomeString.equals("failure"))
                     testOutcome = PaymentTest.FAILURE;
             }
         } catch(Exception e) {
@@ -76,19 +80,45 @@ public class Payment extends HttpServlet {
             return;
         }
 
-        // Connect the order and the user
-        order.setUser(user);
+        // Check if the order already exists by controlling the trackedOrder's ID
+        Order existingOrder = orderService.findByID(order.getId());
+        if(existingOrder == null) {
 
-        // Forward order to the database
-        try {
-            order = orderService.insertNewOrder(order);
-        } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    "Error while generating the order");
-            return;
+            // Connect the order and the user
+            order.setUser(user);
+
+            // Forward order to the database
+            try {
+                order = orderService.insertNewOrder(order);
+            } catch (Exception e) {
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Error while generating the order");
+                return;
+            }
+        }
+        else {
+
+            // Check that the user requesting the order owns the order
+            try {
+                if(user.getId() != order.getUser().getId())
+                    throw new OrderException("Requesting user doesn't own the order");
+            } catch(Exception e) {
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+                return;
+            }
+
+            // Set the order (already present in the DB) as PENDING for the upcoming payment operation
+            try {
+                orderService.updateOrderStatus(order, OrderStatus.PENDING);
+            } catch(Exception e) {
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Error while updating the order status");
+                return;
+            }
         }
 
-        // TODO: remove the order from the tracked order
+        // Removing the tracked order from the session
+        request.getSession().removeAttribute("trackedOrder");
 
         // Payment operation
         try {
@@ -99,14 +129,15 @@ public class Payment extends HttpServlet {
 
         // Update the status of the order
         try {
-            orderService.updateOrderStatus(order, outcome);
+            // In the outlandish case that this operation fails, the order will be persisted as PENDING
+            // and through appropriate front end interfaces the user should be able to repeat the payment
+            // without having it marked off as FAILED
+            orderService.updateOrderStatus(order, fromOutcome(outcome));
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    "Error while generating the order");    // TODO: if this fails here we have a really big problem! The previous transaction is not rolled back
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error while updating the order status");
             return;
         }
-
-        // TODO: eventually track the user in the audit (maybe done in DB via triggers)
 
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");

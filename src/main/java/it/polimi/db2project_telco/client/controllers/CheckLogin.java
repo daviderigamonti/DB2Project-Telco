@@ -37,7 +37,7 @@ public class CheckLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        User user = null;
+        User user;
         String username = null, password = null;
         boolean guest = false;
 
@@ -65,17 +65,16 @@ public class CheckLogin extends HttpServlet {
                 if (user == null)
                     throw new CredentialsException("Wrong credentials");
             } catch (CredentialsException | NonUniqueResultException e) {
-                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN,
                         e.getMessage());
                 return;
             } catch (Exception e) {
-                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_CONFLICT,
                         "Error during login procedure");
                 return;
             }
 
             // Save the user data in the session
-            user.setPassword("");   // Shouldn't be tracked by the em
             request.getSession().setAttribute("user", user);
 
             // Send the user data back to the client
@@ -83,7 +82,7 @@ public class CheckLogin extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
-            objectMapper.writeValue(response.getWriter(), user);    //TODO: It would probably be better to just pass the name + id
+            objectMapper.writeValue(response.getWriter(), user);
         }
         else {
             // Save the guest data in the session

@@ -56,7 +56,7 @@ public class LoadOrderByID extends HttpServlet {
         try {
             order = orderService.findByID(userID);
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     e.getMessage());
             return;
         }
@@ -64,11 +64,14 @@ public class LoadOrderByID extends HttpServlet {
         // Check that the user requesting the order owns the order
         try {
             if(((User) request.getSession().getAttribute("user")).getId() != order.getUser().getId())
-                throw  new OrderException("Requesting user doesn't own the order");
+                throw new OrderException("Requesting user doesn't own the order");
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
             return;
         }
+
+        // Save the tracked order in the session
+        request.getSession().setAttribute("trackedOrder", order);
 
         // Send the package back to the client
         ObjectMapper objectMapper = new ObjectMapper();

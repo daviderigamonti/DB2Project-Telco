@@ -54,7 +54,7 @@ public class LoadPackageByID extends HttpServlet {
         try {
             pkg = servicePackageService.findByID(packageID);
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Could not retrieve the package");
             return;
         }

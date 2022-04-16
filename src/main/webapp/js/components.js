@@ -39,7 +39,7 @@ function Menu(home, access, reset, logout) {
         if(this.reset)
             this.reset.addEventListener("click", () => {
                 // Delete the tracked order, if it exists, and return to home page
-                makeCall("GET", "CheckTrackedOrder?delete=true", null, null, function(req) {
+                makeCall("GET", "CheckTrackedOrder?delete=true", null, null, function() {
                         window.location.href = PAGES.HOME;
                 }, null);
             });
@@ -95,7 +95,6 @@ function ServiceForm(servicePackageCombo, servicesDiv, validityPeriodCombo, opti
 
     this.update = function(self, objects) {
         self.service.update(self.service, objects);
-        self.select(0);
     }
 
     this.updateInfo = function(self, object) {

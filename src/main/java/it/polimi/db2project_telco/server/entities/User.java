@@ -2,6 +2,8 @@ package it.polimi.db2project_telco.server.entities;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,19 +24,16 @@ public class User implements Serializable {
     @Column(name="Username")
     private String username;
 
-    @Column(name="Name")
-    private String name;
-
-    @Column(name="Surname")
-    private String surname;
-
     @Column(name="Password")
+    @JsonIgnore
     private String password;
 
     @Column(name="Failed_Payments")
+    @JsonIgnore
     private int failed_payments;
 
     @Column(name="Insolvent")
+    @JsonIgnore
     private boolean is_insolvent;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -49,8 +48,6 @@ public class User implements Serializable {
     public User(String mail, String username, String password) {
         this.mail = mail;
         this.username = username;
-        this.name = "xx";
-        this.surname = "xx";
         this.password = password;
     }
 
@@ -76,22 +73,6 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public String getPassword() {

@@ -38,7 +38,7 @@ public class LoadServicePackages extends HttpServlet {
         try {
             packages = servicePackageService.findAll();
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Could not retrieve packages");
             return;
         }

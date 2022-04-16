@@ -50,15 +50,19 @@
                         // noinspection EqualityComparisonWithCoercionJS
                         let option = Array.apply(null, combo.options)
                             .find(p => p.value === packageID);
+                        // If there's a package ID inside the request load it, otherwise load the first one
                         if(option) {
                             option.selected = true;
                             combo.dispatchEvent(new CustomEvent('change'));
                         }
+                        else
+                            self.select(0);
                 });
             },
             function(id) {
                 let self = this;
-                loadObjects(self, self.updateInfo, "GET", "LoadPackageByID?id=" + id, null, handler.message, false, 'No package found with the given id');
+                loadObjects(self, self.updateInfo, "GET", "LoadPackageByID?id=" + id, null, handler.message,
+                    false, 'No package found with the given id');
             }
         );
         this.form.init();

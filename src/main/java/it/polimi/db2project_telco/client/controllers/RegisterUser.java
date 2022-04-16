@@ -53,11 +53,11 @@ public class RegisterUser extends HttpServlet {
         try {
             userService.createUser(mail, username, password);
         } catch(EntityExistsException e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_CONFLICT,
                     "Username already registered");
             return;
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Error during registration procedure");
             return;
         }

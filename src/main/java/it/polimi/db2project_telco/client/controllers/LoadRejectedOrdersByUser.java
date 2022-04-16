@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.commons.text.StringEscapeUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -37,29 +35,14 @@ public class LoadRejectedOrdersByUser extends HttpServlet {
             throws IOException {
 
         List<Order> orders;
-        int userID;
+        int userID = 0;
 
-        // Obtain the parameters from the request
-        try {
-            String temp = StringEscapeUtils.escapeJava(request.getParameter("userID"));
-
-            if(temp == null || temp.isEmpty())
-                throw new Exception();
-
-            userID = Integer.parseInt(temp);
-        } catch (Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    "Malformed input request");
-            return;
-        }
-
-        // TODO: it's possible to limit the parameter passed and get the userID directly from the logged in user
-
-        // Check that the user logged in is the user requesting the packages
+        // Get the ID of the logged in user
         try {
             User user = (User) request.getSession().getAttribute("user");
-            if(user == null || user.getId() != userID)
+            if(user == null)
                 throw new OrderException("User requesting the orders and user logged in do not match");
+            userID = user.getId();
         } catch (OrderException e) {
             ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
                     e.getMessage());
@@ -69,7 +52,7 @@ public class LoadRejectedOrdersByUser extends HttpServlet {
         try {
             orders = orderService.getRejectedOrders(userID);
         } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     e.getMessage());
             return;
         }

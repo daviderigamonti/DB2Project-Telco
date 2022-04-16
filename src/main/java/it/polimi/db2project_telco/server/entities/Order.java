@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.server.entities;
 
+import it.polimi.db2project_telco.server.entities.util.OrderStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -9,7 +10,11 @@ import java.util.List;
 
 @Entity
 @Table(name= "Orders", schema = "db2telco")
-@NamedQuery(name = "Order.getRejectedOrdersByUser", query = "SELECT o FROM Order o WHERE o.user.id = :id AND o.status = 'Failed'")
+@NamedQuery(name = "Order.getRejectedOrdersByUser", query = "SELECT o FROM Order o " +
+                                                            "WHERE o.user.id = :id AND " +
+                                                            "(o.status = it.polimi.db2project_telco.server.entities.util.OrderStatus.FAILED OR " +
+                                                            " o.status = it.polimi.db2project_telco.server.entities.util.OrderStatus.PENDING)"
+)
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +49,8 @@ public class Order implements Serializable {
     private Timestamp timestamp;
 
     @Column(name="Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name="Total")
     private float total;
@@ -97,11 +103,11 @@ public class Order implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

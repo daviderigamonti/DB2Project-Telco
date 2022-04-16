@@ -36,7 +36,7 @@ public class LoadTrackedOrder extends HttpServlet {
             if(order == null)
                 throw new Exception();
         } catch (Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Impossible to retrieve the tracked order");
             return;
         }

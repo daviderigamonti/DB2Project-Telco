@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.server.services;
 
 import it.polimi.db2project_telco.server.entities.*;
+import it.polimi.db2project_telco.server.entities.util.OrderStatus;
 import it.polimi.db2project_telco.server.exceptions.OrderException;
 
 import jakarta.ejb.Stateless;
@@ -8,6 +9,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +27,10 @@ public class OrderService {
         Order order = em.find(Order.class, orderID);
 
         // Wake up the lazy entities
-        order.getServicePackage();
-        order.getOptionalProducts().size();
+        if(order != null) {
+            order.getServicePackage();
+            order.getOptionalProducts().size();
+        }
 
         return order;
     }
@@ -34,13 +39,23 @@ public class OrderService {
                                     List<Integer> optionalProductsIDs) {
         Order order = new Order();
 
-        order.setServicePackage(em.find(ServicePackage.class, servicePackageID));
-        order.setValidityPeriod(em.find(ValidityPeriod.class, validityPeriodID));
+        ServicePackage servicePackage = em.find(ServicePackage.class, servicePackageID);
+        ValidityPeriod validityPeriod = em.find(ValidityPeriod.class, validityPeriodID);
 
         // Find all the optional products using the IDs contained in the list
         List<OptionalProduct> optionalProducts = optionalProductsIDs.stream()
                 .map(id -> em.find(OptionalProduct.class, id)).collect(Collectors.toList());
+
+        // Calculate the total and convert it to float
+        int months = validityPeriod.getMonths();
+        double totalDouble = validityPeriod.getFee() * months +
+                optionalProducts.stream().mapToDouble(OptionalProduct::getFee).sum() * months;
+        float total = new BigDecimal(totalDouble).setScale(2, RoundingMode.HALF_UP).floatValue();
+
+        order.setServicePackage(servicePackage);
+        order.setValidityPeriod(validityPeriod);
         order.setOptionalProducts(optionalProducts);
+        order.setTotal(total);
 
         return order;   // The order isn't persisted inside the database
     }
@@ -49,7 +64,6 @@ public class OrderService {
 
         Order order = new Order();
 
-        // TODO: can we do it better?
         // Set the parameters based on the references took from the database
         order.setUser(em.getReference(User.class, trackedOrder.getUser().getId()));
         order.setServicePackage(em.getReference(ServicePackage.class, trackedOrder.getServicePackage().getId()));
@@ -58,24 +72,23 @@ public class OrderService {
                 .stream()
                 .map(p -> em.getReference(OptionalProduct.class, p.getId()))
                 .collect(Collectors.toList()));
-        // The order is given pending status and the current creation time
-        order.setStatus("Pending"); //TODO: substitute order status with enum
+        // The order is given pending status, the current creation time as a timestamp and the total
+        // calculated in advance
+        order.setStatus(OrderStatus.PENDING);
         order.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        order.setTotal(0.0f);   //TODO: set total during order creation
+        order.setTotal(trackedOrder.getTotal());
 
         em.persist(order);
 
         return order;
     }
 
-    public void updateOrderStatus(Order order, boolean payment) {
+    public void updateOrderStatus(Order order, OrderStatus status) {
 
-        if(payment) {
-            order.setStatus("Valid"); //TODO: substitute order status with enum
+        order.setStatus(status);
+
+        if(status == OrderStatus.VALID)
             order.setActivationDate(new Timestamp(System.currentTimeMillis()));
-        }
-        else
-            order.setStatus("Failed");
 
         em.merge(order);
     }
@@ -90,13 +103,11 @@ public class OrderService {
                     .setParameter("id", userID)
                     .getResultList();
         } catch(PersistenceException e) {
-            throw new OrderException("Could not verify credentials");
+            throw new OrderException("Error while retrieving orders");
         }
 
         // Wake up the lazy entities
         orders.forEach(Order::getServicePackage);
-
-        // TODO: in general we have the user object inside every entity we return (which contains the password), maybe use LAZY retrieval or annotate it in such way it doesn't get serialized by JACKSON
 
         return orders;
     }

@@ -36,7 +36,8 @@
         this.servicePackages = new ObjectList(ServicePackage,
             document.getElementById("servicePackages"), function() {
                 let self = this;
-                loadObjects(self, self.update, "GET", "LoadServicePackages", null, handler.message, false, 'No available service packages at the moment');
+                loadObjects(self, self.update, "GET", "LoadServicePackages", null, handler.message,
+                    false, 'No available service packages at the moment');
             }, ServicePackage.prototype.visListClickable
         );
         this.servicePackages.load();
@@ -46,7 +47,8 @@
             this.rejectedOrders = new ObjectList(Order,
                 document.getElementById("rejectedOrders"), function () {
                     let self = this;
-                    loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser?userID=" + getUserInfo().id, false, handler.message, true, '');
+                    loadObjects(self, self.update, "GET", "LoadRejectedOrdersByUser", false, handler.message,
+                        true, '');
                 }, Order.prototype.visRejectedList
             );
             this.rejectedOrders.load();
