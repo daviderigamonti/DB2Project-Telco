@@ -34,20 +34,20 @@ function Menu(home, access, reset, logout) {
     this.addEvents = function() {
         if(this.home)
             this.home.addEventListener("click", () => {
-                window.location.href = PAGES.HOME;
+                window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
             });
         if(this.reset)
             this.reset.addEventListener("click", () => {
                 // Delete the tracked order, if it exists, and return to home page
                 makeCall("GET", "CheckTrackedOrder?delete=true", null, null, function() {
-                        window.location.href = PAGES.HOME;
+                        window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
                 }, null);
             });
         // Access WILL NOT clear server-side session
         if(this.access)
             this.access.addEventListener("click", () => {
                 clearStorage();
-                window.location.href = PAGES.LANDING;
+                window.location.href = PAGES.ROOT + PAGES.LANDING;
             });
         // Logout WILL clear server-side session
         if(this.logout)
@@ -55,7 +55,7 @@ function Menu(home, access, reset, logout) {
                 // Logout the user from the session, clear the storage and return to landing page
                 makeCall("GET", "Logout", null, null, function() {
                     clearStorage();
-                    window.location.href = PAGES.LANDING;
+                    window.location.href = PAGES.ROOT + PAGES.LANDING;
                 }, null);
             });
     }
@@ -138,10 +138,14 @@ function ObjectList(ListObject, list, load, visualize) {
 
         // Initializes every single object and updates it
         objects.forEach((object) => {
-            let p = new ListObject(self.list, object);
-            visualize.call(p);
+            self.add(self, object)
         });
     };
+
+    this.add = function(self, object) {
+        let p = new ListObject(self.list, object);
+        visualize.call(p);
+    }
 }
 
 /**

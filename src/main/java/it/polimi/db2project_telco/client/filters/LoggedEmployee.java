@@ -8,9 +8,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-public class LoggedUser implements Filter {
+public class LoggedEmployee implements Filter {
 
-    public LoggedUser() {}
+    public LoggedEmployee() {}
 
     public void destroy() {}
 
@@ -19,12 +19,12 @@ public class LoggedUser implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String landingPage = PagesNames.ROOT.value() + PagesNames.LANDING.value();
+        String landingPage = PagesNames.ROOT.value() + PagesNames.EMP_LANDING.value();
 
         HttpSession s = req.getSession();
 
-        // If the user is not logged in, return a forbidden response
-        if (s.isNew() || s.getAttribute("user") == null || s.getAttribute("guest") != null) {
+        // If the employee is not logged in, return a forbidden response
+        if (s.isNew() || s.getAttribute("employee") == null) {
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
             res.sendRedirect(landingPage);
             return;

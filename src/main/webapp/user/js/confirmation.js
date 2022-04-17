@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = PAGES.DEFAULT;
+            window.location.href = PAGES.ROOT + PAGES.DEFAULT;
         }
     }, false);
 
@@ -75,7 +75,7 @@
         appendElement(form, "input", {name: "outcome", value: value ?? "", hidden: true});
         makeCall("POST", "Payment", new FormData(form), handler.message, (req) => {
             alert(strcmp(req.responseText, "true") ? "Payment successful!" : "Payment failed!")
-            window.location.href = PAGES.HOME;
+            window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
         }, false);
     }
 

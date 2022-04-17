@@ -8,6 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name= "Employees", schema = "db2telco")
+@NamedQuery(name = "Employee.checkCredentials", query = "SELECT u FROM Employee u WHERE u.username = :usr AND u.password = :psw")
+
 public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
 

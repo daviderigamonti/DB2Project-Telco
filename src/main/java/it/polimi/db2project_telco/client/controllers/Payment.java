@@ -82,7 +82,7 @@ public class Payment extends HttpServlet {
 
         // Check if the order already exists by controlling the trackedOrder's ID
         Order existingOrder = orderService.findByID(order.getId());
-        if(existingOrder == null) {
+            if(existingOrder == null) {
 
             // Connect the order and the user
             order.setUser(user);

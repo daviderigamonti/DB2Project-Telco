@@ -17,9 +17,9 @@
                 // If it is found, redirect to confirmation page
                 makeCall("GET", "CheckTrackedOrder", null, message, function(req) {
                     if(req.responseText != null && strcmp(req.responseText, "true"))
-                        window.location.href = PAGES.CONFIRMATION;
+                        window.location.href = PAGES.ROOT + PAGES.USER + PAGES.CONFIRMATION;
                     else
-                        window.location.href = PAGES.HOME;
+                        window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
                 }, null);
 
             }, null);
@@ -35,7 +35,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "RegisterUser", new FormData(form), message, function(req) {
                 // TODO: something?
-                window.location.href = PAGES.LANDING;
+                window.location.href = PAGES.ROOT + PAGES.LANDING;
             }, null);
         }
         else
@@ -50,8 +50,13 @@
         makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
             // TODO: something?
             setUserInfo();
-            window.location.href = PAGES.HOME;
+            window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
         }, null);
+    });
+
+    // EMPLOYEE PRIVATE AREA
+    document.getElementById("buttonEmployee").addEventListener("click", () => {
+        window.location.href = PAGES.ROOT + PAGES.EMP_LANDING;
     });
 
 })();

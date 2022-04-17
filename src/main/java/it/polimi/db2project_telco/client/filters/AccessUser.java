@@ -19,7 +19,7 @@ public class AccessUser implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String landingPage = req.getServletContext().getContextPath() + PagesNames.LANDING.value();
+        String landingPage = PagesNames.ROOT.value() + PagesNames.LANDING.value();
 
         HttpSession s = req.getSession();
 
@@ -27,7 +27,6 @@ public class AccessUser implements Filter {
         // as a guest user, return a forbidden response
         if (s.isNew() || (s.getAttribute("user") == null &&
                 (s.getAttribute("guest") == null || !(boolean)s.getAttribute("guest")))) {
-            System.out.print("Forbidden access\n");
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
             res.sendRedirect(landingPage);
             return;

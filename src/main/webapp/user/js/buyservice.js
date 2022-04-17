@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = PAGES.DEFAULT;
+            window.location.href = PAGES.ROOT + PAGES.DEFAULT;
         }
     }, false);
 
@@ -75,7 +75,7 @@
                 // Add the order to the session
                 makeCall("POST", "CreateOrder",  new FormData(form), handler.message, (req) => {
                     //TODO: add to local session?
-                    window.location.href = PAGES.CONFIRMATION;
+                    window.location.href = PAGES.ROOT + PAGES.USER + PAGES.CONFIRMATION;
                 }, false)
             }
         });

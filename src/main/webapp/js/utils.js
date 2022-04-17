@@ -11,9 +11,14 @@ const HTTP_CODES = {
 }
 
 const PAGES = {
+    ROOT            : "/DB2Project_Telco/",
+    USER            : "user/",
+    EMPLOYEE        : "employee/",
     DEFAULT         : "landing.html",
     LANDING         : "landing.html",
+    EMP_LANDING     : "emp_landing.html",
     HOME            : "home.html",
+    SALESREPORT     : "salesreport.html",
     BUYSERVICE      : "buyservice.html",
     CONFIRMATION    : "confirmation.html",
 }
@@ -72,7 +77,7 @@ function makeCall(httpMethod, url, data, responseTag,
         }
     };
 
-    req.open(httpMethod, url);
+    req.open(httpMethod, PAGES.ROOT + url);
 
     // If the request contains JSON data, the Content-Type of the request must be specified
     if(json)
@@ -151,8 +156,10 @@ function getUserInfo() {
     }
 }
 
+
+// TODO: tweak for employee
 /**
- * Returns true if the user is logged in, or has identified themselves as a guest
+ * Returns true if the user or is logged in, or has identified themselves as a guest
  * If the login flag is set, it returns true only if the user has logged in
  */
 function checkUserInfo(loggedIn = false) {

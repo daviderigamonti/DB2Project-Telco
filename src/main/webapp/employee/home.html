@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <script src="../js/utils.js" charset="utf-8" defer></script>
+    <script src="../js/entities.js" charset="utf-8" defer></script>
+    <script src="../js/components.js" charset="utf-8" defer></script>
+    <script src="js/components.js" charset="utf-8" defer></script>
+    <script src="js/home.js" charset="utf-8" defer></script>
+    <link rel="stylesheet" href="../css/temp.css">
+    <!--<link rel="stylesheet" href="css/home.css">--> <!-- TODO will I ever be pretty? -->
+</head>
+<body>
+
+    <div class="barHome">
+        <div class="divBarHome">
+            <div id="greeter"></div>
+        </div>
+
+        <div class="divBarHome">
+            <input id="buttonLogout" type="button" value="Logout">
+        </div>
+    </div>
+
+    <div class="divHome">
+        <div id="message"></div>
+    </div>
+
+    <div class="divHome">
+        <form id="formServicePackage" action="#" class="formServicePackage">
+            <label>
+                Service Package name:
+                <input type="text" name="servicePackageName" id="nameFSP" required>
+            </label>
+
+            <div >
+                <label>
+                    Services:
+                    <input id="buttonAddServiceFSP" type="button" value="Add">
+                </label>
+                <div id="servicesFSP"></div>
+            </div>
+
+            <div >
+                <label>
+                    Validity periods:
+                    <input id="buttonAddValidityPeriodFSP" type="button" value="Add">
+                </label>
+                <div id="validityPeriodsFSP"></div>
+            </div>
+
+            <div id="optionalProductsFSP"></div>
+
+            <input id="buttonCreateFSP" type="button" value="Create">
+        </form>
+    </div>
+
+    <div class="divHome">
+        <form id="formOptionalProduct" action="#" class="formOptionalProduct">
+            <label>
+                Optional product name:
+                <input type="text" name="optionalProductName" id="nameFOP" required>
+            </label>
+
+            <label>
+                Optional product fee:
+                <input type="text" name="optionalProductFee" id="feeFOP" required>
+            </label>
+
+            <input id="buttonCreateFOP" type="button" value="Create">
+        </form>
+    </div>
+
+    <div class="divHome">
+        <input id="buttonSales" type="button" value="Go to the sales report">
+    </div>
+
+</body>
+</html>
