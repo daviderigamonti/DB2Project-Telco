@@ -1,5 +1,5 @@
 /**
- *      Collections of interactive components
+ *      Collections of interactive components for the employee application
  */
 
 function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCheck,

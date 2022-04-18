@@ -72,7 +72,7 @@ function makeCall(httpMethod, url, data, responseTag,
             else {
                 responseTag.className = "errorMessage";
                 responseTag.textContent = "Error " + req.status;
-                //responseTag.textContent += " - " + req.response; DEBUG
+                responseTag.textContent += " - " + req.response;
             }
         }
     };
