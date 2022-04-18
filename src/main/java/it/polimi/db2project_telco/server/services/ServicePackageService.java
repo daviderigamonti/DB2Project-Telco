@@ -31,4 +31,8 @@ public class ServicePackageService {
 
         return pkg;
     }
+
+    public void createServicePackage(ServicePackage servicePackage) {
+        em.persist(servicePackage);
+    }
 }

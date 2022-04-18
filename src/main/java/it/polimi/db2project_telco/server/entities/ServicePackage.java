@@ -21,19 +21,19 @@ public class ServicePackage implements Serializable {
     @Column(name="Name")
     private String name;
 
-    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<FixedPhone> fixedPhoneServices;
 
-    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<MobilePhone> mobilePhoneServices;
 
-    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<Internet> internetServices;
 
-    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<ValidityPeriod> validityPeriods;
 

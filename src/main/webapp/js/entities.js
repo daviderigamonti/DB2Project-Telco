@@ -58,21 +58,18 @@ class ServicePackage {
 
 class Service {
 
-    services = [{svc: FixedPhoneSvc, name: "Fixed Phone"},
-                {svc: MobilePhoneSvc, name: "Mobile Phone"},
-                {svc: InternetSvc, name: "Internet"}];
-
     constructor(parent) {
         this.parent = parent;
         this.container = null;
+        this.service = null;
     }
 
     visCreationForm() {
         // Create the combobox for the service selection
         this.container = appendElement(this.parent, "div");
-        let combo = appendElement(this.container, "select");
-        for(let i = 0; i < this.services.length; i++)
-            appendElement(combo, "option", {data: this.services[i].name, value: i});
+        let combo = appendElement(this.container, "select", {name: "serviceType"});
+        for(let i = 0; i < Service.prototype.services.length; i++)
+            appendElement(combo, "option", {data: Service.prototype.services[i].name, value: i});
 
         let contentDiv = appendElement(this.container, "div");
 
@@ -81,8 +78,8 @@ class Service {
             let index = e.target.selectedIndex;
             contentDiv.innerHTML = "";
             // Instantiate the new object of the chosen type
-            let svc = new this.services[index].svc(contentDiv);
-            svc.visCreationForm();
+            this.service = new Service.prototype.services[index].svc(contentDiv);
+            this.service.visCreationForm();
         });
 
         // Button to remove the service
@@ -95,6 +92,10 @@ class Service {
         // Select the first option and fire the corresponding event
         combo.options[0].selected = true;
         combo.dispatchEvent(new CustomEvent('change'));
+    }
+
+    toObject() {
+        return this.service.toObject();
     }
 
 }
@@ -112,6 +113,11 @@ class FixedPhoneSvc {
     visCreationForm() {
         this.visList();
     }
+
+    toObject() {
+        return {type: FixedPhoneSvc};
+    }
+
 }
 
 
@@ -136,19 +142,27 @@ class MobilePhoneSvc {
     visCreationForm() {
         appendElement(this.parent, "div", {data: "Mobile Phone"});
         let minutesLabel = appendElement(this.parent, "label", {data: "Minutes:"});
-        appendElement(minutesLabel, "input", {type: "number", name: "minutes"});
+        let minutesInput = appendElement(minutesLabel, "input", {type: "number", name: "minutes"});
+        minutesInput.addEventListener("input", (e) => this.minutes = e.currentTarget.value);
         let minutesFeeLabel = appendElement(this.parent, "label", {data: "Extra minute fee:"});
-        appendElement(minutesFeeLabel, "input", {type: "number", name: "minuteFee"});
+        let minutesFeeInput = appendElement(minutesFeeLabel, "input", {type: "number", name: "minuteFee"});
+        minutesFeeInput.addEventListener("input", (e) => this.minuteFee = e.currentTarget.value);
         let smsLabel = appendElement(this.parent, "label", {data: "SMS:"});
-        appendElement(smsLabel, "input", {type: "number", name: "sms"});
+        let smsInput = appendElement(smsLabel, "input", {type: "number", name: "sms"});
+        smsInput.addEventListener("input", (e) => this.sms = e.currentTarget.value);
         let smsFeeLabel = appendElement(this.parent, "label", {data: "Extra SMS fee:"});
-        appendElement(smsFeeLabel, "input", {type: "number", name: "smsFee"});
+        let smsFeeInput = appendElement(smsFeeLabel, "input", {type: "number", name: "smsFee"});
+        smsFeeInput.addEventListener("input", (e) => this.smsFee = e.currentTarget.value);
+    }
+
+    toObject() {
+        return {type: MobilePhoneSvc, minutes: this.minutes, minuteFee: this.minuteFee, sms: this.sms, smsFee: this.smsFee};
     }
 }
 
 class InternetSvc {
 
-    constructor(parent, {is_fixed = 1, gigabytes = 0, gigabyteFee = 0.0} = {}) {
+    constructor(parent, {is_fixed = false, gigabytes = 0, gigabyteFee = 0.0} = {}) {
         this.parent = parent;
         this.fixed = is_fixed
         this.gigabytes = gigabytes;
@@ -164,13 +178,24 @@ class InternetSvc {
     visCreationForm() {
         appendElement(this.parent, "div", {data: "Internet"});
         let fixedLabel = appendElement(this.parent, "label", {data: "Fixed:"});
-        appendElement(fixedLabel, "input", {type: "checkbox",  name: "fixed", value: this.id});
+        let fixedInput = appendElement(fixedLabel, "input", {type: "checkbox",  name: "fixed"});
+        fixedInput.addEventListener("input", (e) => this.fixed = e.currentTarget.checked || false);
         let gigabytesLabel = appendElement(this.parent, "label", {data: "Gigabytes:"});
-        appendElement(gigabytesLabel, "input", {type: "number", name: "gigabytes"});
+        let gigabytesInput = appendElement(gigabytesLabel, "input", {type: "number", name: "gigabytes"});
+        gigabytesInput.addEventListener("input", (e) => this.gigabytes = e.currentTarget.value);
         let gigabyteFee = appendElement(this.parent, "label", {data: "Gigabyte Fee:"});
-        appendElement(gigabyteFee, "input", {type: "number", name: "gigabyteFee"});
+        let gigabyteFeeInput = appendElement(gigabyteFee, "input", {type: "number", name: "gigabyteFee"});
+        gigabyteFeeInput.addEventListener("input", (e) => this.gigabyteFee = e.currentTarget.value);
+    }
+
+    toObject() {
+        return {type: InternetSvc, is_fixed: this.fixed || false, gigabytes: this.gigabytes, gigabyteFee: this.gigabyteFee};
     }
 }
+
+Service.prototype.services = [  {svc: FixedPhoneSvc, name: "Fixed Phone", nameJSON: "fixedPhoneServices"},
+                                {svc: MobilePhoneSvc, name: "Mobile Phone", nameJSON: "mobilePhoneServices"},
+                                {svc: InternetSvc, name: "Internet", nameJSON: "internetServices"}];
 
 class Order {
 
@@ -250,9 +275,11 @@ class ValidityPeriod {
 
         // Validity period data
         let monthsLabel = appendElement(validityPeriodDiv, "label", {data: "Months:"});
-        appendElement(monthsLabel, "input", {type: "number", name: "months"});
+        let monthsInput = appendElement(monthsLabel, "input", {type: "number", name: "months"});
+        monthsInput.addEventListener("input", (e) => this.months = e.currentTarget.value);
         let feeLabel = appendElement(validityPeriodDiv, "label", {data: "Fee:"});
-        appendElement(feeLabel, "input", {type: "number", name: "fee"});
+        let feeInput = appendElement(feeLabel, "input", {type: "number", name: "fee"});
+        feeInput.addEventListener("input", (e) => this.fee = e.currentTarget.value);
 
         // Button to remove the validity period
         let remove = appendElement(validityPeriodDiv, "input", {type: "button", value: "Remove"});
@@ -260,6 +287,10 @@ class ValidityPeriod {
             if(validityPeriodDiv)
                 validityPeriodDiv.remove();
         });
+    }
+
+    toObject() {
+        return {months: this.months, fee: this.fee};
     }
 }
 

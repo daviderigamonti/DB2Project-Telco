@@ -42,8 +42,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ServiceActivationSchedule> schedules;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String mail, String username, String password) {
         this.mail = mail;

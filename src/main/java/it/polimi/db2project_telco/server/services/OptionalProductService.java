@@ -18,4 +18,9 @@ public class OptionalProductService {
     public List<OptionalProduct> findAll() {
         return em.createNamedQuery("OptionalProduct.findAll", OptionalProduct.class).getResultList();
     }
+
+    public void createProduct(String name, float fee) {
+        OptionalProduct product = new OptionalProduct(name, fee);
+        em.persist(product);
+    }
 }

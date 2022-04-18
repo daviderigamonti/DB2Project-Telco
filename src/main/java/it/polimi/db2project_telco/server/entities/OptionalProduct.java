@@ -22,6 +22,13 @@ public class OptionalProduct implements Serializable {
     @Column(name="Monthly_Fee")
     private float fee;
 
+    public OptionalProduct() {}
+
+    public OptionalProduct(String name, float fee) {
+        this.name = name;
+        this.fee = fee;
+    }
+
     public int getId() {
         return id;
     }

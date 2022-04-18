@@ -31,4 +31,29 @@ function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCh
     this.refresh = function() {
         this.optional.load();
     }
+
+    this.reset = function() {
+        this.services.reset(this.services);
+        this.validityPeriods.reset(this.validityPeriods);
+        this.optional.reset(this.optional);
+    }
+
+    this.toObject = function() {
+
+        let servicePackage = {};
+
+        // Services
+        let serviceTypes = Service.prototype.services;
+        let allServices = this.services.toObject(this.services);
+        for(let i = 0; i < serviceTypes.length; i++)
+            servicePackage[serviceTypes[i].nameJSON] =
+                allServices.filter(service => service.type === serviceTypes[i].svc);
+
+        // Validity Periods
+        servicePackage.validityPeriods = this.validityPeriods.toObject(this.validityPeriods);
+
+        // Optional Products and the name are retrieved via DOM elements since it is easier
+
+        return servicePackage;
+    }
 }

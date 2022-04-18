@@ -43,11 +43,19 @@
         servicePackageFormButton.addEventListener("click", (e) => {
             let form = e.target.closest("form");
             let message = document.getElementById("message");
+
+            // Build the service package
+            let servicePackage = handler.servicePackageForm.toObject();
+            servicePackage.name = document.getElementById("nameFSP").value;
+            servicePackage.optionalProducts = Array.from(document.getElementsByName("optionalProducts"))
+                .filter(op => op.checked === true).map(op => { return {id: op.value} });
+
             if(form.checkValidity()) {
-                makeCall("GET", "LoadOptionalProducts", new FormData(form), message, function() {   //TODO: POST request to createServicePackage
+                makeCall("POST", "CreateServicePackage", JSON.stringify(servicePackage), message, function() {
                     alert("Service package created!");
+                    handler.servicePackageForm.reset();
                     form.reset();
-                }, null);
+                }, true);
             }
             else
                 form.reportValidity();
@@ -59,7 +67,7 @@
             let form = e.target.closest("form");
             let message = document.getElementById("message");
             if(form.checkValidity()) {
-                makeCall("GET", "LoadOptionalProducts", new FormData(form), message, function() {   //TODO: POST request to createOptionalProduct
+                makeCall("POST", "CreateOptionalProduct", new FormData(form), message, function() {
                     alert("Optional product created!");
                     form.reset();
                     // Refresh the list of optional products in the service package form
@@ -71,7 +79,7 @@
         }, false);
 
         // Button that goes to the sales report
-        this.select = document.getElementById("buttonSelect");
+        this.select = document.getElementById("buttonSales");
         this.select.addEventListener("click", () => {
             window.location.href = PAGES.ROOT + PAGES.EMPLOYEE + PAGES.SALESREPORT;
         });

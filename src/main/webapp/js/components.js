@@ -132,9 +132,16 @@ function ObjectList(ListObject, list, load, visualize) {
 
     this.list = list;
     this.load = load;
+    this.objects = [];
+
+    this.reset = function(self) {
+        self.list.innerHTML = "";
+    }
 
     this.update = function(self, objects) {
-        self.list.innerHTML = ""; // Empty the list
+        // Empty the list
+        self.objects = [];
+        self.list.innerHTML = "";
 
         // Initializes every single object and updates it
         objects.forEach((object) => {
@@ -144,7 +151,12 @@ function ObjectList(ListObject, list, load, visualize) {
 
     this.add = function(self, object) {
         let p = new ListObject(self.list, object);
+        self.objects.push(p);
         visualize.call(p);
+    }
+
+    this.toObject = function(self) {
+        return self.objects.map(object => object.toObject())
     }
 }
 
