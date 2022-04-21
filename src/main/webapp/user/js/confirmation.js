@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkUserInfo())
+        if(checkSessionInfo())
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo().username);
         this.greeter.show();
 
         // If the user is not logged in, display access, otherwise display logout

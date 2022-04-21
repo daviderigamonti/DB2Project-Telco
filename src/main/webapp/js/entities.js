@@ -33,7 +33,6 @@ class ServicePackage {
         }, false);
     }
 
-    // TODO: duplicate code -> find a way to generalize entity visualization methods
     visSummaryServices() {
         this.packageDIV = appendElement(this.parent, "div");
         appendElement(this.packageDIV, "div", {data: this.name});

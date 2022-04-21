@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkUserInfo())
+        if(checkSessionInfo(true, EMPLOYEE_SESSION))
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo(EMPLOYEE_SESSION).username);
         this.greeter.show();
 
         // Menu containing navigation buttons
@@ -34,7 +34,11 @@
             document.getElementById("optionalProductsFSP"),
             document.getElementById("buttonAddServiceFSP"),
             document.getElementById("buttonAddValidityPeriodFSP"),
-            null
+            function () {
+                let self = this;
+                loadObjects(self, self.update, "GET", "LoadOptionalProducts", null, handler.message,
+                    false, 'No optional packages available');
+            }
         )
         this.servicePackageForm.init();
 

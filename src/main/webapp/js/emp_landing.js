@@ -10,7 +10,7 @@
         let message = document.getElementById("errorLogin");
         if(form.checkValidity()) {
             makeCall("POST", "CheckEmployeeLogin", new FormData(form), message, function(req) {
-                setUserInfo(req.responseText);
+                setSessionInfo(req.responseText, EMPLOYEE_SESSION);
                 window.location.href = PAGES.ROOT + PAGES.EMPLOYEE + PAGES.HOME;
             }, null);
         }

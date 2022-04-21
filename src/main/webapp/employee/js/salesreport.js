@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkUserInfo())
+        if(checkSessionInfo(true, EMPLOYEE_SESSION))
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getUserInfo().username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo(EMPLOYEE_SESSION).username);
         this.greeter.show();
 
         // If the user is not logged in, display access, otherwise display logout
@@ -73,8 +73,7 @@
             let form = e.target.closest("form");
             if(form.checkValidity()) {
                 // Add the order to the session
-                makeCall("POST", "CreateOrder",  new FormData(form), handler.message, (req) => {
-                    //TODO: add to local session?
+                makeCall("POST", "CreateOrder",  new FormData(form), handler.message, () => {
                     window.location.href = PAGES.ROOT + PAGES.USER + PAGES.CONFIRMATION;
                 }, false)
             }

@@ -28,6 +28,21 @@ const GUEST = {
     FALSE   : "GUEST_FALSE"
 }
 
+const GUEST_SESSION = 0;
+const USER_SESSION = 1;
+const EMPLOYEE_SESSION = 2;
+const SESSION_NAMES = [
+    {
+        GUEST       : "guest"
+    },
+    {
+        ID          : "userID",
+        USERNAME    : "usr_username"
+    },{
+        ID          : "employeeID",
+        USERNAME    : "emp_username"
+}];
+
 
 /**
  * Compares two strings using the localeCompare function
@@ -47,7 +62,7 @@ function tsToDate(t) {
  * Formats Date and Time given a date
  */
 function formatDateTime(date) {
-    return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " @ " +
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " @ " +
         date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
@@ -131,41 +146,47 @@ function loadObjects(self, update, httpMethod, url, data,
 }
 
 /**
- * Puts user info into the session storage
+ * Puts user or employee info into the session storage
  */
-function setUserInfo(userInfoText = null) {
+function setSessionInfo(infoText = null, sessionSelector = USER_SESSION) {
     let guest = GUEST.TRUE;
+
     clearStorage();
-    if(userInfoText) {
-        let userInfo = JSON.parse(userInfoText);
-        sessionStorage.setItem("userID", userInfo.id);
-        sessionStorage.setItem("username", userInfo.username);
+
+    if(infoText) {
+        let userInfo = JSON.parse(infoText);
+        sessionStorage.setItem(SESSION_NAMES[sessionSelector].ID, userInfo.id);
+        sessionStorage.setItem(SESSION_NAMES[sessionSelector].USERNAME, userInfo.username);
         guest = GUEST.FALSE;
     }
-    sessionStorage.setItem("guest", guest);
+    sessionStorage.setItem(SESSION_NAMES[GUEST_SESSION].GUEST, guest);
 }
 
 /**
- * Retrieves user info from the session storage
+ * Retrieves user or employee info from the session storage
  */
-function getUserInfo() {
+function getSessionInfo(sessionSelector = USER_SESSION) {
     return {
-        id: sessionStorage.getItem("userID"),
-        username: sessionStorage.getItem("username"),
-        guest: sessionStorage.getItem("guest")
+        id: sessionStorage.getItem(SESSION_NAMES[sessionSelector].ID),
+        username: sessionStorage.getItem(SESSION_NAMES[sessionSelector].USERNAME),
+        guest: sessionStorage.getItem(SESSION_NAMES[GUEST_SESSION].GUEST)
     }
 }
 
 
-// TODO: tweak for employee
 /**
- * Returns true if the user or is logged in, or has identified themselves as a guest
- * If the login flag is set, it returns true only if the user has logged in
+ * Returns true if the user is logged in, or has identified themselves as a guest
+ * If the login flag is set or the person is an employee, it returns true only if the user/employee has logged in
  */
-function checkUserInfo(loggedIn = false) {
-    let userInfo = getUserInfo();
+function checkSessionInfo(loggedIn = false, sessionSelector = USER_SESSION) {
+    let logged = loggedIn;
+    let userInfo = getSessionInfo(sessionSelector);
+
+    if(sessionSelector === EMPLOYEE_SESSION)
+        logged = true;
+
     return ((!userInfo.guest || strcmp(userInfo.guest, GUEST.FALSE)) && userInfo.id && userInfo.username) ||
-        (userInfo.guest && strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username && !loggedIn)
+        (userInfo.guest && strcmp(userInfo.guest, GUEST.TRUE) && !userInfo.id && !userInfo.username && !logged)
 }
 
 /**
@@ -212,7 +233,7 @@ function appendElement(parent, tag,
  * Chooses which buttons (access/logout) to display in case the user is logged in or not
  */
 function displayAccessOrLogout(buttonAccess, buttonLogout) {
-    if(checkUserInfo(true)) {
+    if(checkSessionInfo(true)) {
         buttonAccess.remove();
         buttonAccess = null;
     }

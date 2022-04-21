@@ -11,7 +11,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
 
-                setUserInfo(req.responseText);
+                setSessionInfo(req.responseText);
 
                 // Check if the user has a tracked order
                 // If it is found, redirect to confirmation page
@@ -33,8 +33,7 @@
         let form = e.target.closest("form");
         let message = document.getElementById("errorRegister");
         if(form.checkValidity()) {
-            makeCall("POST", "RegisterUser", new FormData(form), message, function(req) {
-                // TODO: something?
+            makeCall("POST", "RegisterUser", new FormData(form), message, function() {
                 window.location.href = PAGES.ROOT + PAGES.LANDING;
             }, null);
         }
@@ -47,9 +46,8 @@
         let form = e.target.closest("form");
         appendElement(form, "input", {name: "guest", value: "true", hidden: true});
         let message = document.getElementById("errorRegister");
-        makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
-            // TODO: something?
-            setUserInfo();
+        makeCall("POST", "CheckLogin", new FormData(form), message, function() {
+            setSessionInfo();
             window.location.href = PAGES.ROOT + PAGES.USER + PAGES.HOME;
         }, null);
     });
