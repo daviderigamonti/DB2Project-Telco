@@ -11,7 +11,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "CheckEmployeeLogin", new FormData(form), message, function(req) {
                 setSessionInfo(req.responseText, EMPLOYEE_SESSION);
-                window.location.href = PAGES.ROOT + PAGES.EMPLOYEE + PAGES.HOME;
+                window.location.href = root() + PAGES.EMPLOYEE + PAGES.HOME;
             }, null);
         }
         else
@@ -20,7 +20,7 @@
 
     // EMPLOYEE PRIVATE AREA
     document.getElementById("buttonUser").addEventListener("click", () => {
-        window.location.href = PAGES.ROOT + PAGES.LANDING;
+        window.location.href = root() + PAGES.LANDING;
     });
 
 })();

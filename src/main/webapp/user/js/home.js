@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = PAGES.ROOT + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.DEFAULT;
         }
     }, false);
 
@@ -57,7 +57,7 @@
         // Select button
         this.select = document.getElementById("buttonSelect");
         this.select.addEventListener("click", () => {
-            window.location.href = PAGES.ROOT + PAGES.USER + PAGES.BUYSERVICE;
+            window.location.href = root() + PAGES.USER + PAGES.BUYSERVICE;
         });
     }
 

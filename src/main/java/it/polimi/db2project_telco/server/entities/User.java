@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "Users", schema = "db2telco")
-@NamedQuery(name = "User.checkCredentials", query = "SELECT u FROM User u WHERE u.username = :usr AND u.password = :psw")
+@NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :usr")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -1,12 +1,11 @@
 package it.polimi.db2project_telco.client.util;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+
 public enum PagesNames  {
-    ROOT("/DB2Project_Telco/"),
     LANDING("landing.html"),
-    EMP_LANDING("emp_landing.html"),
-    HOME("home.html"),
-    BUYSERVICE("buyservice.html"),
-    CONFIRMATION("confirmation.html");
+    EMP_LANDING("emp_landing.html");
 
     private final String value;
 
@@ -16,5 +15,9 @@ public enum PagesNames  {
 
     public String value() {
         return this.value;
+    }
+
+    public static String root(HttpServletRequest request) {
+        return request.getContextPath() + "/";
     }
 }

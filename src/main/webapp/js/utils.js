@@ -11,7 +11,6 @@ const HTTP_CODES = {
 }
 
 const PAGES = {
-    ROOT            : "/DB2Project_Telco/",
     USER            : "user/",
     EMPLOYEE        : "employee/",
     DEFAULT         : "landing.html",
@@ -49,6 +48,17 @@ const SESSION_NAMES = [
  */
 function strcmp(a, b) {
     return !a.localeCompare(b);
+}
+
+/*
+ * Returns the root url
+ */
+function root() {
+    let r = new RegExp(/\/[^\/]+\//g);
+    let root = r.exec(window.location.pathname);
+    if(root)
+        return root[0];
+    return null;
 }
 
 /**
@@ -92,7 +102,7 @@ function makeCall(httpMethod, url, data, responseTag,
         }
     };
 
-    req.open(httpMethod, PAGES.ROOT + url);
+    req.open(httpMethod, root() + url);
 
     // If the request contains JSON data, the Content-Type of the request must be specified
     if(json)

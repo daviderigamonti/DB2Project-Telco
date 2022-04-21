@@ -24,19 +24,24 @@ public class UserService {
 
         // Find the user that matches the credentials
         try {
-            users = em.createNamedQuery("User.checkCredentials", User.class)
+            users = em.createNamedQuery("User.findByUsername", User.class)
                     .setParameter("usr", username)
-                    .setParameter("psw", password)
                     .getResultList();
         } catch (PersistenceException e) {
-            throw new CredentialsException("Could not verify credentials");
+            throw new CredentialsException("Could not find user");
         }
 
         // Make sure that only one user matches the credentials
         if(users.size() > 1)
             throw new NonUniqueResultException("Ambiguity in credentials matching");
 
-        return users.stream().findFirst().orElse(null);
+        // Check that the password is correct (this is done here and not as a separate query
+        // in order to make a case-sensitive comparison in an easier way)
+        User user = users.stream().findFirst().orElse(null);
+        if(user == null || !user.getPassword().equals(password))
+            throw new CredentialsException("Incorrect password");
+
+        return user;
     }
 
     public void createUser(String mail, String username, String password) {

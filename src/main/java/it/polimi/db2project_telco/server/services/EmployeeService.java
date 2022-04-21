@@ -24,18 +24,23 @@ public class EmployeeService {
 
         // Find the user that matches the credentials
         try {
-            employees = em.createNamedQuery("Employee.checkCredentials", Employee.class)
+            employees = em.createNamedQuery("Employee.findByUsername", Employee.class)
                     .setParameter("usr", username)
-                    .setParameter("psw", password)
                     .getResultList();
         } catch (PersistenceException e) {
-            throw new CredentialsException("Could not verify credentials");
+            throw new CredentialsException("Could not find employee");
         }
 
         // Make sure that only one user matches the credentials
         if(employees.size() > 1)
-            throw new NonUniqueResultException("Ambiguity in credentials matching");
+            throw new CredentialsException("Ambiguity in credentials matching");
 
-        return employees.stream().findFirst().orElse(null);
+        // Check that the password is correct (this is done here and not as a separate query
+        // in order to make a case-sensitive comparison in an easier way)
+        Employee employee = employees.stream().findFirst().orElse(null);
+        if(employee == null || !employee.getPassword().equals(password))
+            throw new NonUniqueResultException("Incorrect password");
+
+        return employee;
     }
 }

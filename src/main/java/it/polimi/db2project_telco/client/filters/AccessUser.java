@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.client.filters;
 
 import it.polimi.db2project_telco.client.util.PagesNames;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,17 +19,19 @@ public class AccessUser implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        String landingPage = PagesNames.ROOT.value() + PagesNames.LANDING.value();
-
         HttpSession s = req.getSession();
 
         // If the user is not logged in or if it hasn't authenticated
         // as a guest user, return a forbidden response
         if (s.isNew() || (s.getAttribute("user") == null &&
                 (s.getAttribute("guest") == null || !(boolean)s.getAttribute("guest")))) {
+
+            HttpServletResponse res = (HttpServletResponse) response;
+            String landingPage = PagesNames.root(req) + PagesNames.LANDING.value();
+
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
             res.sendRedirect(landingPage);
+
             return;
         }
 

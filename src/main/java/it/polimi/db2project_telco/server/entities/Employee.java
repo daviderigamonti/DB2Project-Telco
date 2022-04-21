@@ -1,14 +1,14 @@
 package it.polimi.db2project_telco.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name= "Employees", schema = "db2telco")
-@NamedQuery(name = "Employee.checkCredentials", query = "SELECT u FROM Employee u WHERE u.username = :usr AND u.password = :psw")
+@NamedQuery(name = "Employee.findByUsername", query = "SELECT u FROM Employee u WHERE u.username = :usr")
 
 public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
