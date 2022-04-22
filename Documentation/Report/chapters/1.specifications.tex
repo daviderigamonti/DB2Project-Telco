@@ -3,10 +3,65 @@
 %---------------------------------------------------------------------
 
 \chapter{Specifications}
-\todo{Specifications}
+
+This project was developed as part of the \textbf{Data bases 2} course at \textit{Politecnico di Milano a.a. 2021/2022} with the supervision of prof. Davide Martinenghi.
+
 
 \section{Overview}
-\blindtext
+\label{sec:overview}
+
+The goal of this project is to create two applications (one dedicated to consumers, the other to employees) for a telecommunication-oriented company that offers prepaid online services to web users. 
+
+Particular focus was given to the database-application interactions and to the database automated procedures as triggers. 
+
+For the development of the project we chose to utilize:
+\begin{itemize}
+    \item \textbf{MySQL} as the relational SQL DBMS for storing and accesing data. 
+    \item \textbf{Java} in the form of \textbf{JPA}, \textbf{EJB} and \textbf{Jakarta EE} for database communication, server-side operations and client communication through REST APIs.
+    \item \textbf{Maven} for organizing dependencies and simplifying the build process.
+    \item \textbf{HTML}, \textbf{CSS} and \textbf{JavaScript} in order to build a dynamic and interactive client application.
+    \item \textbf{\LaTeX} for designing the requested documentation.
+\end{itemize}
+
+The external tools used to aid the development process were:
+\begin{itemize}
+    \item \textbf{IntelliJ IDEA} and \textbf{Apache TomEE} for the project development and deployment.
+    \item \textbf{Github} as a versioning and collaborative editing tool.
+    \item \textbf{draw.io} for designing various types of diagrams.
+\end{itemize}
+
+It's important to note that some of the presented technologies were strongly recommended during the course. 
+
+Due to the fact that IntelliJ IDEA was used as the main IDE there are some differences with respect to the Eclipse projects provided as examples. 
+
+The most notable difference is the fact that an IntelliJ project is composed of different modules, therefore it's possible to have a \textit{JPA module} and a \textit{Web Application module} working together without the need to split them in different projects, this approach is overall less dispersive and it will preferred throughout the development.
+
 
 \section{Hypotheses}
-\blindtext
+
+This section will address various hypotheses made during the project design and development, however, most of them will be presented while maintaining a broad scope over the given specifications, since more specific and implementation-dependant assumptions and choices will be addressed in their dedicated chapters. 
+
+\subsection*{Client applications}
+
+As stated in the \hyperref[sec:overview]{Overview} section, particular focus was put in trying to centralize the structure of the project as much as possible, following this logic and in order to maximize code reuse, the two applications (user and employee) share the same project and some utilities.
+
+Despite the fact presented above, there is still a degree of separation between the two since they are stored in independent subdirectories and dedicated filters exist in order to properly manage authentication and authorization, nonetheless, for testing purposes, in each landing page there is a button capable of switching between the user and employee landing pages.
+
+\subsection*{External service for payment}
+
+Since the given specifications point to the fact that the simulated external call must be able to return true or false at will, in the confirmation page the user will be presented with 3 different buttons that proceed to the payment procedure:
+\begin{itemize}
+    \item one will always result in a failed payment;
+    \item another one will always make the payment succeed;
+    \item the last one will have a 50\% chance of generating a failed or successful payment.
+\end{itemize}
+
+As far as the payment simulation goes, the called function will also wait for a tunable random time delay to add a bit of realism.
+
+\subsection*{General project philosophy}
+
+Some of the design choices that were made during the preliminary planning phase take scalibility into account quite extensively, since we argue that it is a desirable property when developing an application or database, especially in the field of telecommunication.
+
+However, not every choice was made with scalability in mind since we believe that sometimes a simple and easy solution can be a better option over a complex alternative.
+
+This will be better explained on a case-by-case basis.
