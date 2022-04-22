@@ -16,5 +16,13 @@
         <class>it.polimi.db2project_telco.server.entities.ServicePackage</class>
         <class>it.polimi.db2project_telco.server.entities.User</class>
         <class>it.polimi.db2project_telco.server.entities.ValidityPeriod</class>
+
+        <class>it.polimi.db2project_telco.server.entities.materialized.BestSellerOptional</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.PurchasesPerPackage</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.AvgOptPerPackage</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.InsolventUsers</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.RejectedOrders</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.PurchasesPerPackagePeriod</class>
+        <class>it.polimi.db2project_telco.server.entities.materialized.TotalPerPackage</class>
     </persistence-unit>
 </persistence>

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Entity
 @IdClass(AuditID.class)
 @Table(name= "Audits", schema = "db2telco")
+@NamedQuery(name = "Audit.findAll", query = "SELECT a FROM Audit a")
 public class Audit implements Serializable {
     private static final long serialVersionUID = 1L;
 

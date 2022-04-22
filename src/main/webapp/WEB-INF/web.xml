@@ -36,5 +36,8 @@
     <filter-mapping>
         <filter-name>LoggedEmployee</filter-name>
         <url-pattern>/employee/*</url-pattern>
+        <url-pattern>/CreateServicePackage</url-pattern>
+        <url-pattern>/CreateOptionalProduct</url-pattern>
+        <url-pattern>/LoadSalesReport</url-pattern>
     </filter-mapping>
 </web-app>

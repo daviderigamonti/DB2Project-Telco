@@ -26,8 +26,6 @@ public class ServiceActivationSchedule implements Serializable {
     @Column(name = "Deactivation_Date")
     private Date deactivationDate;
 
-
-
     public User getUser() {
         return user;
     }
