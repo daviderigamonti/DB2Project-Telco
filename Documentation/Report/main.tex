@@ -4,8 +4,13 @@
 
 \documentclass{report}
 
-\usepackage{geometry} % Edit document margins
-\usepackage{hyperref} % Table of contents hyperlinks
+\usepackage{geometry}   % Edit document margins
+\usepackage{hyperref}   % Table of contents hyperlinks
+\usepackage{parskip}    % Paragraph indent & skip
+\usepackage{svg}        % SVG graphics
+\usepackage{listings}   % Code sections formatting
+\usepackage{pdflscape}  % Landscape pages
+\usepackage{fancyhdr}   % Custom header/footer
 
 % HELPER PACKAGES (REMOVE IN FINAL) %
 \usepackage{todonotes}
@@ -15,10 +20,45 @@
 % Hyperlink setup
 \hypersetup{   
     colorlinks,
-    citecolor=blue,
-    filecolor=blue,
-    linkcolor=blue,
-    urlcolor=blue
+    citecolor = blue,
+    filecolor = blue,
+    linkcolor = blue,
+    urlcolor = blue
+}
+
+% SQL code formatting
+\lstdefinestyle{SQL}{
+    language = SQL,
+    basicstyle = \footnotesize\ttfamily,
+    commentstyle = \textcolor{green},
+    stringstyle = \textcolor{orange},
+    keywordstyle = \textcolor{blue},
+    numberstyle = \scriptsize\ttfamily\textcolor{gray},
+    numbers = left,
+    frame = single, 
+    frameround = tttt,
+    framexleftmargin = 20pt
+}
+
+% Landscape page settings
+\fancypagestyle{landscape}{
+    \fancyhf{}
+    \fancyfoot[C]{
+        \makebox[\textwidth][r]{
+            \rlap{
+                \hspace{\footskip * 2}
+                \smash{
+                    \raisebox{
+                        \paperheight - \textheight - \footskip
+                    }{
+                        \rotatebox{90}{\thepage}
+                    }
+                }
+            }
+        }
+    }
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
 }
 
 %---------------------------------------------------------------------
