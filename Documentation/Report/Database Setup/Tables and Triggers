@@ -1,0 +1,305 @@
+CREATE DATABASE db2telco;
+
+-- Database tables
+
+CREATE TABLE  IF NOT EXISTS Users (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Mail varchar(255) NOT NULL,
+    Username varchar(255) UNIQUE NOT NULL,
+    Password varchar(255) NOT NULL,
+    Failed_Payments INT DEFAULT 0,
+    Insolvent BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE  IF NOT EXISTS Service_Pkgs (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE  IF NOT EXISTS Mobile_Phone (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Pkg_ID INT,
+    Minutes_N INT NOT NULL,
+    SMS_N INT NOT NULL,
+    Minutes_Fee FLOAT NOT NULL,
+    SMS_Fee FLOAT NOT NULL,
+    PRIMARY KEY ( ID ),
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE  IF NOT EXISTS Internet (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Pkg_ID INT,
+    GB_N INT NOT NULL,
+    GB_Fee FLOAT NOT NULL,
+    Fixed BOOLEAN DEFAULT FALSE NOT NULL,
+    PRIMARY KEY ( ID ),
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE
+
+);
+
+CREATE TABLE  IF NOT EXISTS Fixed_Phone (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Pkg_ID INT,
+    PRIMARY KEY ( ID ),
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE  IF NOT EXISTS Optional_Products (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Monthly_Fee FLOAT NOT NULL,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE  IF NOT EXISTS Validity_Periods (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Pkg_ID INT,
+    Months INT NOT NULL,
+    Monthly_Fee FLOAT NOT NULL,
+    PRIMARY KEY ( ID ),
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+
+CREATE TABLE  IF NOT EXISTS Orders (
+    ID INT NOT NULL AUTO_INCREMENT,
+    User_ID INT,
+    Pkg_ID INT,
+    Validity_Period_ID INT,
+    Activation_Date DATE,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Status ENUM('Pending', 'Failed', 'Valid') NOT NULL,
+    Total FLOAT NOT NULL,
+    PRIMARY KEY ( ID ),
+    FOREIGN KEY ( User_ID )
+        REFERENCES Users ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE NO ACTION,
+    FOREIGN KEY ( Validity_Period_ID )
+        REFERENCES Validity_Periods ( ID )
+            ON UPDATE RESTRICT ON DELETE NO ACTION
+);
+
+CREATE TABLE  IF NOT EXISTS OrderComprehendsOptional (
+    Order_ID INT NOT NULL,
+    Optional_ID INT NOT NULL,
+    PRIMARY KEY ( Order_ID, Optional_ID ),
+    FOREIGN KEY ( Order_ID )
+        REFERENCES Orders ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY ( Optional_ID )
+        REFERENCES Optional_Products ( ID )
+            ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS ServicePkgOffersOptional (
+    Pkg_ID INT NOT NULL,
+    Optional_ID INT NOT NULL,
+    PRIMARY KEY ( Pkg_ID, Optional_ID ),
+    FOREIGN KEY ( Pkg_ID )
+        REFERENCES Service_Pkgs ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY ( Optional_ID )
+        REFERENCES Optional_Products ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Employees (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Username varchar(255) NOT NULL,
+    Password varchar(255) NOT NULL,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE  IF NOT EXISTS ServiceActivationSchedule (
+    Order_ID INT NOT NULL,
+    User_ID INT NOT NULL,
+    Deactivation_Date DATE NOT NULL,
+    PRIMARY KEY ( Order_ID, User_ID ),
+    FOREIGN KEY ( Order_ID )
+        REFERENCES Orders ( ID )
+            ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY ( User_ID )
+        REFERENCES Users ( ID )
+            ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+
+CREATE TABLE IF NOT EXISTS Audits (
+    User_ID INT NOT NULL,
+    Timestamp TIMESTAMP NOT NULL,
+    Mail varchar(255) NOT NULL,
+    Username varchar(255) NOT NULL,
+    Amount FLOAT NOT NULL,
+    PRIMARY KEY ( User_ID, Timestamp )
+);
+
+-- Materialized views
+
+CREATE TABLE IF NOT EXISTS PurchasesPerPackage(
+    Pkg_ID INT NOT NULL,
+    Name varchar(255) NOT NULL,
+    Purchases INT NOT NULL,
+    PRIMARY KEY ( Pkg_ID )
+);
+
+CREATE TABLE IF NOT EXISTS PurchasesPerPackagePeriod(
+    Pkg_ID INT NOT NULL,
+    Name varchar(255) NOT NULL,
+    Months INT NOT NULL,
+    Purchases INT NOT NULL,
+    PRIMARY KEY ( Pkg_ID, Months )
+);
+
+CREATE TABLE IF NOT EXISTS TotalPerPackage(
+    Pkg_ID INT NOT NULL,
+    Name varchar(255) NOT NULL,
+    Total FLOAT NOT NULL,
+    TotalBeforeOptionals INT NOT NULL,
+    PRIMARY KEY ( Pkg_ID )
+);
+
+CREATE TABLE IF NOT EXISTS AvgOptPerPackage(
+    Pkg_ID INT NOT NULL,
+    Name varchar(255) NOT NULL,
+    AvgOptionals FLOAT NOT NULL,
+    PRIMARY KEY ( Pkg_ID )
+);
+
+CREATE TABLE  IF NOT EXISTS InsolventUsers (
+    ID INT NOT NULL,
+    Mail varchar(255) NOT NULL,
+    Username varchar(255) UNIQUE NOT NULL,
+    Failed_Payments INT DEFAULT 0,
+    Insolvent BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE  IF NOT EXISTS RejectedOrders (
+    ID INT NOT NULL,
+    User_ID INT,
+    Pkg_ID INT,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Status ENUM('Pending', 'Failed', 'Valid') NOT NULL,
+    Total FLOAT NOT NULL,
+    PRIMARY KEY ( ID )
+);
+
+CREATE TABLE IF NOT EXISTS BestSellerOptional(
+    ID INT NOT NULL,
+    Name varchar(255) NOT NULL,
+    TotalSales INT NOT NULL,
+    PRIMARY KEY ( Name )
+);
+
+-- Triggers
+
+DELIMITER $$
+
+CREATE TRIGGER IF NOT EXISTS OrderFailed
+AFTER UPDATE ON Orders
+FOR EACH ROW
+BEGIN
+    IF new.Status='Failed' AND new.Status <> old.Status THEN
+        INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+    END IF;
+    IF new.Status='Failed' THEN
+        UPDATE Users SET Failed_Payments = Failed_Payments + 1;
+    END IF;
+END $$
+
+CREATE TRIGGER IF NOT EXISTS OrderCompleted
+AFTER UPDATE ON Orders
+FOR EACH ROW
+BEGIN
+    IF new.Status="Valid" THEN
+        UPDATE PurchasesPerPackage set Purchases = Purchases + 1
+        WHERE ID=new.Pkg_ID;
+
+        UPDATE PurchasesPerPackagePeriod set Purchases = Purchases + 1
+        WHERE ID=new.Pkg_ID AND Months =
+            ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
+
+        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
+
+        UPDATE TotalPerPackage
+            SET TotalPerPackage.TotalBeforeOptionals = TotalPerPackage.TotalBeforeOptionals +
+            ( SELECT Validity_Periods.Monthly_Fee*Validity_Periods.Months
+              FROM Orders
+              LEFT JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID WHERE Orders.ID = new.ID
+            );
+
+        UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
+            ( SELECT avg(coalesce(OrderComprehendsOptional.Optional_ID, 0))
+              FROM Orders
+              INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
+              LEFT JOIN OrderComprehendsOpt ON Orders.ID=OrderComprehendsOptional.Order_ID
+              GROUP BY Pkg_ID
+            );
+
+        DELETE FROM BestSellerOptional;
+
+        INSERT INTO BestSellerOptional (Name, TotalSales) SELECT
+            Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
+            FROM Optional_Products LEFT JOIN OrderComprehendsOptional ON OrderComprehendsOptional.Optional_ID=Optional_Products.ID
+            GROUP BY Optional_Products.ID
+            ORDER BY TotalSales DESC
+            LIMIT 1;
+    END IF;
+    IF new.Status="Valid" AND old.Status="Rejected" THEN
+        DELETE FROM RejectedOrders WHERE ID=new.ID;
+
+    END IF;
+
+    IF new.Status="Valid" AND old.Status="Rejected" AND
+        ( SELECT COUNT(ID)
+            FROM Orders WHERE Status='Failed' AND User_ID=new.User_ID
+            GROUP BY User_ID LIMIT 1
+        ) = 0 THEN
+
+        UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
+        DELETE FROM InsolventUsers WHERE ID=new.User_ID;
+    END IF;
+END $$
+
+CREATE TRIGGER IF NOT EXISTS NewPackage
+AFTER INSERT ON Service_Pkgs
+FOR EACH ROW
+BEGIN
+    INSERT INTO PurchasesPerPackage VALUES ( new.ID,  new.Name, 0 );
+    INSERT INTO TotalPerPackage VALUES ( new.ID,  new.Name, 0, 0 );
+    INSERT INTO  AvgOptPerPackage VALUES ( new.ID,  new.Name, 0 );
+END $$
+
+CREATE TRIGGER IF NOT EXISTS NewPeriod
+AFTER INSERT ON Validity_Periods
+FOR EACH ROW
+BEGIN
+    INSERT INTO PurchasesPerPackagePeriod  (Pkg_ID, Name, Months, Purchases)
+        SELECT Service_Pkgs.ID, Service_Pkgs.Name, new.Months AS Months, 0
+        FROM Service_Pkgs WHERE ID = new.PKG_ID;
+END $$
+
+CREATE TRIGGER IF NOT EXISTS FailedPayments
+AFTER UPDATE ON Users
+FOR EACH ROW
+BEGIN
+    IF new.Failed_Payments = 3 THEN
+        UPDATE Users SET Insolvent=TRUE WHERE ID=new.ID;
+        INSERT INTO InsolventUsers VALUES( new.ID, new.Mail, new.Username, new.Failed_Payments, new.Insolvent);
+    END IF;
+END $$
+
+DELIMITER ;
