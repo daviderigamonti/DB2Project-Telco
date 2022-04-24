@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS Validity_Periods (
 CREATE TABLE IF NOT EXISTS Orders (
     ID INT NOT NULL AUTO_INCREMENT,
     User_ID INT NOT NULL,
-    Pkg_ID INT NOT NULL,
-    Validity_Period_ID INT NOT NULL,
+    Pkg_ID INT,
+    Validity_Period_ID INT,
     Activation_Date DATE,
     Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
@@ -89,10 +89,10 @@ CREATE TABLE IF NOT EXISTS Orders (
             ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY ( Pkg_ID )
         REFERENCES Service_Pkgs ( ID )
-            ON UPDATE NO ACTION ON DELETE CASCADE,
+            ON UPDATE NO ACTION ON DELETE SET NULL,
     FOREIGN KEY ( Validity_Period_ID )
         REFERENCES Validity_Periods ( ID )
-            ON UPDATE NO ACTION ON DELETE CASCADE
+            ON UPDATE NO ACTION ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS OrderComprehendsOptional (
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS OrderComprehendsOptional (
             ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY ( Optional_ID )
         REFERENCES Optional_Products ( ID )
-            ON UPDATE NO ACTION ON DELETE NO ACTION
+            ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ServicePkgOffersOptional (
@@ -121,8 +121,8 @@ CREATE TABLE IF NOT EXISTS ServicePkgOffersOptional (
 
 CREATE TABLE IF NOT EXISTS Employees (
     ID INT NOT NULL AUTO_INCREMENT,
-    Username varchar(255) NOT NULL,
-    Password varchar(255) NOT NULL,
+    Username varchar(255) UNIQUE NOT NULL,
+    Password varchar(64) NOT NULL,
     PRIMARY KEY ( ID )
 );
 
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS ServiceActivationSchedule (
             ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY ( User_ID )
         REFERENCES Users ( ID )
-            ON UPDATE NO ACTION ON DELETE NO ACTION
+            ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 
@@ -185,8 +185,8 @@ CREATE TABLE IF NOT EXISTS InsolventUsers (
     ID INT NOT NULL,
     Mail varchar(255) NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
-    Failed_Payments INT DEFAULT 0,
-    Insolvent BOOLEAN DEFAULT FALSE,
+    Failed_Payments INT NOT NULL DEFAULT 0,
+    Insolvent BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY ( ID )
 );
 
@@ -211,13 +211,12 @@ CREATE TABLE IF NOT EXISTS BestSellerOptional(
 
 DELIMITER $$
 
-DROP TRIGGER IF EXISTS OrderFailed$$
+DROP TRIGGER IF EXISTS OrderFailed $$
 CREATE TRIGGER OrderFailed
 AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
     IF new.Status='FAILED' THEN
-
         IF new.ID NOT IN (SELECT ID FROM RejectedOrders) THEN
             INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
         END IF;
@@ -236,12 +235,63 @@ BEGIN
 END $$
 
 
-DROP TRIGGER IF EXISTS OrderCompleted$$
+DROP TRIGGER IF EXISTS OrderCompleted $$
 CREATE TRIGGER OrderCompleted
 AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
+    IF new.Status='VALID' AND old.STATUS<>'VALID' THEN
+       DELETE FROM RejectedOrders WHERE ID=new.ID;
+        INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
 
+        UPDATE PurchasesPerPackage set Purchases = Purchases + 1
+        WHERE Pkg_ID=new.Pkg_ID;
+
+        UPDATE PurchasesPerPackagePeriod set Purchases = Purchases + 1
+        WHERE Pkg_ID=new.Pkg_ID AND Months =
+            ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
+
+        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
+
+        UPDATE TotalPerPackage
+            SET TotalPerPackage.TotalBeforeOptionals = TotalPerPackage.TotalBeforeOptionals +
+            ( SELECT Validity_Periods.Monthly_Fee*Validity_Periods.Months
+              FROM Orders
+              LEFT JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID WHERE Orders.ID = new.ID
+            );
+
+        UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
+            ( SELECT AVG(OptNum) FROM
+                (SELECT Orders.ID as ID, Service_Pkgs.ID as Pkg_ID, COUNT(coalesce(OrderComprehendsOptional.Optional_ID, 0)) as OptNum
+                    FROM Orders
+                    INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
+                    LEFT JOIN OrderComprehendsOptional ON Orders.ID=OrderComprehendsOptional.Order_ID
+                    GROUP BY Pkg_ID, Orders.ID) as Numbers
+                GROUP BY Pkg_ID
+            );
+
+        DELETE FROM BestSellerOptional;
+
+        INSERT INTO BestSellerOptional (ID, Name, TotalSales) SELECT
+            Optional_Products.ID as ID, Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
+            FROM Optional_Products LEFT JOIN OrderComprehendsOptional ON OrderComprehendsOptional.Optional_ID=Optional_Products.ID
+            GROUP BY Optional_Products.ID
+            ORDER BY TotalSales DESC
+            LIMIT 1;
+
+        IF (SELECT COUNT(*) FROM Orders WHERE Status='FAILED' AND User_ID=new.User_ID ) = 0 THEN
+            UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
+            DELETE FROM InsolventUsers WHERE ID=new.User_ID;
+        END IF;
+    END IF;
+END $$
+
+
+DROP TRIGGER IF EXISTS OrderCreated $$
+CREATE TRIGGER OrderCreated
+AFTER INSERT ON Orders
+FOR EACH ROW
+BEGIN
     IF new.Status='VALID' THEN
        DELETE FROM RejectedOrders WHERE ID=new.ID;
         INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
@@ -288,7 +338,8 @@ BEGIN
     END IF;
 END $$
 
-DROP TRIGGER IF EXISTS NewPackage$$
+
+DROP TRIGGER IF EXISTS NewPackage $$
 CREATE TRIGGER NewPackage
 AFTER INSERT ON Service_Pkgs
 FOR EACH ROW
@@ -298,7 +349,7 @@ BEGIN
     INSERT INTO  AvgOptPerPackage VALUES ( new.ID,  new.Name, 0 );
 END $$
 
-DROP TRIGGER IF EXISTS NewPeriod$$
+DROP TRIGGER IF EXISTS NewPeriod $$
 CREATE TRIGGER NewPeriod
 AFTER INSERT ON Validity_Periods
 FOR EACH ROW
@@ -307,8 +358,5 @@ BEGIN
         SELECT Service_Pkgs.ID, Service_Pkgs.Name, new.Months AS Months, 0
         FROM Service_Pkgs WHERE ID = new.PKG_ID;
 END $$
-
-DROP TRIGGER IF EXISTS FailedPayments$$
-
 
 DELIMITER ;
