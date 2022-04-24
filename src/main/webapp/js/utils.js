@@ -219,20 +219,15 @@ function visInf(n) {
  * Creates an HTML element given a tag, fills it with data and appends it to the parent
  * Optional parameters are passed by name using javascript destructuring
  */
-function appendElement(parent, tag,
-                       {id = null, type = null, name = null,
-                           value: value = null, data = null, hidden = null} = {}) {
+function appendElement(parent, tag, info = {}) {
     const el = document.createElement(tag);
 
-    // DOM Element.id shouldn't be assigned an empty string
-    if(id)
-        el.id = id;
-
-    el.type = type ?? "";
-    el.name = name ?? "";
-    el.value = value ?? "";
-    el.hidden = hidden ?? false;
-    el.innerHTML = data ?? "";
+    // Put all the info in the new element
+    for(let property in info) {
+        let value = info[property];
+        if(value)
+            el[property] = value;
+    }
 
     parent.appendChild(el);
 

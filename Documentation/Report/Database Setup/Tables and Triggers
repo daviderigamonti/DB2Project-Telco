@@ -4,7 +4,7 @@ USE db2telco;
 
 -- Database tables
 
-CREATE TABLE  IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS Users (
     ID INT NOT NULL AUTO_INCREMENT,
     Mail varchar(255) NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
@@ -14,13 +14,13 @@ CREATE TABLE  IF NOT EXISTS Users (
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE  IF NOT EXISTS Service_Pkgs (
+CREATE TABLE IF NOT EXISTS Service_Pkgs (
     ID INT NOT NULL AUTO_INCREMENT,
     Name varchar(255) NOT NULL,
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE  IF NOT EXISTS Mobile_Phone (
+CREATE TABLE IF NOT EXISTS Mobile_Phone (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT,
     Minutes_N INT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE  IF NOT EXISTS Mobile_Phone (
             ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
-CREATE TABLE  IF NOT EXISTS Internet (
+CREATE TABLE IF NOT EXISTS Internet (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT,
     GB_N INT NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE  IF NOT EXISTS Internet (
 
 );
 
-CREATE TABLE  IF NOT EXISTS Fixed_Phone (
+CREATE TABLE IF NOT EXISTS Fixed_Phone (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT,
     PRIMARY KEY ( ID ),
@@ -55,13 +55,14 @@ CREATE TABLE  IF NOT EXISTS Fixed_Phone (
             ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
-CREATE TABLE  IF NOT EXISTS Optional_Products (
+CREATE TABLE IF NOT EXISTS Optional_Products (
     ID INT NOT NULL AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
     Monthly_Fee FLOAT NOT NULL,
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE  IF NOT EXISTS Validity_Periods (
+CREATE TABLE IF NOT EXISTS Validity_Periods (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT,
     Months INT NOT NULL,
@@ -73,7 +74,7 @@ CREATE TABLE  IF NOT EXISTS Validity_Periods (
 );
 
 
-CREATE TABLE  IF NOT EXISTS Orders (
+CREATE TABLE IF NOT EXISTS Orders (
     ID INT NOT NULL AUTO_INCREMENT,
     User_ID INT,
     Pkg_ID INT,
@@ -94,7 +95,7 @@ CREATE TABLE  IF NOT EXISTS Orders (
             ON UPDATE RESTRICT ON DELETE NO ACTION
 );
 
-CREATE TABLE  IF NOT EXISTS OrderComprehendsOptional (
+CREATE TABLE IF NOT EXISTS OrderComprehendsOptional (
     Order_ID INT NOT NULL,
     Optional_ID INT NOT NULL,
     PRIMARY KEY ( Order_ID, Optional_ID ),
@@ -125,7 +126,7 @@ CREATE TABLE IF NOT EXISTS Employees (
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE  IF NOT EXISTS ServiceActivationSchedule (
+CREATE TABLE IF NOT EXISTS ServiceActivationSchedule (
     Order_ID INT NOT NULL,
     User_ID INT NOT NULL,
     Deactivation_Date DATE NOT NULL,
@@ -180,7 +181,7 @@ CREATE TABLE IF NOT EXISTS AvgOptPerPackage(
     PRIMARY KEY ( Pkg_ID )
 );
 
-CREATE TABLE  IF NOT EXISTS InsolventUsers (
+CREATE TABLE IF NOT EXISTS InsolventUsers (
     ID INT NOT NULL,
     Mail varchar(255) NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
@@ -189,7 +190,7 @@ CREATE TABLE  IF NOT EXISTS InsolventUsers (
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE  IF NOT EXISTS RejectedOrders (
+CREATE TABLE IF NOT EXISTS RejectedOrders (
     ID INT NOT NULL,
     User_ID INT,
     Pkg_ID INT,

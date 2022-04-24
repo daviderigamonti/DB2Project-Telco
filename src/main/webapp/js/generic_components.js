@@ -76,13 +76,14 @@ function ObjectList(ListObject, list, load, visualize) {
     this.objects = [];
 
     this.reset = function(self) {
+        self.objects.splice(0, self.objects.length)
         self.list.innerHTML = "";
+
     }
 
     this.update = function(self, objects) {
         // Empty the list
-        self.objects = [];
-        self.list.innerHTML = "";
+        self.reset(self);
 
         // Initializes every single object and updates it
         objects.forEach((object) => {

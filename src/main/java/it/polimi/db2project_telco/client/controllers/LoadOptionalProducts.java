@@ -39,7 +39,7 @@ public class LoadOptionalProducts extends HttpServlet {
             products = optionalProductService.findAll();
         } catch(Exception e) {
             ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Could not retrieve packages");
+                    "Could not retrieve optional products");
             return;
         }
 

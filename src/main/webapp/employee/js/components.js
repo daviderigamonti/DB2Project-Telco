@@ -31,7 +31,7 @@ function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCh
     this.reset = function() {
         this.services.reset(this.services);
         this.validityPeriods.reset(this.validityPeriods);
-        this.optional.reset(this.optional);
+        // Optionals are not reset
     }
 
     this.toObject = function() {

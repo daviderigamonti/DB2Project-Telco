@@ -13,7 +13,7 @@ class ServicePackage {
 
     visListClickable() {
         this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {data: this.name});
+        appendElement(this.packageDIV, "div", {innerHTML: this.name});
 
         let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
             null, FixedPhoneSvc.prototype.visList);
@@ -35,7 +35,7 @@ class ServicePackage {
 
     visSummaryServices() {
         this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {data: this.name});
+        appendElement(this.packageDIV, "div", {innerHTML: this.name});
 
         let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
             null, FixedPhoneSvc.prototype.visList);
@@ -50,7 +50,7 @@ class ServicePackage {
     }
 
     visCombo() {
-        appendElement(this.parent, "option", {data: this.name, value: this.id});
+        appendElement(this.parent, "option", {innerHTML: this.name, value: this.id});
     }
 }
 
@@ -68,7 +68,7 @@ class Service {
         this.container = appendElement(this.parent, "div");
         let combo = appendElement(this.container, "select", {name: "serviceType"});
         for(let i = 0; i < Service.prototype.services.length; i++)
-            appendElement(combo, "option", {data: Service.prototype.services[i].name, value: i});
+            appendElement(combo, "option", {innerHTML: Service.prototype.services[i].name, value: i});
 
         let contentDiv = appendElement(this.container, "div");
 
@@ -106,7 +106,7 @@ class FixedPhoneSvc {
     }
 
     visList() {
-        appendElement(this.parent, "div", {data: "Fixed Phone"});
+        appendElement(this.parent, "div", {innerHTML: Service.prototype.services[0].name});
     };
 
     visCreationForm() {
@@ -135,22 +135,26 @@ class MobilePhoneSvc {
         let info = "Mobile Phone: " +
             visInf(this.minutes) + " minutes + " + this.minuteFee + "€/extra minute" + "\n" +
             visInf(this.sms) + " SMS + " + this.smsFee + "€/extra sms";
-        appendElement(this.parent, "div", {data: info});
+        appendElement(this.parent, "div", {innerHTML: info});
     };
 
     visCreationForm() {
-        appendElement(this.parent, "div", {data: "Mobile Phone"});
-        let minutesLabel = appendElement(this.parent, "label", {data: "Minutes:"});
-        let minutesInput = appendElement(minutesLabel, "input", {type: "number", name: "minutes"});
+        appendElement(this.parent, "div", {innerHTML: Service.prototype.services[1].name});
+        let minutesLabel = appendElement(this.parent, "label", {innerHTML: "Minutes:"});
+        let minutesInput = appendElement(minutesLabel, "input",
+            {type: "number", name: "minutes", min: 0});
         minutesInput.addEventListener("input", (e) => this.minutes = e.currentTarget.value);
-        let minutesFeeLabel = appendElement(this.parent, "label", {data: "Extra minute fee:"});
-        let minutesFeeInput = appendElement(minutesFeeLabel, "input", {type: "number", name: "minuteFee"});
+        let minutesFeeLabel = appendElement(this.parent, "label", {innerHTML: "Extra minute fee:"});
+        let minutesFeeInput = appendElement(minutesFeeLabel, "input",
+            {type: "number", name: "minuteFee", step: 0.01, min: 0});
         minutesFeeInput.addEventListener("input", (e) => this.minuteFee = e.currentTarget.value);
-        let smsLabel = appendElement(this.parent, "label", {data: "SMS:"});
-        let smsInput = appendElement(smsLabel, "input", {type: "number", name: "sms"});
+        let smsLabel = appendElement(this.parent, "label", {innerHTML: "SMS:"});
+        let smsInput = appendElement(smsLabel, "input", {type: "number",
+            name: "sms", min: 0});
         smsInput.addEventListener("input", (e) => this.sms = e.currentTarget.value);
-        let smsFeeLabel = appendElement(this.parent, "label", {data: "Extra SMS fee:"});
-        let smsFeeInput = appendElement(smsFeeLabel, "input", {type: "number", name: "smsFee"});
+        let smsFeeLabel = appendElement(this.parent, "label", {innerHTML: "Extra SMS fee:"});
+        let smsFeeInput = appendElement(smsFeeLabel, "input",
+            {type: "number", name: "smsFee", step: 0.01, min: 0});
         smsFeeInput.addEventListener("input", (e) => this.smsFee = e.currentTarget.value);
     }
 
@@ -171,19 +175,21 @@ class InternetSvc {
     visList() {
         let info = this.fixed ? "Fixed " : "Mobile "
         info += "Internet: " + visInf(this.gigabytes) + " GB + " + this.gigabyteFee + "€/extra GB";
-        appendElement(this.parent, "div", {data: info});
+        appendElement(this.parent, "div", {innerHTML: info});
     };
 
     visCreationForm() {
-        appendElement(this.parent, "div", {data: "Internet"});
-        let fixedLabel = appendElement(this.parent, "label", {data: "Fixed:"});
+        appendElement(this.parent, "div", {innerHTML: Service.prototype.services[2].name});
+        let fixedLabel = appendElement(this.parent, "label", {innerHTML: "Fixed:"});
         let fixedInput = appendElement(fixedLabel, "input", {type: "checkbox",  name: "fixed"});
         fixedInput.addEventListener("input", (e) => this.fixed = e.currentTarget.checked || false);
-        let gigabytesLabel = appendElement(this.parent, "label", {data: "Gigabytes:"});
-        let gigabytesInput = appendElement(gigabytesLabel, "input", {type: "number", name: "gigabytes"});
+        let gigabytesLabel = appendElement(this.parent, "label", {innerHTML: "Gigabytes:"});
+        let gigabytesInput = appendElement(gigabytesLabel, "input",
+            {type: "number", name: "gigabytes", min: 0});
         gigabytesInput.addEventListener("input", (e) => this.gigabytes = e.currentTarget.value);
-        let gigabyteFee = appendElement(this.parent, "label", {data: "Gigabyte Fee:"});
-        let gigabyteFeeInput = appendElement(gigabyteFee, "input", {type: "number", name: "gigabyteFee"});
+        let gigabyteFee = appendElement(this.parent, "label", {innerHTML: "Gigabyte Fee:"});
+        let gigabyteFeeInput = appendElement(gigabyteFee, "input",
+            {type: "number", name: "gigabyteFee", step: 0.01, min: 0});
         gigabyteFeeInput.addEventListener("input", (e) => this.gigabyteFee = e.currentTarget.value);
     }
 
@@ -225,22 +231,22 @@ class Order {
             null, OptionalProduct.prototype.visSummary);
         optionalProductsList.update(optionalProductsList, this.optionalProducts);
 
-        appendElement(this.parent, "div", {data: "Total: " + this.total + "€"});
+        appendElement(this.parent, "div", {innerHTML: "Total: " + this.total + "€"});
     }
 
     visRejectedList() {
         let orderDIV = appendElement(this.parent, "div");
 
-        appendElement(orderDIV, "div", {data: this.id});
+        appendElement(orderDIV, "div", {innerHTML: this.id});
 
         this.servicePackage.parent = orderDIV;
         this.servicePackage.visSummaryServices();
 
         let date = formatDateTime(tsToDate(this.timestamp));
 
-        appendElement(orderDIV, "div", {data: date});
-        appendElement(orderDIV, "div", {data: "Status: " + this.status});
-        appendElement(orderDIV, "div", {data: "Total: " + this.total + "€"});
+        appendElement(orderDIV, "div", {innerHTML: date});
+        appendElement(orderDIV, "div", {innerHTML: "Status: " + this.status});
+        appendElement(orderDIV, "div", {innerHTML: "Total: " + this.total + "€"});
 
         // Clickable rejected order
         orderDIV.addEventListener("click", () => {
@@ -261,23 +267,25 @@ class ValidityPeriod {
 
     visCombo() {
         let name = this.months + " months @ " + this.fee + " €/month";
-        appendElement(this.parent, "option", {data: name, value: this.id});
+        appendElement(this.parent, "option", {innerHTML: name, value: this.id});
     }
 
     visSummary() {
         let info = this.months + " months @ " + this.fee + " €/month";
-        appendElement(this.parent, "div", {data: info});
+        appendElement(this.parent, "div", {innerHTML: info});
     }
 
     visCreationForm() {
         let validityPeriodDiv = appendElement(this.parent, "div");
 
         // Validity period data
-        let monthsLabel = appendElement(validityPeriodDiv, "label", {data: "Months:"});
-        let monthsInput = appendElement(monthsLabel, "input", {type: "number", name: "months"});
+        let monthsLabel = appendElement(validityPeriodDiv, "label", {innerHTML: "Months:"});
+        let monthsInput = appendElement(monthsLabel, "input",
+            {type: "number", name: "months", min: 0});
         monthsInput.addEventListener("input", (e) => this.months = e.currentTarget.value);
-        let feeLabel = appendElement(validityPeriodDiv, "label", {data: "Fee:"});
-        let feeInput = appendElement(feeLabel, "input", {type: "number", name: "fee"});
+        let feeLabel = appendElement(validityPeriodDiv, "label", {innerHTML: "Monthly fee:"});
+        let feeInput = appendElement(feeLabel, "input",
+            {type: "number", name: "fee", step: 0.01, min: 0});
         feeInput.addEventListener("input", (e) => this.fee = e.currentTarget.value);
 
         // Button to remove the validity period
@@ -304,12 +312,12 @@ class OptionalProduct {
 
     visCheck() {
         let productString = this.name + " @ " + this.fee + "€/month";
-        let label = appendElement(this.parent, "label", {data: productString});
+        let label = appendElement(this.parent, "label", {innerHTML: productString});
         appendElement(label, "input", {type: "checkbox",  name: "optionalProducts", value: this.id});
     };
 
     visSummary() {
         let info = this.name + " @ " + this.fee + "€/month";
-        appendElement(this.parent, "div", {data: info});
+        appendElement(this.parent, "div", {innerHTML: info});
     };
 }
