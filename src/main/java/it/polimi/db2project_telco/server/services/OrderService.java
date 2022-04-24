@@ -107,7 +107,8 @@ public class OrderService {
         }
 
         // Wake up the lazy entities
-        orders.forEach(Order::getServicePackage);
+        if(orders != null)
+            orders.forEach(Order::getServicePackage);
 
         return orders;
     }

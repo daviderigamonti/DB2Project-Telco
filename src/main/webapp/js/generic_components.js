@@ -86,9 +86,15 @@ function ObjectList(ListObject, list, load, visualize) {
         self.reset(self);
 
         // Initializes every single object and updates it
-        objects.forEach((object) => {
-            self.add(self, object)
-        });
+        if(Array.isArray(objects))
+            // Treat array differently
+            objects.forEach((object) => {
+                self.add(self, object)
+            });
+        else
+            for(let object in objects)
+                self.add(self, object)
+
     };
 
     this.add = function(self, object) {

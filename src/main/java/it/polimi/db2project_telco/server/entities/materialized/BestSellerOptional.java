@@ -11,7 +11,7 @@ public class BestSellerOptional implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "Opt_ID")    //TODO: cambiare id eventualmente
+    @Column(name = "ID")    //TODO: cambiare id eventualmente
     private int id;
 
     @Column(name="Name")

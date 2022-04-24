@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS RejectedOrders (
     User_ID INT,
     Pkg_ID INT,
     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Status ENUM('Pending', 'Failed', 'Valid') NOT NULL,
+    Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
     Total FLOAT NOT NULL,
     PRIMARY KEY ( ID )
 );
