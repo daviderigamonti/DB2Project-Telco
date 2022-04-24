@@ -8,48 +8,58 @@
     <script src="../js/generic_components.js" charset="utf-8" defer></script>
     <script src="js/components.js" charset="utf-8" defer></script>
     <script src="js/confirmation.js" charset="utf-8" defer></script>
-    <link rel="stylesheet" href="../css/temp.css">
-    <!--<link rel="stylesheet" href="css/confirmation.css">--> <!-- TODO will I ever be pretty? -->
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="../css/normalize.css">
+    <!-- Milligram CSS -->
+
+    <link rel="stylesheet" href="../css/milligram.min.css">
 </head>
 <body>
+<div class="container">
 
-    <div class="barConfirm">
-        <div class="divBarConfirm">
+    <div class="barConfirm row">
+        <div class="divBarConfirm column column-50">
             <div id="greeter"></div>
         </div>
 
-        <div class="divBarConfirm">
-            <input id="buttonHome" type="button" value="Home">
+        <div class="divBarConfirm column">
+            <input class="button-clear" id="buttonHome" type="button" value="Home">
         </div>
 
-        <div class="divBarConfirm">
-            <input id="buttonAccess" type="button" value="Access">
+        <div class="divBarConfirm column">
+            <input class="button-clear" id="buttonAccess" type="button" value="Access">
         </div>
 
-        <div class="divBarConfirm">
-            <input id="buttonLogout" type="button" value="Logout">
+        <div class="divBarConfirm column">
+            <input class="button-clear" id="buttonLogout" type="button" value="Logout">
         </div>
 
-        <div class="divBarConfirm">
-            <input id="buttonReset" type="button" value="Reset">
+        <div class="divBarConfirm column">
+            <input class="button-clear" id="buttonReset" type="button" value="Reset">
         </div>
     </div>
 
-    <div class="divConfirm">
+    <div class="divConfirm row">
         <div id="message"></div>
     </div>
 
-    <div class="divConfirm">
+    <hr>
+    <div class="row"><h3>Your order summary:</h3></div>
+    <div class="divConfirm row">
+
         <div id="summary"></div>
     </div>
-
-    <div class="divConfirm">
+    <hr>
+    <div class="divConfirm row">
         <form id="formConfirm" action="#" class="formConfirm">
             <input id="buttonBuySuccess" type="button" value="Buy Success">
             <input id="buttonBuy" type="button" value="Buy">
             <input id="buttonBuyFailure" type="button" value="Buy Failure">
         </form>
     </div>
-
+</div>
 </body>
 </html>
