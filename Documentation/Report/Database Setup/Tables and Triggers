@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS RejectedOrders (
     User_ID INT,
     Pkg_ID INT,
     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Status ENUM('Pending', 'Failed', 'Valid') NOT NULL,
+    Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
     Total FLOAT NOT NULL,
     PRIMARY KEY ( ID )
 );
@@ -216,14 +216,19 @@ CREATE TRIGGER OrderFailed
 AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
-    IF new.Status='Failed' AND new.Status <> old.Status THEN
-        INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
-        UPDATE Users SET Insolvent=TRUE WHERE ID=new.ID;
-        INSERT INTO InsolventUsers (ID, Mail, Username, Failed_Payments, Insolvent)
-            SELECT ID, Mail, Username, Failed_Payments, Insolvent FROM Users WHERE ID=new.User_ID;
-    END IF;
-    IF new.Status='Failed' THEN
+    IF new.Status='FAILED' THEN
+
+        IF new.ID NOT IN (SELECT ID FROM RejectedOrders) THEN
+            INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+        END IF;
+        IF (SELECT Insolvent FROM Users WHERE ID=new.User_ID)=FALSE THEN
+            UPDATE Users SET Insolvent=TRUE WHERE ID=new.User_ID;
+            INSERT INTO InsolventUsers (ID, Mail, Username, Failed_Payments, Insolvent)
+                SELECT ID, Mail, Username, Failed_Payments, Insolvent FROM Users WHERE ID=new.User_ID;
+        END IF;
+
         UPDATE Users SET Failed_Payments = Failed_Payments + 1 WHERE ID=new.User_ID;
+        UPDATE InsolventUsers SET Failed_Payments = Failed_Payments + 1 WHERE ID=new.User_ID;
         IF (SELECT Failed_Payments FROM Users WHERE ID=new.User_ID) = 3 THEN
             INSERT INTO Audits (User_ID, Mail, Username, Amount) SELECT ID, Mail, Username, new.Total FROM Users WHERE ID=new.User_ID;
         END IF;
@@ -236,8 +241,9 @@ CREATE TRIGGER OrderCompleted
 AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
-    IF new.Status="VALID" THEN
 
+    IF new.Status="VALID" THEN
+       DELETE FROM RejectedOrders WHERE ID=new.ID;
         INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
 
         UPDATE PurchasesPerPackage set Purchases = Purchases + 1
@@ -274,20 +280,11 @@ BEGIN
             GROUP BY Optional_Products.ID
             ORDER BY TotalSales DESC
             LIMIT 1;
-    END IF;
-    IF new.Status="Valid" AND old.Status="Rejected" THEN
-        DELETE FROM RejectedOrders WHERE ID=new.ID;
 
-    END IF;
-
-    IF new.Status="Valid" AND old.Status="Rejected" AND
-        ( SELECT COUNT(ID)
-            FROM Orders WHERE Status='Failed' AND User_ID=new.User_ID
-            GROUP BY User_ID LIMIT 1
-        ) = 0 THEN
-
-        UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
-        DELETE FROM InsolventUsers WHERE ID=new.User_ID;
+        IF (SELECT COUNT(*) FROM Orders WHERE Status='FAILED' AND User_ID=new.User_ID ) = 0 THEN
+            UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
+            DELETE FROM InsolventUsers WHERE ID=new.User_ID;
+        END IF;
     END IF;
 END $$
 
