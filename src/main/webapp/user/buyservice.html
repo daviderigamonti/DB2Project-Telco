@@ -8,26 +8,33 @@
     <script src="../js/generic_components.js" charset="utf-8" defer></script>
     <script src="js/components.js" charset="utf-8" defer></script>
     <script src="js/buyservice.js" charset="utf-8" defer></script>
-    <link rel="stylesheet" href="../css/temp.css">
-    <!--<link rel="stylesheet" href="css/buyservice.css">--> <!-- TODO will I ever be pretty? -->
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="../css/normalize.css">
+    <!-- Milligram CSS -->
+
+    <link rel="stylesheet" href="../css/milligram.min.css">
 </head>
 <body>
-
-    <div class="barService">
-        <div class="divBarService">
+    <div class="container">
+    <div class="barService row">
+        <div class="divBarService column column-50">
             <div id="greeter"></div>
         </div>
 
-        <div class="divBarService">
-            <input id="buttonHome" type="button" value="Home">
+        <div class="divBarService column">
+            <input class="button-clear" id="buttonHome" type="button" value="Home">
         </div>
 
-        <div class="divBarService">
-            <input id="buttonAccess" type="button" value="Access">
+        <div class="divBarService column">
+            <input class="button-clear" id="buttonAccess" type="button" value="Access">
         </div>
 
-        <div class="divBarService">
-            <input id="buttonLogout" type="button" value="Logout">
+        <div class="divBarService column">
+            <input class="button-clear" id="buttonLogout" type="button" value="Logout">
         </div>
     </div>
 
@@ -56,6 +63,6 @@
             <input id="buttonConfirm" type="button" value="Confirm">
         </form>
     </div>
-
+    </div>
 </body>
 </html>

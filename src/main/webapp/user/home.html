@@ -8,40 +8,50 @@
     <script src="../js/generic_components.js" charset="utf-8" defer></script>
     <script src="js/components.js" charset="utf-8" defer></script>
     <script src="js/home.js" charset="utf-8" defer></script>
-    <link rel="stylesheet" href="../css/temp.css">
-    <!--<link rel="stylesheet" href="css/home.css">--> <!-- TODO will I ever be pretty? -->
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="../css/normalize.css">
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="../css/milligram.min.css">
 </head>
 <body>
-
-    <div class="barHome">
-        <div class="divBarHome">
+    <div class="container">
+    <div class="barHome row">
+        <div class="divBarHome column column-50">
             <div id="greeter"></div>
         </div>
 
-        <div class="divBarHome">
-            <input id="buttonAccess" type="button" value="Access">
+        <div class="divBarHome column">
+            <input class="button-clear" id="buttonAccess" type="button" value="Access">
         </div>
 
-        <div class="divBarHome">
-            <input id="buttonLogout" type="button" value="Logout">
+        <div class="divBarHome column">
+            <input class="button-clear" id="buttonLogout" type="button" value="Logout">
         </div>
     </div>
 
-    <div class="divHome">
+    <div class="divHome row">
         <div id="message"></div>
     </div>
 
-    <div class="divHome">
-        <div id="servicePackages"></div>
+    <div class="row"><h3>Our current offers:</h3></div>
+    <div class="divHome row">
+
+        <div id="servicePackages" class="column column-50 column-offset-25"></div>
     </div>
 
+        <div class="divHome row">
+            <input class="column" id="buttonSelect" type="button" value="Buy a Service Package">
+        </div>
+        <hr>
     <div class="divHome">
-        <div id="rejectedOrders"></div>
+
+        <div class="row"><h3>Your pending or rejected orders:</h3></div>
+        <div class="row" id="rejectedOrders"></div>
     </div>
 
-    <div class="divHome">
-        <input id="buttonSelect" type="button" value="Select a Service Package">
     </div>
-
 </body>
 </html>

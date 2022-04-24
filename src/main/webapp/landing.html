@@ -5,17 +5,27 @@
     <title>Welcome</title>
     <script src="js/utils.js" charset="utf-8" defer></script>
     <script src="js/landing.js" charset="utf-8" defer></script>
-    <link rel="stylesheet" href="css/temp.css">
-    <!--<link rel="stylesheet" href="css/landing.css">--> <!-- TODO will I ever be pretty? -->
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <!-- Milligram CSS -->
+
+    <link rel="stylesheet" href="css/milligram.min.css">
+
 </head>
 <body>
 
-    <div class="divLanding">
+    <div class="container">
+    <div class="row">
         <h1>Welcome</h1>
     </div>
 
-    <div class="divLanding">
-        <form id="formLogin" action="#" class="formLogin">
+    <div class="row">
+
+        <form id="formLogin" action="#" class="column">
+            <h3>Login:</h3>
             <label>
                 Username:
                 <input type="text" name="username" placeholder="Username" required>
@@ -26,11 +36,14 @@
             </label>
             <p id="errorLogin"></p>
             <input id="buttonLogin" type="button" value="Login">
+
         </form>
     </div>
 
-    <div class="divLanding">
-        <form id="formRegister" action="#" class="formRegister">
+    <div class="row">
+
+        <form id="formRegister" action="#" class="column">
+            <h3>Register:</h3>
             <label>
                 Username:
                 <input type="text" name="username" placeholder="Username" required />
@@ -45,20 +58,24 @@
             </label>
             <p id="errorRegister"></p>
             <input id="buttonRegister" type="button" value="Register">
+
         </form>
     </div>
-
-    <div class="divLanding">
-        <form id="formBrowsing" action="#" class="formBrowsing">
+        <hr>
+    <div class="row">
+        <form id="formBrowsing" action="#" class="column">
+            <label>
+                Proceed to website:
             <input id="buttonBrowse" type="button" value="Browse">
+            </label>
         </form>
-    </div>
-
-    <div class="divLanding">
+        <div class ="column">
         <label>
             Employee private area:
             <input id="buttonEmployee" type="button" value="Access">
         </label>
+        </div>
+    </div>
     </div>
 
 </body>
