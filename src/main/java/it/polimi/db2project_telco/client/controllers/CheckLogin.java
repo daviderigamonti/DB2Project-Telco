@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.client.controllers;
 
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
+import it.polimi.db2project_telco.client.util.Utils;
 import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.exceptions.CredentialsException;
 import it.polimi.db2project_telco.server.services.UserService;
@@ -19,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 @WebServlet("/CheckLogin")
 @MultipartConfig
@@ -38,7 +41,8 @@ public class CheckLogin extends HttpServlet {
             throws IOException {
 
         User user;
-        String username = null, password = null;
+        String username = null, password;
+        String passwordHash = null;
         boolean guest = false;
 
         // Obtain the parameters from the request
@@ -50,8 +54,15 @@ public class CheckLogin extends HttpServlet {
             if(!guest) {
                 username = StringEscapeUtils.escapeJava(request.getParameter("username"));
                 password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+
                 if (username == null || password == null || username.isEmpty() || password.isEmpty())
                     throw new Exception();
+
+                // Hashing the password
+                final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+                final byte[] hashByte = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+                passwordHash = Utils.bytesToHexString(hashByte);
+
             }
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incomplete or malformed credentials");
@@ -61,7 +72,7 @@ public class CheckLogin extends HttpServlet {
         if(!guest) {
             // Check the credentials for the user
             try {
-                user = userService.checkCredentials(username, password);
+                user = userService.checkCredentials(username, passwordHash);
                 if (user == null)
                     throw new CredentialsException("Wrong credentials");
             } catch (CredentialsException | NonUniqueResultException e) {

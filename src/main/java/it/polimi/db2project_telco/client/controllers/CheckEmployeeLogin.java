@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.client.controllers;
 
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
+import it.polimi.db2project_telco.client.util.Utils;
 import it.polimi.db2project_telco.server.entities.Employee;
 import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.exceptions.CredentialsException;
@@ -21,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 @WebServlet("/CheckEmployeeLogin")
 @MultipartConfig
@@ -41,13 +44,21 @@ public class CheckEmployeeLogin extends HttpServlet {
 
         Employee employee;
         String username, password;
+        String passwordHash;
 
         // Obtain the parameters from the request
         try {
             username = StringEscapeUtils.escapeJava(request.getParameter("username"));
             password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+
             if (username == null || password == null || username.isEmpty() || password.isEmpty())
                 throw new Exception();
+
+            // Hashing the password
+            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final byte[] hashByte = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            passwordHash = Utils.bytesToHexString(hashByte);
+
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incomplete or malformed credentials");
             return;
@@ -55,7 +66,7 @@ public class CheckEmployeeLogin extends HttpServlet {
 
         // Check the credentials for the employee
         try {
-            employee = employeeService.checkCredentials(username, password);
+            employee = employeeService.checkCredentials(username, passwordHash);
             if (employee == null)
                 throw new CredentialsException("Wrong credentials");
         } catch (CredentialsException | NonUniqueResultException e) {
