@@ -1,0 +1,30 @@
+-- User creation.
+-- 1 = Arthur, 2 = Merlin, 3 = Morgana, 4 = Lancelot. PWD is camelot for everyone.
+
+INSERT INTO Users (Username, Mail, Password) VALUES ('Arthur', 'arthur@camelot.uk', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
+INSERT INTO Users (Username, Mail, Password) VALUES ('Merlin', 'merlin@camelot.uk', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
+INSERT INTO Users (Username, Mail, Password) VALUES ('Morgana', 'morgana@camelot.uk', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
+INSERT INTO Users (Username, Mail, Password) VALUES ('Lancelot', 'lancelot@camelot.uk', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
+
+-- Employee
+INSERT INTO Employees (Username, Password) VALUES ('Excalibur', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
+
+-- Optionals
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("Free video calls", 10);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("You and me", 5);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("New phone", 15);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("Trip to Avalon", 100);
+
+-- Packages
+
+INSERT INTO Service_Pkgs (Name) VALUES ('Spring Package');
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,1,20);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,3,15);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,12,12);
+INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,500,20, TRUE);
+INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,200,10, FALSE);
+INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,300,15, FALSE);
+INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (1,1);
+INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (1,2);
+
+

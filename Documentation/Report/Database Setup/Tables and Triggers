@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     Validity_Period_ID INT,
     Activation_Date DATE,
     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Status ENUM('Pending', 'Failed', 'Valid') NOT NULL,
+    Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
     Total FLOAT NOT NULL,
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( User_ID )
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS ServiceActivationSchedule (
 
 CREATE TABLE IF NOT EXISTS Audits (
     User_ID INT NOT NULL,
-    Timestamp TIMESTAMP NOT NULL,
+    Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Mail varchar(255) NOT NULL,
     Username varchar(255) NOT NULL,
     Amount FLOAT NOT NULL,
@@ -218,23 +218,33 @@ FOR EACH ROW
 BEGIN
     IF new.Status='Failed' AND new.Status <> old.Status THEN
         INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+        UPDATE Users SET Insolvent=TRUE WHERE ID=new.ID;
+        INSERT INTO InsolventUsers (ID, Mail, Username, Failed_Payments, Insolvent)
+            SELECT ID, Mail, Username, Failed_Payments, Insolvent FROM Users WHERE ID=new.User_ID;
     END IF;
     IF new.Status='Failed' THEN
-        UPDATE Users SET Failed_Payments = Failed_Payments + 1;
+        UPDATE Users SET Failed_Payments = Failed_Payments + 1 WHERE ID=new.User_ID;
+        IF (SELECT Failed_Payments FROM Users WHERE ID=new.User_ID) = 3 THEN
+            INSERT INTO Audits (User_ID, Mail, Username, Amount) SELECT ID, Mail, Username, new.Total FROM Users WHERE ID=new.User_ID;
+        END IF;
     END IF;
 END $$
+
 
 DROP TRIGGER IF EXISTS OrderCompleted$$
 CREATE TRIGGER OrderCompleted
 AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
-    IF new.Status="Valid" THEN
+    IF new.Status="VALID" THEN
+
+        INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
+
         UPDATE PurchasesPerPackage set Purchases = Purchases + 1
-        WHERE ID=new.Pkg_ID;
+        WHERE Pkg_ID=new.Pkg_ID;
 
         UPDATE PurchasesPerPackagePeriod set Purchases = Purchases + 1
-        WHERE ID=new.Pkg_ID AND Months =
+        WHERE Pkg_ID=new.Pkg_ID AND Months =
             ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
 
         UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
@@ -247,17 +257,19 @@ BEGIN
             );
 
         UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
-            ( SELECT avg(coalesce(OrderComprehendsOptional.Optional_ID, 0))
-              FROM Orders
-              INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
-              LEFT JOIN OrderComprehendsOpt ON Orders.ID=OrderComprehendsOptional.Order_ID
-              GROUP BY Pkg_ID
+            ( SELECT AVG(OptNum) FROM
+                (SELECT Orders.ID as ID, Service_Pkgs.ID as Pkg_ID, COUNT(coalesce(OrderComprehendsOptional.Optional_ID, 0)) as OptNum
+                    FROM Orders
+                    INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
+                    LEFT JOIN OrderComprehendsOptional ON Orders.ID=OrderComprehendsOptional.Order_ID
+                    GROUP BY Pkg_ID, Orders.ID) as Numbers
+                GROUP BY Pkg_ID
             );
 
         DELETE FROM BestSellerOptional;
 
-        INSERT INTO BestSellerOptional (Name, TotalSales) SELECT
-            Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
+        INSERT INTO BestSellerOptional (ID, Name, TotalSales) SELECT
+            Optional_Products.ID as ID, Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
             FROM Optional_Products LEFT JOIN OrderComprehendsOptional ON OrderComprehendsOptional.Optional_ID=Optional_Products.ID
             GROUP BY Optional_Products.ID
             ORDER BY TotalSales DESC
@@ -300,14 +312,6 @@ BEGIN
 END $$
 
 DROP TRIGGER IF EXISTS FailedPayments$$
-CREATE TRIGGER FailedPayments
-AFTER UPDATE ON Users
-FOR EACH ROW
-BEGIN
-    IF new.Failed_Payments = 3 THEN
-        UPDATE Users SET Insolvent=TRUE WHERE ID=new.ID;
-        INSERT INTO InsolventUsers VALUES( new.ID, new.Mail, new.Username, new.Failed_Payments, new.Insolvent);
-    END IF;
-END $$
+
 
 DELIMITER ;
