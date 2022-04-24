@@ -190,7 +190,7 @@ CREATE TABLE IF NOT EXISTS InsolventUsers (
     PRIMARY KEY ( ID )
 );
 
-CREATE TABLE IF NOT EXISTS RejectedOrders (
+CREATE TABLE IF NOT EXISTS SuspendedOrders (
     ID INT NOT NULL,
     User_ID INT,
     Pkg_ID INT,
@@ -217,9 +217,12 @@ AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
     IF new.Status='FAILED' THEN
-        IF new.ID NOT IN (SELECT ID FROM RejectedOrders) THEN
-            INSERT INTO RejectedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+        IF new.ID NOT IN (SELECT ID FROM SuspendedOrders) THEN
+            INSERT INTO SuspendedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+        ELSE
+            UPDATE SuspendedOrders SET Status='FAILED' WHERE ID=new.ID;
         END IF;
+
         IF (SELECT Insolvent FROM Users WHERE ID=new.User_ID)=FALSE THEN
             UPDATE Users SET Insolvent=TRUE WHERE ID=new.User_ID;
             INSERT INTO InsolventUsers (ID, Mail, Username, Failed_Payments, Insolvent)
@@ -241,7 +244,7 @@ AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
     IF new.Status='VALID' AND old.STATUS<>'VALID' THEN
-       DELETE FROM RejectedOrders WHERE ID=new.ID;
+       DELETE FROM SuspendedOrders WHERE ID=new.ID;
         INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
 
         UPDATE PurchasesPerPackage set Purchases = Purchases + 1
@@ -270,57 +273,6 @@ BEGIN
                 GROUP BY Pkg_ID
             );
 
-        DELETE FROM BestSellerOptional;
-
-        INSERT INTO BestSellerOptional (ID, Name, TotalSales) SELECT
-            Optional_Products.ID as ID, Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
-            FROM Optional_Products LEFT JOIN OrderComprehendsOptional ON OrderComprehendsOptional.Optional_ID=Optional_Products.ID
-            GROUP BY Optional_Products.ID
-            ORDER BY TotalSales DESC
-            LIMIT 1;
-
-        IF (SELECT COUNT(*) FROM Orders WHERE Status='FAILED' AND User_ID=new.User_ID ) = 0 THEN
-            UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
-            DELETE FROM InsolventUsers WHERE ID=new.User_ID;
-        END IF;
-    END IF;
-END $$
-
-
-DROP TRIGGER IF EXISTS OrderCreated $$
-CREATE TRIGGER OrderCreated
-AFTER INSERT ON Orders
-FOR EACH ROW
-BEGIN
-    IF new.Status='VALID' THEN
-       DELETE FROM RejectedOrders WHERE ID=new.ID;
-        INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
-
-        UPDATE PurchasesPerPackage set Purchases = Purchases + 1
-        WHERE Pkg_ID=new.Pkg_ID;
-
-        UPDATE PurchasesPerPackagePeriod set Purchases = Purchases + 1
-        WHERE Pkg_ID=new.Pkg_ID AND Months =
-            ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
-
-        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
-
-        UPDATE TotalPerPackage
-            SET TotalPerPackage.TotalBeforeOptionals = TotalPerPackage.TotalBeforeOptionals +
-            ( SELECT Validity_Periods.Monthly_Fee*Validity_Periods.Months
-              FROM Orders
-              LEFT JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID WHERE Orders.ID = new.ID
-            );
-
-        UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
-            ( SELECT AVG(OptNum) FROM
-                (SELECT Orders.ID as ID, Service_Pkgs.ID as Pkg_ID, COUNT(coalesce(OrderComprehendsOptional.Optional_ID, 0)) as OptNum
-                    FROM Orders
-                    INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
-                    LEFT JOIN OrderComprehendsOptional ON Orders.ID=OrderComprehendsOptional.Order_ID
-                    GROUP BY Pkg_ID, Orders.ID) as Numbers
-                GROUP BY Pkg_ID
-            );
 
         DELETE FROM BestSellerOptional;
 
@@ -328,8 +280,8 @@ BEGIN
             Optional_Products.ID as ID, Optional_Products.Name as Name, COUNT(OrderComprehendsOptional.Order_ID) as TotalSales
             FROM Optional_Products LEFT JOIN OrderComprehendsOptional ON OrderComprehendsOptional.Optional_ID=Optional_Products.ID
             GROUP BY Optional_Products.ID
-            ORDER BY TotalSales DESC
-            LIMIT 1;
+            ORDER BY TotalSales DESC LIMIT 1;
+
 
         IF (SELECT COUNT(*) FROM Orders WHERE Status='FAILED' AND User_ID=new.User_ID ) = 0 THEN
             UPDATE Users SET Insolvent = FALSE, Failed_Payments = 0 WHERE ID=new.User_ID;
@@ -337,7 +289,6 @@ BEGIN
         END IF;
     END IF;
 END $$
-
 
 DROP TRIGGER IF EXISTS NewPackage $$
 CREATE TRIGGER NewPackage
@@ -348,6 +299,15 @@ BEGIN
     INSERT INTO TotalPerPackage VALUES ( new.ID,  new.Name, 0, 0 );
     INSERT INTO  AvgOptPerPackage VALUES ( new.ID,  new.Name, 0 );
 END $$
+
+DROP TRIGGER IF EXISTS OrderCreated $$
+CREATE TRIGGER OrderCreated
+AFTER INSERT ON Orders
+FOR EACH ROW
+BEGIN
+    INSERT INTO SuspendedOrders VALUES (new.ID, new.User_ID, new.Pkg_ID, new.Timestamp, new.Status, new.Total);
+END $$
+
 
 DROP TRIGGER IF EXISTS NewPeriod $$
 CREATE TRIGGER NewPeriod
