@@ -29,7 +29,8 @@ class ServicePackage {
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
             if (this.id && this.id > 0)
-                window.location.href = root() + PAGES.USER + PAGES.BUYSERVICE + "?ServicePackageID=" + this.id;
+                window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.BUYSERVICE +
+                    "?ServicePackageID=" + this.id;
         }, false);
     }
 
@@ -251,7 +252,7 @@ class Order {
         // Clickable rejected order
         orderDIV.addEventListener("click", () => {
             if(this.id)
-                window.location.href = root() + PAGES.USER + PAGES.CONFIRMATION + "?orderID=" + this.id;
+                window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.CONFIRMATION + "?orderID=" + this.id;
         }, false);
     }
 }

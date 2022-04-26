@@ -13,9 +13,8 @@ const HTTP_CODES = {
 const PAGES = {
     USER            : "user/",
     EMPLOYEE        : "employee/",
-    DEFAULT         : "landing.html",
+    PAGES           : "pages/",
     LANDING         : "landing.html",
-    EMP_LANDING     : "emp_landing.html",
     HOME            : "home.html",
     SALESREPORT     : "salesreport.html",
     BUYSERVICE      : "buyservice.html",

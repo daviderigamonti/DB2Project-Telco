@@ -17,9 +17,9 @@
                 // If it is found, redirect to confirmation page
                 makeCall("GET", "CheckTrackedOrder", null, message, function(req) {
                     if(req.responseText != null && strcmp(req.responseText, "true"))
-                        window.location.href = root() + PAGES.USER + PAGES.CONFIRMATION;
+                        window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.CONFIRMATION;
                     else
-                        window.location.href = root() + PAGES.USER + PAGES.HOME;
+                        window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.HOME;
                 }, null);
 
             }, null);
@@ -35,7 +35,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "RegisterUser", new FormData(form), message, function() {
                 alert("Registration successful!");
-                window.location.href = root() + PAGES.LANDING;
+                window.location.href = root() + PAGES.USER + PAGES.LANDING;
             }, null);
         }
         else
@@ -49,13 +49,13 @@
         let message = document.getElementById("errorRegister");
         makeCall("POST", "CheckLogin", new FormData(form), message, function() {
             setSessionInfo();
-            window.location.href = root() + PAGES.USER + PAGES.HOME;
+            window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.HOME;
         }, null);
     });
 
     // EMPLOYEE PRIVATE AREA
     document.getElementById("buttonEmployee").addEventListener("click", () => {
-        window.location.href = root() + PAGES.EMP_LANDING;
+        window.location.href = root() + PAGES.EMPLOYEE + PAGES.LANDING;
     });
 
 })();

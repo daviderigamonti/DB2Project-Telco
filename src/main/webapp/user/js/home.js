@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.USER + PAGES.LANDING;
         }
     }, false);
 
@@ -27,7 +27,7 @@
         displayAccessOrLogout(access, logout);
 
         // Menu containing navigation buttons
-        this.menu = new Menu(null, access, null, logout);
+        this.menu = new Menu(null, access, null, logout, root() + PAGES.USER);
         this.menu.addEvents(this);
 
         let handler = this;
@@ -57,7 +57,7 @@
         // Select button
         this.select = document.getElementById("buttonSelect");
         this.select.addEventListener("click", () => {
-            window.location.href = root() + PAGES.USER + PAGES.BUYSERVICE;
+            window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.BUYSERVICE;
         });
     }
 

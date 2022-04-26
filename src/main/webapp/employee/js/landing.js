@@ -11,16 +11,16 @@
         if(form.checkValidity()) {
             makeCall("POST", "CheckEmployeeLogin", new FormData(form), message, function(req) {
                 setSessionInfo(req.responseText, EMPLOYEE_SESSION);
-                window.location.href = root() + PAGES.EMPLOYEE + PAGES.HOME;
+                window.location.href = root() + PAGES.EMPLOYEE + PAGES.PAGES + PAGES.HOME;
             }, null);
         }
         else
             form.reportValidity();
     });
 
-    // EMPLOYEE PRIVATE AREA
+    // USER PRIVATE AREA
     document.getElementById("buttonUser").addEventListener("click", () => {
-        window.location.href = root() + PAGES.LANDING;
+        window.location.href = root() + PAGES.USER + PAGES.LANDING;
     });
 
 })();

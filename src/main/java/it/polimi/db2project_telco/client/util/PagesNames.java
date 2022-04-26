@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 public enum PagesNames  {
-    LANDING("landing.html"),
-    EMP_LANDING("emp_landing.html");
+    LANDING("user/landing.html"),
+    EMP_LANDING("employee/landing.html");
 
     private final String value;
 

@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.PAGES + PAGES.LANDING;
         }
     }, false);
 
@@ -23,7 +23,7 @@
 
         // Menu containing navigation buttons
         this.menu = new Menu(document.getElementById("buttonHome"), null,
-            null, document.getElementById("buttonLogout"));
+            null, document.getElementById("buttonLogout"), root() + PAGES.EMPLOYEE);
         this.menu.addEvents(this);
 
         let handler = this;
