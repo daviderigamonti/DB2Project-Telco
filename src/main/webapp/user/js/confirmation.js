@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.LANDING;
         }
     }, false);
 
@@ -31,7 +31,8 @@
             document.getElementById("buttonHome"),
             access,
             document.getElementById("buttonReset"),
-            logout);
+            logout,
+            root() + PAGES.USER);
         this.menu.addEvents(this);
 
         let handler = this;
@@ -71,12 +72,16 @@
     }
 
     function buttonBuy(e, handler, value = null) {
-        let form = e.target.closest("form");
-        appendElement(form, "input", {name: "outcome", value: value ?? "", hidden: true});
-        makeCall("POST", "Payment", new FormData(form), handler.message, (req) => {
-            alert(strcmp(req.responseText, "true") ? "Payment successful!" : "Payment failed!")
-            window.location.href = root() + PAGES.USER + PAGES.HOME;
-        }, false);
+        if(checkSessionInfo(true)) {
+            let form = e.target.closest("form");
+            appendElement(form, "input", {name: "outcome", value: value ?? "", hidden: true});
+            makeCall("POST", "Payment", new FormData(form), handler.message, (req) => {
+                alert(strcmp(req.responseText, "true") ? "Payment successful!" : "Payment failed!")
+                window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.HOME;
+            }, false);
+        }
+        else
+            alert("In order to buy a package you must be logged in!")
     }
 
 })();

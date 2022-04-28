@@ -1,9 +1,13 @@
 package it.polimi.db2project_telco.server.services;
 
+import it.polimi.db2project_telco.client.util.PaymentService;
+import it.polimi.db2project_telco.client.util.PaymentTest;
 import it.polimi.db2project_telco.server.entities.*;
 import it.polimi.db2project_telco.server.entities.util.OrderStatus;
 import it.polimi.db2project_telco.server.exceptions.OrderException;
 
+import it.polimi.db2project_telco.server.exceptions.PaymentException;
+import it.polimi.db2project_telco.server.exceptions.UserException;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,6 +18,8 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static it.polimi.db2project_telco.server.entities.util.OrderStatus.fromOutcome;
 
 @Stateless
 public class OrderService {
@@ -83,14 +89,60 @@ public class OrderService {
         return order;
     }
 
-    public void updateOrderStatus(Order order, OrderStatus status) {
+    public void updateOrderStatus(Order order, OrderStatus status) throws OrderException {
 
         order.setStatus(status);
 
         if(status == OrderStatus.VALID)
             order.setActivationDate(new Timestamp(System.currentTimeMillis()));
 
-        em.merge(order);
+        try {
+            em.merge(order);
+        } catch(Exception e) {
+            throw new OrderException("Impossible to change status of the order");
+        }
+    }
+
+    public boolean payment(Order trackedOrder, User user, PaymentTest testOutcome)
+            throws UserException, OrderException {
+
+        boolean outcome;
+
+        // Check if the order already exists by controlling the trackedOrder's ID
+        Order existingOrder = findByID(trackedOrder.getId());
+        if(existingOrder == null) {
+
+            // Connect the order and the user
+            trackedOrder.setUser(user);
+
+            // Forward order to the database
+            try {
+                trackedOrder = insertNewOrder(trackedOrder);
+            } catch (Exception e) {
+                throw new OrderException("Error while generating the order");
+            }
+        }
+        else {
+
+            // Check that the user requesting the order owns the order
+            if(user.getId() != trackedOrder.getUser().getId())
+                throw new UserException("Requesting user doesn't own the order");
+
+            // Set the order (already present in the DB) as PENDING for the upcoming payment operation
+            updateOrderStatus(trackedOrder, OrderStatus.PENDING);
+        }
+
+        // Payment operation
+        try {
+            outcome = PaymentService.paymentOperation(testOutcome, 1000);
+        } catch(PaymentException e) {
+            outcome = false;
+        }
+
+        // Update the status of the order
+        updateOrderStatus(trackedOrder, fromOutcome(outcome));
+
+        return outcome;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -107,7 +159,8 @@ public class OrderService {
         }
 
         // Wake up the lazy entities
-        orders.forEach(Order::getServicePackage);
+        if(orders != null)
+            orders.forEach(Order::getServicePackage);
 
         return orders;
     }

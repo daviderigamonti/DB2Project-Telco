@@ -55,6 +55,9 @@ public class LoadOrderByID extends HttpServlet {
         // Find the order
         try {
             order = orderService.findByID(userID);
+
+            if(order == null)
+                throw new OrderException("Can't find the order with the given ID");
         } catch(Exception e) {
             ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     e.getMessage());

@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.PAGES + PAGES.LANDING;
         }
     }, false);
 
@@ -21,75 +21,20 @@
         this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo(EMPLOYEE_SESSION).username);
         this.greeter.show();
 
-        // If the user is not logged in, display access, otherwise display logout
-        let access = document.getElementById("buttonAccess");
-        let logout = document.getElementById("buttonLogout");
-        displayAccessOrLogout(access, logout);
-
         // Menu containing navigation buttons
-        this.menu = new Menu(document.getElementById("buttonHome"), access,
-            null, logout);
+        this.menu = new Menu(document.getElementById("buttonHome"), null,
+            null, document.getElementById("buttonLogout"), root() + PAGES.EMPLOYEE);
         this.menu.addEvents(this);
 
         let handler = this;
 
-        // Form for choosing the service
-        this.form = new ServiceForm(
-            document.getElementById("servicePackage"),
-            document.getElementById("services"),
-            document.getElementById("validityPeriod"),
-            document.getElementById("optionalProducts"),
-            function() {
-                let self = this;
-                loadObjects(self, self.update, "GET", "LoadServicePackages", null, handler.message,
-                    false, 'No available service packages at the moment',
-                    () => {
-                        // After it loads the service packages check for GET parameter
-                        let combo = document.getElementById("servicePackage");
-                        let packageID = getRequestPackageID();
-                        // noinspection EqualityComparisonWithCoercionJS
-                        let option = Array.apply(null, combo.options)
-                            .find(p => p.value === packageID);
-                        // If there's a package ID inside the request load it, otherwise load the first one
-                        if(option) {
-                            option.selected = true;
-                            combo.dispatchEvent(new CustomEvent('change'));
-                        }
-                        else
-                            self.select(0);
-                    });
-            },
-            function(id) {
-                let self = this;
-                loadObjects(self, self.updateInfo, "GET", "LoadPackageByID?id=" + id, null, handler.message,
-                    false, 'No package found with the given id');
-            }
-        );
-        this.form.init();
-
-        // Confirm button
-        this.select = document.getElementById("buttonConfirm");
-        this.select.addEventListener("click", (e) => {
-            let form = e.target.closest("form");
-            if(form.checkValidity()) {
-                // Add the order to the session
-                makeCall("POST", "CreateOrder",  new FormData(form), handler.message, () => {
-                    window.location.href = root() + PAGES.USER + PAGES.CONFIRMATION;
-                }, false)
-            }
+        this.report = new SalesReport(document.getElementById("report"), function () {
+            let self = this;
+            makeCall("GET", "LoadSalesReport", null, handler.message, function(req) {
+                let jsonElements = JSON.parse(req.responseText);
+                self.update(jsonElements);
+            }, false);
         });
+        this.report.init();
     }
-
-    function getRequestPackageID() {
-        // Check if an ID for a service package has been passed through GET parameters
-        // in case that it's found, select the corresponding service package inside the form
-        let idString = checkGETParameter("ServicePackageID");
-        if(idString) {
-            let id = parseInt(idString);
-            if(id && id > 0)
-                return id.toString()
-        }
-        return null;
-    }
-
 })();

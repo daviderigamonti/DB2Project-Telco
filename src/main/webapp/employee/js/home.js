@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.EMPLOYEE + PAGES.LANDING;
         }
     }, false);
 
@@ -22,7 +22,8 @@
         this.greeter.show();
 
         // Menu containing navigation buttons
-        this.menu = new Menu(null, null, null, document.getElementById("buttonLogout"));
+        this.menu = new Menu(null, null, null, document.getElementById("buttonLogout"),
+            root() + PAGES.EMPLOYEE);
         this.menu.addEvents(this);
 
         let handler = this;
@@ -85,7 +86,7 @@
         // Button that goes to the sales report
         this.select = document.getElementById("buttonSales");
         this.select.addEventListener("click", () => {
-            window.location.href = root() + PAGES.EMPLOYEE + PAGES.SALESREPORT;
+            window.location.href = root() + PAGES.EMPLOYEE + PAGES.PAGES + PAGES.SALESREPORT;
         });
     }
 

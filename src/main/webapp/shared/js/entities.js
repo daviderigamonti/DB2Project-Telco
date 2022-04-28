@@ -29,7 +29,8 @@ class ServicePackage {
         // Clickable rejected order
         this.packageDIV.addEventListener("click", () => {
             if (this.id && this.id > 0)
-                window.location.href = root() + PAGES.USER + PAGES.BUYSERVICE + "?ServicePackageID=" + this.id;
+                window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.BUYSERVICE +
+                    "?ServicePackageID=" + this.id;
         }, false);
     }
 
@@ -251,7 +252,7 @@ class Order {
         // Clickable rejected order
         orderDIV.addEventListener("click", () => {
             if(this.id)
-                window.location.href = root() + PAGES.USER + PAGES.CONFIRMATION + "?orderID=" + this.id;
+                window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.CONFIRMATION + "?orderID=" + this.id;
         }, false);
     }
 }
@@ -321,3 +322,43 @@ class OptionalProduct {
         appendElement(this.parent, "div", {innerHTML: info});
     };
 }
+
+class SalesReportElement {
+
+    constructor(parent, elem = {}) {
+        this.parent = parent;
+        // Retrieve the element type
+        this.elementType = elem[SalesReportElement.prototype.type];
+        this.elem = elem;
+    }
+
+    visReport() {
+        let row = appendElement(this.parent, "tr");
+        for (let i = 0; i < this.elementType.properties.length; i++) {
+            let value = this.elem[this.elementType.properties[i]];
+            if (value) {
+                appendElement(row, "td", {innerHTML: value});
+            }
+        }
+    }
+}
+    SalesReportElement.prototype.type = "typeJSON";
+    SalesReportElement.prototype.elements = [
+        {nameJSON: "PurchasesPerPackage", name: "Purchases for a given package",
+            properties: ["id", "name", "purchases"]},
+        {nameJSON: "PurchasesPerPackagePeriod", name: "Purchases for a given package and validity period",
+            properties: ["id", "name", "months", "purchases"]},
+        {nameJSON: "TotalPerPackage", name: "Total earnings for a given package",
+            properties: ["id", "name", "total", "totalBeforeOptionals"]},
+        {nameJSON: "AvgOptPerPackage", name: "Average optional packages chosen",
+            properties: ["id", "name", "avgOptionals"]},
+        {nameJSON: "InsolventUsers", name: "Insolvent users",
+            properties: ["id", "mail", "username", "failed_payments", "is_insolvent"]},
+        // mail and username are unwrapped from user, name is unwrapped from servicePackage
+        {nameJSON: "RejectedOrders", name: "Suspended orders",
+            properties: ["id", "mail", "username", "name", "timestamp", "status", "total"]},
+        {nameJSON: "Audits", name: "Audits",
+            properties: ["id", "name", "purchases"]},  //TODO: audit
+        {nameJSON: "BestSellerOptional", name: "Best selling optional",
+            properties: ["id", "name", "totalSales"]},
+    ];

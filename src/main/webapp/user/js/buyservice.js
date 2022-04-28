@@ -9,7 +9,7 @@
             init()
         else {
             clearStorage();
-            window.location.href = root() + PAGES.DEFAULT;
+            window.location.href = root() + PAGES.USER + PAGES.LANDING;
         }
     }, false);
 
@@ -28,7 +28,7 @@
 
         // Menu containing navigation buttons
         this.menu = new Menu(document.getElementById("buttonHome"), access,
-            null, logout);
+            null, logout, root() + PAGES.USER);
         this.menu.addEvents(this);
 
         let handler = this;
@@ -74,7 +74,7 @@
             if(form.checkValidity()) {
                 // Add the order to the session
                 makeCall("POST", "CreateOrder",  new FormData(form), handler.message, () => {
-                    window.location.href = root() + PAGES.USER + PAGES.CONFIRMATION;
+                    window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.CONFIRMATION;
                 }, false)
             }
         });

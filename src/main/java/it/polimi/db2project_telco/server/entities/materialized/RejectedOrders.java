@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.server.entities.materialized;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.polimi.db2project_telco.server.entities.ServicePackage;
 import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.entities.util.OrderStatus;
@@ -21,10 +22,12 @@ public class RejectedOrders implements Serializable {   //TODO: rename as suspen
 
     @ManyToOne
     @JoinColumn(name = "User_ID")
+    @JsonUnwrapped
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Pkg_ID")
+    @JsonUnwrapped
     private ServicePackage servicePackage;
 
     @Column(name="Timestamp")

@@ -10,10 +10,10 @@ INSERT INTO Users (Username, Mail, Password) VALUES ('Lancelot', 'lancelot@camel
 INSERT INTO Employees (Username, Password) VALUES ('Excalibur', '1633ec8902f371a0f51a0dc9b227b6d0bb852f58a94ad51ea4412623a1cfaed2');
 
 -- Optionals
-INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("Free video calls", 10);
-INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("You and me", 5);
-INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("New phone", 15);
-INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ("Trip to Avalon", 100);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('Free video calls', 10);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('You and me', 5);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('New phone', 15);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('Trip to Avalon', 100);
 
 -- Packages
 

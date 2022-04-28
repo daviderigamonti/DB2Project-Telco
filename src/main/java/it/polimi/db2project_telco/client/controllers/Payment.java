@@ -10,6 +10,7 @@ import it.polimi.db2project_telco.server.entities.User;
 import it.polimi.db2project_telco.server.entities.util.OrderStatus;
 import it.polimi.db2project_telco.server.exceptions.OrderException;
 import it.polimi.db2project_telco.server.exceptions.PaymentException;
+import it.polimi.db2project_telco.server.exceptions.UserException;
 import it.polimi.db2project_telco.server.services.OrderService;
 
 import jakarta.ejb.EJB;
@@ -44,7 +45,7 @@ public class Payment extends HttpServlet {
             throws IOException {
 
         PaymentTest testOutcome = PaymentTest.RANDOM;
-        boolean outcome;
+        boolean outcome = false;
         Order order;
         User user;
 
@@ -80,64 +81,23 @@ public class Payment extends HttpServlet {
             return;
         }
 
-        // Check if the order already exists by controlling the trackedOrder's ID
-        Order existingOrder = orderService.findByID(order.getId());
-        if(existingOrder == null) {
-
-            // Connect the order and the user
-            order.setUser(user);
-
-            // Forward order to the database
-            try {
-                order = orderService.insertNewOrder(order);
-            } catch (Exception e) {
-                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        "Error while generating the order");
-                return;
-            }
+        /* Execute the payment operation by:
+         *      - check if the order exists, if so put it in the PENDING state and check if the user owns the order,
+         *          otherwise create a new order
+         *      - call the external payment service
+         *      - update the order status depending on the payment's outcome
+         */
+        try {
+            outcome = orderService.payment(order, user, testOutcome);
+        } catch(UserException e) {
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
-        else {
-
-            // Check that the user requesting the order owns the order
-            try {
-                if(user.getId() != order.getUser().getId())
-                    throw new OrderException("Requesting user doesn't own the order");
-            } catch(Exception e) {
-                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-                return;
-            }
-
-            // Set the order (already present in the DB) as PENDING for the upcoming payment operation
-            try {
-                orderService.updateOrderStatus(order, OrderStatus.PENDING);
-            } catch(Exception e) {
-                ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        "Error while updating the order status");
-                return;
-            }
+        catch(OrderException e) {
+            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
-        // Removing the tracked order from the session
+        // Remove the tracked order from the session
         request.getSession().removeAttribute("trackedOrder");
-
-        // Payment operation
-        try {
-            outcome = PaymentService.paymentOperation(testOutcome, 1000);
-        } catch(PaymentException e) {
-            outcome = false;
-        }
-
-        // Update the status of the order
-        try {
-            // In the outlandish case that this operation fails, the order will be persisted as PENDING
-            // and through appropriate front end interfaces the user should be able to repeat the payment
-            // without having it marked off as FAILED
-            orderService.updateOrderStatus(order, fromOutcome(outcome));
-        } catch(Exception e) {
-            ServletErrorResponse.createResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Error while updating the order status");
-            return;
-        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json");

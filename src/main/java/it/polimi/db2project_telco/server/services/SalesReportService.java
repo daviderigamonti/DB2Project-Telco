@@ -18,7 +18,7 @@ public class SalesReportService {
     public SalesReportService() {}
 
     public List<PurchasesPerPackage> findPurchasesPerPackage() {
-        return em.createNamedQuery("InsolventUsers.findAll", PurchasesPerPackage.class).getResultList();
+        return em.createNamedQuery("PurchasesPerPackage.findAll", PurchasesPerPackage.class).getResultList();
     }
 
     public List<PurchasesPerPackagePeriod> findPurchasesPerPackagePeriod() {

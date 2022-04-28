@@ -242,7 +242,7 @@ AFTER UPDATE ON Orders
 FOR EACH ROW
 BEGIN
 
-    IF new.Status="VALID" THEN
+    IF new.Status='VALID' THEN
        DELETE FROM RejectedOrders WHERE ID=new.ID;
         INSERT INTO ServiceActivationSchedule VALUES(new.ID, new.User_ID, TIMESTAMPADD(MONTH,( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID ),new.Activation_Date));
 

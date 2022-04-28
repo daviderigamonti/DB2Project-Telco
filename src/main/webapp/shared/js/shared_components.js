@@ -23,8 +23,9 @@ function Greeter(greeter, name) {
  * @param {Element} access Element containing the ACCESS button
  * @param {Element} reset Element containing the RESET button
  * @param {Element} logout Element containing the HOME button
+ * @param {String} rootLocation Root for the redirects
  */
-function Menu(home, access, reset, logout) {
+function Menu(home, access, reset, logout, rootLocation) {
 
     this.home = home;
     this.access = access;
@@ -34,20 +35,20 @@ function Menu(home, access, reset, logout) {
     this.addEvents = function() {
         if(this.home)
             this.home.addEventListener("click", () => {
-                window.location.href = root() + PAGES.USER + PAGES.HOME;
+                window.location.href = rootLocation + PAGES.PAGES + PAGES.HOME;
             });
         if(this.reset)
             this.reset.addEventListener("click", () => {
                 // Delete the tracked order, if it exists, and return to home page
                 makeCall("GET", "CheckTrackedOrder?delete=true", null, null, function() {
-                        window.location.href = root() + PAGES.USER + PAGES.HOME;
+                        window.location.href = rootLocation + PAGES.PAGES + PAGES.HOME;
                 }, null);
             });
         // Access WILL NOT clear server-side session
         if(this.access)
             this.access.addEventListener("click", () => {
                 clearStorage();
-                window.location.href = root() + PAGES.LANDING;
+                window.location.href = rootLocation + PAGES.LANDING;
             });
         // Logout WILL clear server-side session
         if(this.logout)
@@ -55,7 +56,7 @@ function Menu(home, access, reset, logout) {
                 // Logout the user from the session, clear the storage and return to landing page
                 makeCall("GET", "Logout", null, null, function() {
                     clearStorage();
-                    window.location.href = root() + PAGES.LANDING;
+                    window.location.href = rootLocation + PAGES.LANDING;
                 }, null);
             });
     }
@@ -86,9 +87,15 @@ function ObjectList(ListObject, list, load, visualize) {
         self.reset(self);
 
         // Initializes every single object and updates it
-        objects.forEach((object) => {
-            self.add(self, object)
-        });
+        if(Array.isArray(objects))
+            // Treat array differently
+            objects.forEach((object) => {
+                self.add(self, object)
+            });
+        else
+            for(let object in objects)
+                self.add(self, object)
+
     };
 
     this.add = function(self, object) {
