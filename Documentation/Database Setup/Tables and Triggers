@@ -6,11 +6,11 @@ USE db2telco;
 
 CREATE TABLE IF NOT EXISTS Users (
     ID INT NOT NULL AUTO_INCREMENT,
-    Mail varchar(255) NOT NULL,
+    Mail varchar(255) UNIQUE NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
-    Password varchar(255) NOT NULL,
-    Failed_Payments INT DEFAULT 0,
-    Insolvent BOOLEAN DEFAULT FALSE,
+    Password varchar(64) NOT NULL,
+    Failed_Payments INT DEFAULT 0 NOT NULL,
+    Insolvent BOOLEAN DEFAULT FALSE NOT NULL,
     PRIMARY KEY ( ID )
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Service_Pkgs (
 
 CREATE TABLE IF NOT EXISTS Mobile_Phone (
     ID INT NOT NULL AUTO_INCREMENT,
-    Pkg_ID INT,
+    Pkg_ID INT NOT NULL,
     Minutes_N INT NOT NULL,
     SMS_N INT NOT NULL,
     Minutes_Fee FLOAT NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Mobile_Phone (
 
 CREATE TABLE IF NOT EXISTS Internet (
     ID INT NOT NULL AUTO_INCREMENT,
-    Pkg_ID INT,
+    Pkg_ID INT NOT NULL,
     GB_N INT NOT NULL,
     GB_Fee FLOAT NOT NULL,
     Fixed BOOLEAN DEFAULT FALSE NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS Internet (
 
 CREATE TABLE IF NOT EXISTS Fixed_Phone (
     ID INT NOT NULL AUTO_INCREMENT,
-    Pkg_ID INT,
+    Pkg_ID INT NOT NULL,
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( Pkg_ID )
         REFERENCES Service_Pkgs ( ID )
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS Optional_Products (
 
 CREATE TABLE IF NOT EXISTS Validity_Periods (
     ID INT NOT NULL AUTO_INCREMENT,
-    Pkg_ID INT,
+    Pkg_ID INT NOT NULL,
     Months INT NOT NULL,
     Monthly_Fee FLOAT NOT NULL,
     PRIMARY KEY ( ID ),
@@ -76,11 +76,11 @@ CREATE TABLE IF NOT EXISTS Validity_Periods (
 
 CREATE TABLE IF NOT EXISTS Orders (
     ID INT NOT NULL AUTO_INCREMENT,
-    User_ID INT,
-    Pkg_ID INT,
-    Validity_Period_ID INT,
+    User_ID INT NOT NULL,
+    Pkg_ID INT NOT NULL,
+    Validity_Period_ID INT NOT NULL,
     Activation_Date DATE,
-    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
     Total FLOAT NOT NULL,
     PRIMARY KEY ( ID ),
@@ -89,10 +89,10 @@ CREATE TABLE IF NOT EXISTS Orders (
             ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY ( Pkg_ID )
         REFERENCES Service_Pkgs ( ID )
-            ON UPDATE NO ACTION ON DELETE NO ACTION,
+            ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY ( Validity_Period_ID )
         REFERENCES Validity_Periods ( ID )
-            ON UPDATE RESTRICT ON DELETE NO ACTION
+            ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS OrderComprehendsOptional (
