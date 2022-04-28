@@ -23,7 +23,7 @@ public class Order implements Serializable {
     @Column(name = "ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "User_ID")
     private User user;
 
@@ -31,7 +31,7 @@ public class Order implements Serializable {
     @JoinColumn(name = "Pkg_ID")
     private ServicePackage servicePackage;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Validity_Period_ID")
     private ValidityPeriod validityPeriod;
 
