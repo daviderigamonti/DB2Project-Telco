@@ -17,7 +17,7 @@ The proposed ER diagram reflects the directives indicated in the given specifica
 
 In some entities we deemed appropiate to add a generated incremental ID as the primary key even if there were other candidate keys available (e.g. the username of the \textit{User} could have been its primary key), this was done in order to simplify foreign key handling with the added benefit of being more maintainable in the long term.
 
-Another doubt that arose during the planning phase of the database was related to the \textit{Fixed Phone} entity since, in the specifications, it was clearly stated that it shouldn't have any particular configuration parameters, therefore modeling it as an entity would mean having an "empty" entity; in the end we decided to stick with our choice for the sake of consistency with the other services and because it is also a scalable solution in case the company needs to add parameters to the service in the future.
+Another doubt that arose during the planning phase of the database was related to the \textit{Fixed Phone} entity since, in the specifications, it was clearly stated that it shouldn't have any particular configuration parameters, therefore modeling it as an entity would mean having an "empty" entity; in the end we decided to stick with this choice for the sake of consistency with the other services and because it is also a scalable solution in case the company needs to add parameters to the service in the future.
 
 The specifications document is not completely transparent regarding the \textit{Service Activation Schedule} and its purpose inside the database: although it is stated that the schedule must include the date of activation and deactivation for the services and the optional products for a given user, we opted to include just a reference to the user, a reference to the order and the deactivation date.
 
@@ -25,5 +25,5 @@ The previous choice was taken in order to reduce redundancy and minimize the ove
 
 \section{Logical model}
 \todo{logical model}
-\todo{NOTE: talk about ISA resolution}
 \blindtext
+\todo{NOTE: talk about ISA resolution}

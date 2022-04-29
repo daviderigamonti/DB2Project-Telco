@@ -47,6 +47,16 @@ As stated in the \hyperref[sec:overview]{Overview} section, particular focus was
 
 Despite the fact presented above, there is still a degree of separation between the two since they are stored in independent subdirectories and dedicated filters exist in order to properly manage authentication and authorization, nonetheless, for testing purposes, in each landing page there is a button capable of switching between the user and employee landing pages.
 
+\subsection*{Employee accounts}
+
+Since the given specifications do not disclose whether the project should allow employees to register other employees (or register at all) we assumed that employee accounts are created by some application/entity that is external to the scope of this project.
+
+\subsection*{Update and delete operations}
+
+Because of the reasons stated above, update and delete operations on existing entities and tables inside the database weren't considered as part of the project.
+
+However, update and delete operations were taken into consideration in the context of defining cascading properties for the entities and in other instances where we thought that it would be an appropriate choice for the sake of scalability.
+
 \subsection*{External service for payment}
 
 Since the given specifications point to the fact that the simulated external call must be able to return true or false at will, in the confirmation page the user will be presented with 3 different buttons that proceed to the payment procedure:
@@ -56,11 +66,11 @@ Since the given specifications point to the fact that the simulated external cal
     \item the last one will have a 50\% chance of generating a failed or successful payment.
 \end{itemize}
 
-As far as the payment simulation goes, the called function will also wait for a tunable random time delay to add a bit of realism.
+As far as the payment simulation goes, the called function will also wait for a tunable random time delay in order to add a bit of realism.
 
 \subsection*{General project philosophy}
 
-Some of the design choices that were made during the preliminary planning phase take scalability into account quite extensively, since we argue that it is a desirable property when developing an application or database, especially in the field of telecommunication.
+Some of the design choices that were made during the preliminary planning phase take scalibility into account quite extensively since we argue that it is a desirable property when developing an application or database, especially in the field of telecommunication.
 
 However, not every choice was made with scalability in mind since we believe that sometimes a simple and easy solution can be a better option over a complex alternative.
 
