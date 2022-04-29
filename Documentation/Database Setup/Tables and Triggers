@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS InsolventUsers (
     ID INT NOT NULL,
     Mail varchar(255) NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
-    Failed_Payments INT NOT NULL DEFAULT 0,
+    Failed_Payments INT NOT NULL DEFAULT 1,
     Insolvent BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY ( ID )
 );

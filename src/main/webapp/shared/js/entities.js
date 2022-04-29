@@ -282,11 +282,11 @@ class ValidityPeriod {
         // Validity period data
         let monthsLabel = appendElement(validityPeriodDiv, "label", {innerHTML: "Months:"});
         let monthsInput = appendElement(monthsLabel, "input",
-            {type: "number", name: "months", min: 0});
+            {type: "number", name: "months", value: this.months || "", min: 0});
         monthsInput.addEventListener("input", (e) => this.months = e.currentTarget.value);
         let feeLabel = appendElement(validityPeriodDiv, "label", {innerHTML: "Monthly fee:"});
         let feeInput = appendElement(feeLabel, "input",
-            {type: "number", name: "fee", step: 0.01, min: 0});
+            {type: "number", name: "fee", value: this.fee || "", step: 0.01, min: 0});
         feeInput.addEventListener("input", (e) => this.fee = e.currentTarget.value);
 
         // Button to remove the validity period
@@ -336,29 +336,28 @@ class SalesReportElement {
         let row = appendElement(this.parent, "tr");
         for (let i = 0; i < this.elementType.properties.length; i++) {
             let value = this.elem[this.elementType.properties[i]];
-            if (value) {
-                appendElement(row, "td", {innerHTML: value});
-            }
+            let data = value != null ? value.toString() : "N/D";
+            appendElement(row, "td", {innerHTML: data});
         }
     }
 }
-    SalesReportElement.prototype.type = "typeJSON";
-    SalesReportElement.prototype.elements = [
-        {nameJSON: "PurchasesPerPackage", name: "Purchases for a given package",
-            properties: ["id", "name", "purchases"]},
-        {nameJSON: "PurchasesPerPackagePeriod", name: "Purchases for a given package and validity period",
-            properties: ["id", "name", "months", "purchases"]},
-        {nameJSON: "TotalPerPackage", name: "Total earnings for a given package",
-            properties: ["id", "name", "total", "totalBeforeOptionals"]},
-        {nameJSON: "AvgOptPerPackage", name: "Average optional packages chosen",
-            properties: ["id", "name", "avgOptionals"]},
-        {nameJSON: "InsolventUsers", name: "Insolvent users",
-            properties: ["id", "mail", "username", "failed_payments", "is_insolvent"]},
-        // mail and username are unwrapped from user, name is unwrapped from servicePackage
-        {nameJSON: "RejectedOrders", name: "Suspended orders",
-            properties: ["id", "mail", "username", "name", "timestamp", "status", "total"]},
-        {nameJSON: "Audits", name: "Audits",
-            properties: ["id", "name", "purchases"]},  //TODO: audit
-        {nameJSON: "BestSellerOptional", name: "Best selling optional",
-            properties: ["id", "name", "totalSales"]},
-    ];
+SalesReportElement.prototype.type = "typeJSON";
+SalesReportElement.prototype.elements = [
+    {nameJSON: "PurchasesPerPackage", name: "Purchases for a given package",
+        properties: ["id", "name", "purchases"]},
+    {nameJSON: "PurchasesPerPackagePeriod", name: "Purchases for a given package and validity period",
+        properties: ["id", "name", "months", "purchases"]},
+    {nameJSON: "TotalPerPackage", name: "Total earnings for a given package",
+        properties: ["id", "name", "total", "totalBeforeOptionals"]},
+    {nameJSON: "AvgOptPerPackage", name: "Average optional packages chosen",
+        properties: ["id", "name", "avgOptionals"]},
+    {nameJSON: "InsolventUsers", name: "Insolvent users",
+        properties: ["id", "mail", "username", "failed_payments", "is_insolvent"]},
+    // mail and username are unwrapped from user, name is unwrapped from servicePackage
+    {nameJSON: "RejectedOrders", name: "Suspended orders",
+        properties: ["id", "mail", "username", "name", "timestamp", "status", "total"]},
+    {nameJSON: "Audits", name: "Audits",
+        properties: ["userID", "timestamp", "mail", "username", "amount"]},
+    {nameJSON: "BestSellerOptional", name: "Best selling optional",
+        properties: ["id", "name", "totalSales"]},
+];

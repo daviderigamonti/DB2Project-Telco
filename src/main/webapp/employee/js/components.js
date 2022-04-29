@@ -15,6 +15,7 @@ function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCh
         loadOptional, OptionalProduct.prototype.visCheck);
 
     this.init = function() {
+        this.loadDefaults();
         this.optional.load();
         this.addServiceButton.addEventListener("click", () => {
             this.services.add(this.services, {})
@@ -31,6 +32,7 @@ function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCh
     this.reset = function() {
         this.services.reset(this.services);
         this.validityPeriods.reset(this.validityPeriods);
+        this.loadDefaults();
         // Optionals are not reset
     }
 
@@ -51,6 +53,12 @@ function PackageCreationForm(servicesDiv, validityPeriodsDiv, optionalProductsCh
         // Optional Products and the name are retrieved via DOM elements since it is easier
 
         return servicePackage;
+    }
+
+    this.loadDefaults = function() {
+        this.validityPeriods.add(this.validityPeriods, {months: 12});
+        this.validityPeriods.add(this.validityPeriods, {months: 24});
+        this.validityPeriods.add(this.validityPeriods, {months: 36});
     }
 }
 

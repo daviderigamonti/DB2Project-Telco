@@ -7,7 +7,6 @@ import java.io.Serializable;
 @Entity
 @Table(name= "Optional_Products", schema = "db2telco")
 @NamedQuery(name = "OptionalProduct.findAll", query = "SELECT s FROM OptionalProduct s")
-@NamedQuery(name = "OptionalProduct.findByUser", query = "SELECT u FROM User u WHERE u.username = :usr AND u.password = :psw")
 public class OptionalProduct implements Serializable {
     private static final long serialVersionUID = 1L;
 

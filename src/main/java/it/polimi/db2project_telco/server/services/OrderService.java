@@ -42,11 +42,19 @@ public class OrderService {
     }
 
     public Order composeOrder(int servicePackageID, int validityPeriodID,
-                                    List<Integer> optionalProductsIDs) {
+                                    List<Integer> optionalProductsIDs) throws OrderException {
         Order order = new Order();
 
         ServicePackage servicePackage = em.find(ServicePackage.class, servicePackageID);
+        List<Integer> offeredOptionalIDs = servicePackage.getOptionalProducts().stream()
+                .map(OptionalProduct::getId).collect(Collectors.toList());
         ValidityPeriod validityPeriod = em.find(ValidityPeriod.class, validityPeriodID);
+        List<Integer> offeredValidityIDs = servicePackage.getValidityPeriods().stream()
+                .map(ValidityPeriod::getId).collect(Collectors.toList());
+
+        // Check if every optional product and validity period can be applied to the service package
+        if(!offeredOptionalIDs.containsAll(optionalProductsIDs) || !offeredValidityIDs.contains(validityPeriod.getId()))
+            throw new OrderException("Invalid optional products or validity period");
 
         // Find all the optional products using the IDs contained in the list
         List<OptionalProduct> optionalProducts = optionalProductsIDs.stream()
@@ -159,8 +167,10 @@ public class OrderService {
         }
 
         // Wake up the lazy entities
-        if(orders != null)
+        if(orders != null) {
             orders.forEach(Order::getServicePackage);
+            orders.forEach(Order::getValidityPeriod);
+        }
 
         return orders;
     }
