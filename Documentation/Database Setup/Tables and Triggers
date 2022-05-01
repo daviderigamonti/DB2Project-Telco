@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
     Mail varchar(255) UNIQUE NOT NULL,
     Username varchar(255) UNIQUE NOT NULL,
     Password varchar(64) NOT NULL,
-    Failed_Payments INT DEFAULT 0 NOT NULL,
+    Failed_Payments INT DEFAULT 0 NOT NULL CHECK (Failed_Payments  >= 0),
     Insolvent BOOLEAN DEFAULT FALSE NOT NULL,
     PRIMARY KEY ( ID )
 );
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS Mobile_Phone (
     Pkg_ID INT NOT NULL,
     Minutes_N INT NOT NULL,
     SMS_N INT NOT NULL,
-    Minutes_Fee FLOAT NOT NULL,
-    SMS_Fee FLOAT NOT NULL,
+    Minutes_Fee FLOAT NOT NULL CHECK (Minutes_Fee  >= 0),
+    SMS_Fee FLOAT NOT NULL CHECK (SMS_Fee  >= 0),
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( Pkg_ID )
         REFERENCES Service_Pkgs ( ID )
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS Internet (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT NOT NULL,
     GB_N INT NOT NULL,
-    GB_Fee FLOAT NOT NULL,
+    GB_Fee FLOAT NOT NULL CHECK (GB_Fee  >= 0),
     Fixed BOOLEAN DEFAULT FALSE NOT NULL,
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( Pkg_ID )
@@ -58,15 +58,15 @@ CREATE TABLE IF NOT EXISTS Fixed_Phone (
 CREATE TABLE IF NOT EXISTS Optional_Products (
     ID INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(255) NOT NULL,
-    Monthly_Fee FLOAT NOT NULL,
+    Monthly_Fee FLOAT NOT NULL CHECK (Monthly_Fee  >= 0),
     PRIMARY KEY ( ID )
 );
 
 CREATE TABLE IF NOT EXISTS Validity_Periods (
     ID INT NOT NULL AUTO_INCREMENT,
     Pkg_ID INT NOT NULL,
-    Months INT NOT NULL,
-    Monthly_Fee FLOAT NOT NULL,
+    Months INT NOT NULL CHECK (Months  > 0),
+    Monthly_Fee FLOAT NOT NULL CHECK (Monthly_Fee  >= 0),
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( Pkg_ID )
         REFERENCES Service_Pkgs ( ID )
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     Activation_Date DATE,
     Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Status ENUM('PENDING', 'FAILED', 'VALID') NOT NULL,
-    Total FLOAT NOT NULL,
+    Total FLOAT NOT NULL CHECK (Total  >= 0),
     PRIMARY KEY ( ID ),
     FOREIGN KEY ( User_ID )
         REFERENCES Users ( ID )
@@ -254,14 +254,14 @@ BEGIN
         WHERE Pkg_ID=new.Pkg_ID AND Months =
             ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
 
-        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
+        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total WHERE Pkg_ID=new.Pkg_ID;
 
         UPDATE TotalPerPackage
             SET TotalPerPackage.TotalBeforeOptionals = TotalPerPackage.TotalBeforeOptionals +
             ( SELECT Validity_Periods.Monthly_Fee*Validity_Periods.Months
               FROM Orders
               LEFT JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID WHERE Orders.ID = new.ID
-            );
+            ) WHERE Pkg_ID=new.Pkg_ID;
 
         UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
             ( SELECT AVG(OptNum) FROM
@@ -270,8 +270,8 @@ BEGIN
                     INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
                     LEFT JOIN OrderComprehendsOptional ON Orders.ID=OrderComprehendsOptional.Order_ID
                     GROUP BY Pkg_ID, Orders.ID) as Numbers
-                GROUP BY Pkg_ID
-            );
+                GROUP BY Pkg_ID HAVING Pkg_ID=new.Pkg_ID
+            ) WHERE Pkg_ID=new.Pkg_ID;
 
 
         DELETE FROM BestSellerOptional;
@@ -315,8 +315,8 @@ AFTER INSERT ON Validity_Periods
 FOR EACH ROW
 BEGIN
     INSERT INTO PurchasesPerPackagePeriod  (Pkg_ID, Name, Months, Purchases)
-        SELECT Service_Pkgs.ID, Service_Pkgs.Name, new.Months AS Months, 0
-        FROM Service_Pkgs WHERE ID = new.PKG_ID;
+        SELECT Service_Pkgs.ID AS Pkg_ID, Service_Pkgs.Name as Name, new.Months, 0
+        FROM Service_Pkgs WHERE Service_Pkgs.ID=new.Pkg_ID;
 END $$
 
 DELIMITER ;

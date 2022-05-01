@@ -1,6 +1,7 @@
 package it.polimi.db2project_telco.server.entities;
 
 import it.polimi.db2project_telco.server.entities.util.OrderStatus;
+
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -12,8 +13,7 @@ import java.util.List;
 @Table(name= "Orders", schema = "db2telco")
 @NamedQuery(name = "Order.getRejectedOrdersByUser", query = "SELECT o FROM Order o " +
                                                             "WHERE o.user.id = :id AND " +
-                                                            "(o.status = it.polimi.db2project_telco.server.entities.util.OrderStatus.FAILED OR " +
-                                                            " o.status = it.polimi.db2project_telco.server.entities.util.OrderStatus.PENDING)"
+                                                            "o.status = it.polimi.db2project_telco.server.entities.util.OrderStatus.FAILED"
 )
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
