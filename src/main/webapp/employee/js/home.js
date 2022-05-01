@@ -58,8 +58,8 @@
             if(form.checkValidity()) {
                 makeCall("POST", "CreateServicePackage", JSON.stringify(servicePackage), message, function() {
                     alert("Service package created!");
-                    handler.servicePackageForm.reset();
                     form.reset();
+                    handler.servicePackageForm.reset();
                 }, true);
             }
             else
