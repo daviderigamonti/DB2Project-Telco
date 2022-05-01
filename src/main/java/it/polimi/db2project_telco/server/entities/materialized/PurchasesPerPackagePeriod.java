@@ -1,10 +1,13 @@
 package it.polimi.db2project_telco.server.entities.materialized;
 
+import it.polimi.db2project_telco.server.entities.keys.PPPPID;
+
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
+@IdClass(PPPPID.class)
 @Table(name= "PurchasesPerPackagePeriod", schema = "db2telco")
 @NamedQuery(name = "PurchasesPerPackagePeriod.findAll", query = "SELECT p FROM PurchasesPerPackagePeriod p")
 public class PurchasesPerPackagePeriod implements Serializable {
@@ -17,6 +20,7 @@ public class PurchasesPerPackagePeriod implements Serializable {
     @Column(name="Name")
     private String name;
 
+    @Id
     @Column(name="Months")
     private int months;
 
