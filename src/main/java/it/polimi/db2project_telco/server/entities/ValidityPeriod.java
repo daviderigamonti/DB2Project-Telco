@@ -25,7 +25,7 @@ public class ValidityPeriod implements Serializable {
     private int months;
 
     @Column(name="Monthly_Fee")
-    private int fee;
+    private float fee;
 
     public int getId() {
         return id;
@@ -43,11 +43,11 @@ public class ValidityPeriod implements Serializable {
         this.servicePackage = servicePackage;
     }
 
-    public int getFee() {
+    public float getFee() {
         return fee;
     }
 
-    public void setFee(int fee) {
+    public void setFee(float fee) {
         this.fee = fee;
     }
 

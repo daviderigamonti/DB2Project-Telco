@@ -34,6 +34,8 @@ public class OrderService {
 
         // Wake up the lazy entities
         if(order != null) {
+            order.getUser();
+            order.getValidityPeriod();
             order.getServicePackage();
             order.getOptionalProducts().size();
         }
