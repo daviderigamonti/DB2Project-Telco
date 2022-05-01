@@ -113,48 +113,6 @@ public class OrderService {
         }
     }
 
-    public boolean payment(Order trackedOrder, User user, PaymentTest testOutcome)
-            throws UserException, OrderException {
-
-        boolean outcome;
-
-        // Check if the order already exists by controlling the trackedOrder's ID
-        Order existingOrder = findByID(trackedOrder.getId());
-        if(existingOrder == null) {
-
-            // Connect the order and the user
-            trackedOrder.setUser(user);
-
-            // Forward order to the database
-            try {
-                trackedOrder = insertNewOrder(trackedOrder);
-            } catch (Exception e) {
-                throw new OrderException("Error while generating the order");
-            }
-        }
-        else {
-
-            // Check that the user requesting the order owns the order
-            if(user.getId() != trackedOrder.getUser().getId())
-                throw new UserException("Requesting user doesn't own the order");
-
-            // Set the order (already present in the DB) as PENDING for the upcoming payment operation
-            updateOrderStatus(trackedOrder, OrderStatus.PENDING);
-        }
-
-        // Payment operation
-        try {
-            outcome = PaymentService.paymentOperation(testOutcome, 1000);
-        } catch(PaymentException e) {
-            outcome = false;
-        }
-
-        // Update the status of the order
-        updateOrderStatus(trackedOrder, fromOutcome(outcome));
-
-        return outcome;
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<Order> getRejectedOrders(int userID) throws OrderException {
 
