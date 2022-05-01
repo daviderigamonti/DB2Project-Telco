@@ -254,14 +254,14 @@ BEGIN
         WHERE Pkg_ID=new.Pkg_ID AND Months =
             ( SELECT Months FROM Validity_Periods WHERE ID=new.Validity_Period_ID );
 
-        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total;
+        UPDATE TotalPerPackage SET TotalPerPackage.Total = TotalPerPackage.Total + new.Total WHERE Pkg_ID=new.Pkg_ID;
 
         UPDATE TotalPerPackage
             SET TotalPerPackage.TotalBeforeOptionals = TotalPerPackage.TotalBeforeOptionals +
             ( SELECT Validity_Periods.Monthly_Fee*Validity_Periods.Months
               FROM Orders
               LEFT JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID WHERE Orders.ID = new.ID
-            );
+            ) WHERE Pkg_ID=new.Pkg_ID;
 
         UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
             ( SELECT AVG(OptNum) FROM
@@ -270,8 +270,8 @@ BEGIN
                     INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
                     LEFT JOIN OrderComprehendsOptional ON Orders.ID=OrderComprehendsOptional.Order_ID
                     GROUP BY Pkg_ID, Orders.ID) as Numbers
-                GROUP BY Pkg_ID
-            );
+                GROUP BY Pkg_ID HAVING Pkg_ID=new.Pkg_ID
+            ) WHERE Pkg_ID=new.Pkg_ID;
 
 
         DELETE FROM BestSellerOptional;
@@ -315,8 +315,8 @@ AFTER INSERT ON Validity_Periods
 FOR EACH ROW
 BEGIN
     INSERT INTO PurchasesPerPackagePeriod  (Pkg_ID, Name, Months, Purchases)
-        SELECT Service_Pkgs.ID, Service_Pkgs.Name, new.Months AS Months, 0
-        FROM Service_Pkgs WHERE ID = new.PKG_ID;
+        SELECT Service_Pkgs.ID AS Pkg_ID, Service_Pkgs.Name as Name, new.Months, 0
+        FROM Service_Pkgs WHERE Service_Pkgs.ID=new.Pkg_ID;
 END $$
 
 DELIMITER ;
