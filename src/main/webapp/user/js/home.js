@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkSessionInfo())
+        if(checkStorageInfo())
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo().username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getStorageInfo().username);
         this.greeter.show();
 
         // If the user is not logged in, display access, otherwise display logout
@@ -43,7 +43,7 @@
         this.servicePackages.load();
 
         // Rejected orders list if the user is not a guest
-        if(strcmp(getSessionInfo().guest, GUEST.FALSE)) {
+        if(strcmp(getStorageInfo().guest, GUEST.FALSE)) {
             this.rejectedOrders = new ObjectList(Order,
                 document.getElementById("rejectedOrders"), function () {
                     let self = this;

@@ -37,13 +37,12 @@ public class LoadSalesReport extends HttpServlet {
         // Find the report elements
         try {
             // TODO: enum for map entries?
-            // TODO: rejected orders -> suspended orders?
             salesReport.put("PurchasesPerPackage", salesReportService.findPurchasesPerPackage());
             salesReport.put("PurchasesPerPackagePeriod", salesReportService.findPurchasesPerPackagePeriod());
             salesReport.put("TotalPerPackage", salesReportService.findTotalPerPackage());
             salesReport.put("AvgOptPerPackage", salesReportService.findAvgOptPerPackage());
             salesReport.put("InsolventUsers", salesReportService.findInsolventUsers());
-            salesReport.put("RejectedOrders", salesReportService.findRejectedOrders());
+            salesReport.put("SuspendedOrders", salesReportService.findSuspendedOrders());
             salesReport.put("Audits", salesReportService.findAudits());
             salesReport.put("BestSellerOptional", salesReportService.findBestSellerOptional());
         } catch(Exception e) {

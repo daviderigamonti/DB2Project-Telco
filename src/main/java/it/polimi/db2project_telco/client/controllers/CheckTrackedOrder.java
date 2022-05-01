@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 
 import jakarta.servlet.ServletException;
@@ -46,7 +47,7 @@ public class CheckTrackedOrder extends HttpServlet {
         }
 
         // Retrieve the user and the tracked order and check if they are null
-        boolean result = session.getAttribute("user") != null && session.getAttribute("trackedOrder") != null;
+        boolean result = session.getAttribute(Accounts.USER.value()) != null && session.getAttribute("trackedOrder") != null;
 
         // If the delete parameter is set as true and a tracked order exists, then delete it
         if(delete && result) {

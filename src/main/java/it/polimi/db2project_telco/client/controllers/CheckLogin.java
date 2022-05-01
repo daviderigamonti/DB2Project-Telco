@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.client.util.Utils;
 import it.polimi.db2project_telco.server.entities.User;
@@ -85,8 +86,10 @@ public class CheckLogin extends HttpServlet {
                 return;
             }
 
-            // Save the user data in the session
-            request.getSession().setAttribute("user", user);
+            // Save the user data and remove the other accounts from the session
+            Accounts account = Accounts.USER;
+            account.invalidateAccountSession(request);
+            request.getSession().setAttribute(account.value(), user);
 
             // Send the user data back to the client
             ObjectMapper objectMapper = new ObjectMapper();
@@ -96,8 +99,10 @@ public class CheckLogin extends HttpServlet {
             objectMapper.writeValue(response.getWriter(), user);
         }
         else {
-            // Save the guest data in the session
-            request.getSession().setAttribute("guest", true);
+            // Save the guest data and remove the other accounts from the session
+            Accounts account = Accounts.GUEST;
+            account.invalidateAccountSession(request);
+            request.getSession().setAttribute(account.value(), true);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }

@@ -38,8 +38,8 @@ public class SalesReportService {
         return em.createNamedQuery("InsolventUsers.findAll", InsolventUsers.class).getResultList();
     }
 
-    public List<RejectedOrders> findRejectedOrders() {  //TODO: rename as suspended orders?
-        return em.createNamedQuery("RejectedOrders.findAll", RejectedOrders.class).getResultList();
+    public List<SuspendedOrders> findSuspendedOrders() {
+        return em.createNamedQuery("SuspendedOrders.findAll", SuspendedOrders.class).getResultList();
     }
 
     public List<Audit> findAudits() {

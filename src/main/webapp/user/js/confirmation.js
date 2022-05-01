@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkSessionInfo())
+        if(checkStorageInfo())
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo().username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getStorageInfo().username);
         this.greeter.show();
 
         // If the user is not logged in, display access, otherwise display logout
@@ -72,7 +72,7 @@
     }
 
     function buttonBuy(e, handler, value = null) {
-        if(checkSessionInfo(true)) {
+        if(checkStorageInfo(true)) {
             let form = e.target.closest("form");
             appendElement(form, "input", {name: "outcome", value: value ?? "", hidden: true});
             makeCall("POST", "Payment", new FormData(form), handler.message, (req) => {

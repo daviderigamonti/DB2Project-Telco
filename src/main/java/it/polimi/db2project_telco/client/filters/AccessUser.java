@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.filters;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.PagesNames;
 
 import jakarta.servlet.*;
@@ -23,8 +24,8 @@ public class AccessUser implements Filter {
 
         // If the user is not logged in or if it hasn't authenticated
         // as a guest user, return a forbidden response
-        if (s.isNew() || (s.getAttribute("user") == null &&
-                (s.getAttribute("guest") == null || !(boolean)s.getAttribute("guest")))) {
+        if (s.isNew() || (s.getAttribute(Accounts.USER.value()) == null &&
+                (s.getAttribute(Accounts.GUEST.value()) == null || !(boolean)s.getAttribute(Accounts.GUEST.value())))) {
 
             HttpServletResponse res = (HttpServletResponse) response;
             String landingPage = PagesNames.root(req) + PagesNames.LANDING.value();

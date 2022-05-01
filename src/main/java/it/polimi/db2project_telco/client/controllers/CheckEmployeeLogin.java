@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.client.util.Utils;
 import it.polimi.db2project_telco.server.entities.Employee;
@@ -79,8 +80,10 @@ public class CheckEmployeeLogin extends HttpServlet {
             return;
         }
 
-        // Save the user data in the session
-        request.getSession().setAttribute("employee", employee);
+        // Save the employee data and remove the other accounts from the session
+        Accounts account = Accounts.EMPLOYEE;
+        account.invalidateAccountSession(request);
+        request.getSession().setAttribute(account.value(), employee);
 
         // Send the user data back to the client
         ObjectMapper objectMapper = new ObjectMapper();

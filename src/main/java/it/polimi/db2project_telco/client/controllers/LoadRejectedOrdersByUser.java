@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.Order;
 import it.polimi.db2project_telco.server.entities.User;
@@ -37,9 +38,9 @@ public class LoadRejectedOrdersByUser extends HttpServlet {
         List<Order> orders;
         int userID = 0;
 
-        // Get the ID of the logged in user
+        // Get the ID of the logged-in user
         try {
-            User user = (User) request.getSession().getAttribute("user");
+            User user = (User) request.getSession().getAttribute(Accounts.USER.value());
             if(user == null)
                 throw new OrderException("User requesting the orders and user logged in do not match");
             userID = user.getId();

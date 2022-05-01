@@ -11,9 +11,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name= "RejectedOrders", schema = "db2telco")
-@NamedQuery(name = "RejectedOrders.findAll", query = "SELECT o FROM RejectedOrders o")
-public class RejectedOrders implements Serializable {   //TODO: rename as suspended orders?
+@Table(name= "SuspendedOrders", schema = "db2telco")
+@NamedQuery(name = "SuspendedOrders.findAll", query = "SELECT o FROM SuspendedOrders o")
+public class SuspendedOrders implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

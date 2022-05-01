@@ -157,28 +157,28 @@ function loadObjects(self, update, httpMethod, url, data,
 /**
  * Puts user or employee info into the session storage
  */
-function setSessionInfo(infoText = null, sessionSelector = USER_SESSION) {
+function setStorageInfo(infoText = null, sessionSelector = USER_SESSION) {
     let guest = GUEST.TRUE;
 
     clearStorage();
 
     if(infoText) {
         let userInfo = JSON.parse(infoText);
-        sessionStorage.setItem(SESSION_NAMES[sessionSelector].ID, userInfo.id);
-        sessionStorage.setItem(SESSION_NAMES[sessionSelector].USERNAME, userInfo.username);
+        localStorage.setItem(SESSION_NAMES[sessionSelector].ID, userInfo.id);
+        localStorage.setItem(SESSION_NAMES[sessionSelector].USERNAME, userInfo.username);
         guest = GUEST.FALSE;
     }
-    sessionStorage.setItem(SESSION_NAMES[GUEST_SESSION].GUEST, guest);
+    localStorage.setItem(SESSION_NAMES[GUEST_SESSION].GUEST, guest);
 }
 
 /**
  * Retrieves user or employee info from the session storage
  */
-function getSessionInfo(sessionSelector = USER_SESSION) {
+function getStorageInfo(sessionSelector = USER_SESSION) {
     return {
-        id: sessionStorage.getItem(SESSION_NAMES[sessionSelector].ID),
-        username: sessionStorage.getItem(SESSION_NAMES[sessionSelector].USERNAME),
-        guest: sessionStorage.getItem(SESSION_NAMES[GUEST_SESSION].GUEST)
+        id: localStorage.getItem(SESSION_NAMES[sessionSelector].ID),
+        username: localStorage.getItem(SESSION_NAMES[sessionSelector].USERNAME),
+        guest: localStorage.getItem(SESSION_NAMES[GUEST_SESSION].GUEST)
     }
 }
 
@@ -187,9 +187,9 @@ function getSessionInfo(sessionSelector = USER_SESSION) {
  * Returns true if the user is logged in, or has identified themselves as a guest
  * If the login flag is set or the person is an employee, it returns true only if the user/employee has logged in
  */
-function checkSessionInfo(loggedIn = false, sessionSelector = USER_SESSION) {
+function checkStorageInfo(loggedIn = false, sessionSelector = USER_SESSION) {
     let logged = loggedIn;
-    let userInfo = getSessionInfo(sessionSelector);
+    let userInfo = getStorageInfo(sessionSelector);
 
     if(sessionSelector === EMPLOYEE_SESSION)
         logged = true;
@@ -202,7 +202,7 @@ function checkSessionInfo(loggedIn = false, sessionSelector = USER_SESSION) {
  * Clears information from the session storage
  */
 function clearStorage() {
-    sessionStorage.clear();
+    localStorage.clear();
 }
 
 /*
@@ -237,7 +237,7 @@ function appendElement(parent, tag, info = {}) {
  * Chooses which buttons (access/logout) to display in case the user is logged in or not
  */
 function displayAccessOrLogout(buttonAccess, buttonLogout) {
-    if(checkSessionInfo(true)) {
+    if(checkStorageInfo(true)) {
         buttonAccess.remove();
         buttonAccess = null;
     }

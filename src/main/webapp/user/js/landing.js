@@ -11,7 +11,7 @@
         if(form.checkValidity()) {
             makeCall("POST", "CheckLogin", new FormData(form), message, function(req) {
 
-                setSessionInfo(req.responseText);
+                setStorageInfo(req.responseText);
 
                 // Check if the user has a tracked order
                 // If it is found, redirect to confirmation page
@@ -48,7 +48,7 @@
         appendElement(form, "input", {name: "guest", value: "true", hidden: true});
         let message = document.getElementById("errorRegister");
         makeCall("POST", "CheckLogin", new FormData(form), message, function() {
-            setSessionInfo();
+            setStorageInfo();
             window.location.href = root() + PAGES.USER + PAGES.PAGES + PAGES.HOME;
         }, null);
     });

@@ -5,7 +5,7 @@
 (function() {	// Hide from global scope
 
     window.addEventListener("load", () => {
-        if(checkSessionInfo(true, EMPLOYEE_SESSION))
+        if(checkStorageInfo(true, EMPLOYEE_SESSION))
             init()
         else {
             clearStorage();
@@ -18,7 +18,7 @@
         this.message = document.getElementById("message");
 
         // Greeter
-        this.greeter = new Greeter(document.getElementById("greeter"), getSessionInfo(EMPLOYEE_SESSION).username);
+        this.greeter = new Greeter(document.getElementById("greeter"), getStorageInfo(EMPLOYEE_SESSION).username);
         this.greeter.show();
 
         // Menu containing navigation buttons

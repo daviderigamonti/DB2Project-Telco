@@ -2,6 +2,7 @@ package it.polimi.db2project_telco.client.controllers;
 
 import static it.polimi.db2project_telco.server.entities.util.OrderStatus.fromOutcome;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.PaymentService;
 import it.polimi.db2project_telco.client.util.PaymentTest;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
@@ -70,7 +71,7 @@ public class Payment extends HttpServlet {
 
         // Retrieve the order and the user from the session
         try {
-            user = (User) request.getSession().getAttribute("user");
+            user = (User) request.getSession().getAttribute(Accounts.USER.value());
             order = (Order) request.getSession().getAttribute("trackedOrder");
             if(order == null || user == null)
                 throw new Exception();

@@ -1,5 +1,6 @@
 package it.polimi.db2project_telco.client.controllers;
 
+import it.polimi.db2project_telco.client.util.Accounts;
 import it.polimi.db2project_telco.client.util.ServletErrorResponse;
 import it.polimi.db2project_telco.server.entities.Order;
 import it.polimi.db2project_telco.server.entities.User;
@@ -66,7 +67,7 @@ public class LoadOrderByID extends HttpServlet {
 
         // Check that the user requesting the order owns the order
         try {
-            if(((User) request.getSession().getAttribute("user")).getId() != order.getUser().getId())
+            if(((User) request.getSession().getAttribute(Accounts.USER.value())).getId() != order.getUser().getId())
                 throw new OrderException("Requesting user doesn't own the order");
         } catch(Exception e) {
             ServletErrorResponse.createResponse(response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
