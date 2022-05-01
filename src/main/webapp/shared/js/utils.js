@@ -209,7 +209,7 @@ function clearStorage() {
  * If the number received as parameter is zero or less, substitute it with an infinity character
  */
 function visInf(n) {
-    if(n != null && n <= 0)
+    if(n != null && n < 0)
         return "∞";
     return n.toString();
 }

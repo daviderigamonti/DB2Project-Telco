@@ -354,7 +354,7 @@ SalesReportElement.prototype.elements = [
     {nameJSON: "InsolventUsers", name: "Insolvent users",
         properties: ["id", "mail", "username", "failed_payments", "is_insolvent"]},
     // mail and username are unwrapped from user, name is unwrapped from servicePackage
-    {nameJSON: "RejectedOrders", name: "Suspended orders",
+    {nameJSON: "SuspendedOrders", name: "Suspended orders",
         properties: ["id", "mail", "username", "name", "timestamp", "status", "total"]},
     {nameJSON: "Audits", name: "Audits",
         properties: ["userID", "timestamp", "mail", "username", "amount"]},
