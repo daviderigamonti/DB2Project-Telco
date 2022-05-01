@@ -3,10 +3,153 @@
 %---------------------------------------------------------------------
 
 \chapter{List of components}
-\todo{Components}
+
+This chapter contains an overview of all the components that are contained in the project subdivided in \texttt{front-end} components and \texttt{back-end} components.
+
+\section*{Notes}
+
+As far as the \texttt{back-end} components are concerned, we tried to associate a service to each relevant entity defined by the \textbf{JPA} mapping; in the case of materialized views, however, we though that it would be more appropriate to have a single service capable of interacting with all the entities dedicated to the \textit{Sales Report} since that is the only purpose of their existence.
+\todo{maybe expand notes}
 
 \section{Front end}
-\blindtext
+
+\subsection{Views}
+
+\subsubsection*{Customer}
+
+Views of the customer are located in the \texttt{webapp/user} subfolder.
+
+\begin{itemize}
+    \item \textbf{Landing page} (landing.html + landing.js)
+    \item \textbf{Home page} (home.html + home.js)
+    \item \textbf{Buy service page} (buyservice.html + buyservice.js)
+    \item \textbf{Confirmation page} (landing.html + landing.js)
+\end{itemize}
+
+\subsubsection*{Employee}
+
+Views of the employee are located in the \texttt{webapp/employee} subfolder.
+
+\begin{itemize}
+    \item \textbf{Landing page} (landing.html + landing.js)
+    \item \textbf{Home page} (home.html + home.js)
+    \item \textbf{Sales report page} (sales.html + buyservice.js)
+\end{itemize}
+
+\subsection{Controllers (Servlets)}
+
+\begin{itemize}[leftmargin = \leftmargin + 1em, itemindent = -1em]
+    \item \textbf{CheckEmployeeLogin} \\
+        Verifies the credentials of an employee for the login procedure.
+    \item \textbf{CheckLogin} \\
+        Verifies the credentials of a customer for the login procedure.
+    \item \textbf{CheckTrackedOrder} \\
+        Verifies the existence of a tracked order in the server-side session.
+    \item \textbf{CreateOptionalProduct} \\
+        Creates a new optional product with a name and a fee and stores it in the database.
+    \item \textbf{CreateOrder} \\
+        Creates a new order given a set of wanted features storing it in the server-side session as the tracked order.
+    \item \textbf{CreateServicePackage} \\
+        Creates a new service package with a name, a set of services, a set of validity periods and a set of optional products and stores it in the database.
+    \item \textbf{LoadOptionalProducts} \\
+        Returns all of the optional products present in the database.
+    \item \textbf{LoadOrderByID} \\
+        Returns information about an order given its ID and only if the user requesting the order owns it.
+    \item \textbf{LoadPackageByID} \\
+        Returns information about a service package given its ID.
+    \item \textbf{LoadRejectedOrdersByUser} \\
+        Returns all of the \texttt{REJECTED} or \texttt{PENDING} orders of the current user.
+    \item \textbf{LoadSalesReport} \\
+        Returns aggregate information about sales and users.
+    \item \textbf{LoadServicePackages} \\
+        Returns all of the service packages present in the database.
+    \item \textbf{LoadTrackedOrder} \\
+        Returns the tracked order from the current session.
+    \item \textbf{Logout} \\
+        Invalidates the session.
+    \item \textbf{Payment} \\
+        Moves the tracked order from the session to the database, effectively saving it; it also simulates a payment and updates the status of the order accordingly with respect to the outcome of the payment.
+    \item \textbf{RegisterUser} \\
+        Registers a new user by adding their credentials to the database.
+
+\end{itemize}
 
 \section{Back end}
-\blindtext
+
+\subsection{Entities}
+
+Entities and their mappings are discussed more in depth inside the \hyperref[chap:orm]{ORM chapter}.
+
+\begin{itemize}
+    \item \textbf{Audit}
+    \item \textbf{Employee}
+    \item \textbf{FixedPhone}
+    \item \textbf{Internet}
+    \item \textbf{MobilePhone}
+    \item \textbf{OptionalProduct}
+    \item \textbf{Order}
+    \item \textbf{ServiceActivationSchedule}
+    \item \textbf{ServicePackage}
+    \item \textbf{ValidityPeriod}
+    \item \textbf{User}
+\end{itemize}
+
+\subsubsection*{Materialized Views}
+
+\begin{itemize}
+    \item \textbf{AvgOptPerPackage}
+    \item \textbf{BestSellerOptional}
+    \item \textbf{InsolventUsers}
+    \item \textbf{PurchasesPerPackage}
+    \item \textbf{PurchasesPerPackagePeriod}
+    \item \textbf{RejectedOrders}
+    \item \textbf{TotalPerPackage}
+\end{itemize}
+
+\subsection{Business Components (EJBs)}
+
+\begin{itemize}
+    \item \textbf{EmployeeService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}]
+            \item \texttt{Employee \textttbf{checkCredentials}(String username, String password)}
+        \end{itemize}
+    \item \textbf{OptionalProductService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}]
+            \item \texttt{List<OptionalProduct> \textttbf{findAll}()}
+            \item \texttt{void \textttbf{createProduct}(String name, float fee)}
+        \end{itemize}
+    \item \textbf{OrderService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}, leftmargin = \leftmargin + 1em, itemindent = -1em]
+            \item \texttt{Order \textttbf{findByID}(int orderID)}
+            \item \texttt{Order \textttbf{composeOrder}(int servicePackageID, int validityPeriodID, \\ 
+                List<Integer> optionalProductsIDs)}
+            \item \texttt{Order \textttbf{insertNewOrder}(Order trackedOrder)}
+            \item \texttt{void \textttbf{updateOrderStatus}(Order order, OrderStatus status)}
+            \item \texttt{boolean \textttbf{payment}(Order trackedOrder, User user, PaymentTest testOutcome)}
+            \item \texttt{List<Order> \textttbf{getRejectedOrders}(int userID)}
+        \end{itemize}
+    \item \textbf{SalesReportService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}]
+            \item \texttt{List<PurchasesPerPackage> \textttbf{findPurchasesPerPackage}()}
+            \item \texttt{List<PurchasesPerPackagePeriod> \textttbf{findPurchasesPerPackagePeriod}()}
+            \item \texttt{List<TotalPerPackage> \textttbf{findTotalPerPackage}()}
+            \item \texttt{List<AvgOptPerPackage> \textttbf{findAvgOptPerPackage}()}
+            \item \texttt{List<InsolventUsers> \textttbf{findInsolventUsers}()}
+            \item \texttt{List<RejectedOrders> \textttbf{findRejectedOrders}()}
+            \item \texttt{List<Audit> \textttbf{findAudits}()}
+            \item \texttt{List<BestSellerOptional> \textttbf{findBestSellerOptional}()}
+        \end{itemize}
+    \item \textbf{ServicePackageService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}]
+            \item \texttt{List<ServicePackage> \textttbf{findAll}()}
+            \item \texttt{ServicePackage \textttbf{findByID}(int packageID)}
+            \item \texttt{void \textttbf{createServicePackage}(ServicePackage servicePackage)}
+        \end{itemize}
+    \item \textbf{UserService} \texttt{@Stateless}
+        \begin{itemize}[label = {$\circ$}]
+            \item \texttt{User \textttbf{checkCredentials}(String username, String password)}
+            \item \texttt{void \textttbf{createUser}(String mail, String username, String password)}
+        \end{itemize}
+    \item \textbf{ValidityPeriodService} \texttt{@Stateless}    
+    \todo{remove ValidityPeriodService??????? (from code also)}
+\end{itemize}

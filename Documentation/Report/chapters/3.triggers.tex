@@ -43,7 +43,7 @@ Similar to the one above, it requires an extra join to group by the selected val
 In the trigger it is still implemented by \verb OrderCompleted in a similar fashion as before, while the creation of the
 entry in the \verb PurchasePerPackagePeriod table is delegated to the trigger \verb NewPeriod . \\
 
-This reflects the fact that the Validity_Periods table is the one containing the join column with respect to the service
+This reflects the fact that the Validity\_Periods table is the one containing the join column with respect to the service
 packages, and therefore validity periods are created after the service package they refer to: the \verb NewPackage trigger
 would not have all the information needed to create an entry yet.
 
@@ -90,7 +90,7 @@ The query uses a nested select statement to return an intermediate table where e
 The coalesce function is used to account for the NULL value that packages with no optionals would have in the join table. The average is then
 computed on the values of this table.\\
 
-The triggers relating to this table are the same ones as above. The query is reused pretty much untouched inside the \verb OrderCompleted
+The triggers relating to this table are the same ones as above. The query is reused pretty much untouched inside the \verb! OrderCompleted!
 trigger to update to the new value the entry for each service package.
 
 \subsection{List of insolvent users, suspended orders and alerts}
@@ -102,7 +102,7 @@ WHERE Insolvent=True;
 
 CREATE VIEW RejectedOrders AS
 SELECT * FROM Orders
-WHERE Status=’Failed’;
+WHERE Status='Failed';
 \end{lstlisting}
 
 The views are pretty simple select statements. A view for the alerts has not been created because it would coincide exactly with the
