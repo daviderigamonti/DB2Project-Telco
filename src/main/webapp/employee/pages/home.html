@@ -17,22 +17,22 @@
 </head>
 <body>
 <div class="container">
-    <div class="barHome">
-        <div class="divBarHome">
+    <div class="barHome row">
+        <div class="divBarHome column column-50">
             <div id="greeter"></div>
         </div>
 
-        <div class="divBarHome">
-            <input id="buttonLogout" type="button" value="Logout">
+        <div class="divBarHome column">
+            <input class="button-clear" id="buttonLogout" type="button" value="Logout">
         </div>
     </div>
 
-    <div class="divHome">
+    <div class="divHome row">
         <div id="message"></div>
     </div>
 
-    <div class="divHome">
-        <form id="formServicePackage" action="#" class="formServicePackage">
+    <div class="divHome row">
+        <form id="formServicePackage" action="#" class="formServicePackage column">
             <label>
                 Service Package name:
                 <input type="text" name="servicePackageName" id="nameFSP" required>
@@ -59,9 +59,9 @@
             <input id="buttonCreateFSP" type="button" value="Create">
         </form>
     </div>
-
-    <div class="divHome">
-        <form id="formOptionalProduct" action="#" class="formOptionalProduct">
+<hr>
+    <div class="divHome row">
+        <form id="formOptionalProduct" action="#" class="formOptionalProduct column">
             <label>
                 Optional product name:
                 <input type="text" name="optionalProductName" id="nameFOP" required>
@@ -76,7 +76,8 @@
         </form>
     </div>
 
-    <div class="divHome">
+    <hr>
+    <div class="divHome row">
         <input id="buttonSales" type="button" value="Go to the sales report">
     </div>
 </div>
