@@ -4,11 +4,17 @@
 
 \chapter{Functional analysis of the specifications}
 
-The front end applications have been completely developed using pure HTML + CSS + JS with the support of some free templates for the CSS files.
+The upcoming IFML diagrams will describe, respectively, customer and employee applications; it is important to keep in mind that the provided diagrams offer just an overview of the functional analysis for the applications, there may be slight mismatches between the documentation and the actual implementation even if quite some effort was put into trying to fit the finished project to the design.
 
-Most of the data related to client-server interactions is stored in server-side sessions but in some cases the client-side browser storage has also been used for storing less critical data.
+\subsection*{Notes on the design and structure of the front end}
 
-This approach can be seen in the upcoming IFML diagrams describing, respectively, customer and employee applications:
+The views have been completely developed using pure HTML + CSS + JS with the support of some free templates for the CSS files. 
+
+Every view is composed by an HTML and a JS file with the same name, the JS file is stored in a subfolder named \texttt{js} together with the JS files for the other views of the application (customer or employee) and another JS file containing some components used by all the views of the application named \texttt{components.js}. 
+
+Outside the application-specific folder there is a shared folder containing CSS and JS file that are used by all of the views for both applications.
+
+Most of the data related to client-server interactions is stored in server-side sessions but in some cases the client-side browser local storage has also been used for storing less critical data.
 
 \begin{landscape}
     \thispagestyle{landscape}

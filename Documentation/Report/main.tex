@@ -8,6 +8,7 @@
 \usepackage{hyperref}   % Table of contents hyperlinks
 \usepackage{parskip}    % Paragraph indent & skip
 \usepackage{svg}        % SVG graphics
+\usepackage{xcolor}     % More colors
 \usepackage{listings}   % Code sections formatting
 \usepackage{pdflscape}  % Landscape pages
 \usepackage{enumitem}   % List utilities
@@ -22,6 +23,10 @@
 % Custom Monospace + Bold command: \textttbf{"text"}
 \def\textttbf#1{\renewcommand{\ttdefault}{pcr}\texttt{\textbf{#1}}\renewcommand{\ttdefault}{cmtt}}
 
+% Custom Colors
+\definecolor{AnnotationGreen}{RGB}{34, 128, 45}
+\definecolor{CommentGreen}{RGB}{29, 204, 49}
+
 % Hyperlink setup
 \hypersetup{   
     colorlinks,
@@ -35,14 +40,36 @@
 \lstdefinestyle{SQL}{
     language = SQL,
     basicstyle = \footnotesize\ttfamily,
-    commentstyle = \textcolor{green},
+    commentstyle = \textcolor{CommentGreen},
     stringstyle = \textcolor{orange},
     keywordstyle = \textcolor{blue},
     numberstyle = \scriptsize\ttfamily\textcolor{gray},
     numbers = left,
     frame = single, 
     frameround = tttt,
-    framexleftmargin = 20pt
+    framexleftmargin = 20pt,
+    framexrightmargin = 20pt
+}
+
+% JAva code formatting
+\lstdefinestyle{JPA}{
+    language = Java,
+    basicstyle = \footnotesize\ttfamily,
+    commentstyle = \textcolor{CommentGreen},
+    stringstyle = \textcolor{orange},
+    showstringspaces = false,
+    keywordstyle = \textcolor{blue},
+    moredelim = [is][\textcolor{black}]{\\!!}{!!\/},            % Remove from keyword
+    moredelim = [is][\textcolor{AnnotationGreen}]{\\@}{@@\/},   % Annotations
+    morekeywords = [2]{name, column, query, schema, strategy, 
+                        fetch, mappedBy, cascade},              % JPA annotation parameters
+    keywordstyle = [2]{\textcolor{purple}},
+    numberstyle = \scriptsize\ttfamily\textcolor{gray},
+    numbers = left,
+    frame = single, 
+    frameround = tttt,
+    framexleftmargin = 20pt,
+    framexrightmargin = 20pt
 }
 
 % Landscape page settings

@@ -10,4 +10,370 @@
 \blindtext
 
 \section{Java entities}
-\blindtext
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@IdClass@@/(AuditID.class)
+\@@Table@@/(name= "Audits", schema = "db2telco")
+\@@NamedQuery@@/(name = "Audit.findAll", query = "SELECT a FROM Audit a")
+public class Audit implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@Column@@/(name = "User_ID")
+    private int userID;
+
+    \@@Id@@/
+    \@@Column@@/(name = "Timestamp")
+    private Timestamp timestamp;
+
+    \@@Column@@/(name="Mail")
+    private String mail;
+
+    \@@Column@@/(name="Username")
+    private String username;
+
+    \@@Column@@/(name = "Amount")
+    private float amount;
+
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Employees", schema = "db2telco")
+\@@NamedQuery@@/(name = "Employee.findByUsername", query = "SELECT u " + 
+                                                      "FROM Employee u " + 
+                                                      "WHERE u.username = :usr"
+)
+public class Employee implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@Column@@/(name="Username")
+    private String username;
+
+    \@@Column@@/(name="Password")
+    \@@JsonIgnore@@/
+    private String password;
+
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Fixed_Phone", schema = "db2telco")
+public class FixedPhone implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@ManyToOne@@/
+    \@@JoinColumn@@/(name = "Pkg_ID")
+    \@@JsonBackReference@@/
+    private ServicePackage servicePackage;
+
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Internet", schema = "db2telco")
+public class Internet implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@ManyToOne@@/
+    \@@JoinColumn@@/(name = "Pkg_ID")
+    \@@JsonBackReference@@/
+    private ServicePackage servicePackage;
+
+    \@@Column@@/(name="GB_N")
+    private int gigabytes;
+
+    \@@Column@@/(name="GB_Fee")
+    private float gigabyteFee;
+
+    \@@Column@@/(name="Fixed")
+    private boolean is_fixed;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Mobile_Phone", schema = "db2telco")
+public class MobilePhone implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@ManyToOne@@/
+    \@@JoinColumn@@/(name = "Pkg_ID")
+    \@@JsonBackReference@@/
+    private ServicePackage servicePackage;
+
+    \@@Column@@/(name="Minutes_N")
+    private int minutes;
+
+    \@@Column@@/(name="SMS_N")
+    private int sms;
+
+    \@@Column@@/(name="Minutes_Fee")
+    private float minuteFee;
+
+    \@@Column@@/(name="SMS_Fee")
+    private float smsFee;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Optional_Products", schema = "db2telco")
+\@@NamedQuery@@/(name = "OptionalProduct.findAll", query = "SELECT s " + 
+                                                      "FROM OptionalProduct s"
+)
+public class OptionalProduct implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@Column@@/(name="Name")
+    private String \!!name!!/;
+
+    \@@Column@@/(name="Monthly_Fee")
+    private float fee;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Orders", schema = "db2telco")
+\@@NamedQuery@@/(name = "Order.getRejectedOrdersByUser", 
+            query = "SELECT o FROM Order o " +
+                    "WHERE o.user.id = :id AND " +
+                    "(o.status = " +
+    "it.polimi.db2project_telco.server.entities.util.OrderStatus.FAILED OR " +
+                    "o.status = " +
+    "it.polimi.db2project_telco.server.entities.util.OrderStatus.PENDING)"
+)
+public class Order implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
+    \@@JoinColumn@@/(name = "User_ID")
+    private User user;
+
+    \@@OneToOne@@/(fetch = FetchType.LAZY)
+    \@@JoinColumn@@/(name = "Pkg_ID")
+    private ServicePackage servicePackage;
+
+    \@@OneToOne@@/(fetch = FetchType.LAZY)
+    \@@JoinColumn@@/name = "Validity_Period_ID")
+    private ValidityPeriod validityPeriod;
+
+    \@@OneToMany@@/(fetch = FetchType.LAZY)
+    \@@JoinTable@@/(name="OrderComprehendsOptional",
+            joinColumns = \@@JoinColumn@@/(name = "Order_ID"),
+            inverseJoinColumns = \@@JoinColumn@@/(name = "Optional_ID")
+    )
+    private List<OptionalProduct> optionalProducts;
+
+    \@@Column@@/(name="Activation_Date")
+    private Date activationDate;
+
+    \@@Column@@/(name="Timestamp")
+    private Timestamp timestamp;
+
+    \@@Column@@/(name="Status")
+    \@@Enumerated@@/(EnumType.STRING)
+    private OrderStatus status;
+
+    \@@Column@@/(name="Total")
+    private float total;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@IdClass@@/(ScheduleID.class)
+\@@Table@@/(name= "ServiceActivationSchedule", schema = "db2telco")
+public class ServiceActivationSchedule implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
+    \@@JoinColumn@@/(name = "User_ID")
+    private User user;
+
+    \@@Id@@/
+    \@@OneToOne@@/(fetch = FetchType.EAGER)
+    \@@JoinColumn@@/(name = "Order_ID")
+    private Order order;
+
+    \@@Column@@/(name = "Deactivation_Date")
+    private Date deactivationDate;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Service_Pkgs", schema = "db2telco")
+\@@NamedQuery@@/(name = "ServicePackage.findAll", query = "SELECT s " +
+                                                     "FROM ServicePackage s"
+)
+public class ServicePackage implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@Column@@/(name="Name")
+    private String name;
+
+    \@@OneToMany@@/(mappedBy = "servicePackage", fetch = FetchType.EAGER, 
+               cascade = CascadeType.PERSIST)
+    \@@JsonManagedReference@@/
+    private List<FixedPhone> fixedPhoneServices;
+
+    \@@OneToMany@@/(mappedBy = "servicePackage", fetch = FetchType.EAGER, 
+               cascade = CascadeType.PERSIST)
+    \@@JsonManagedReference@@/
+    private List<MobilePhone> mobilePhoneServices;
+
+    \@@OneToMany@@/(mappedBy = "servicePackage", fetch = FetchType.EAGER,
+               cascade = CascadeType.PERSIST)
+    \@@JsonManagedReference@@/
+    private List<Internet> internetServices;
+
+    \@@OneToMany@@/(mappedBy = "servicePackage", fetch = FetchType.LAZY,
+               cascade = CascadeType.PERSIST)
+    \@@JsonManagedReference@@/
+    private List<ValidityPeriod> validityPeriods;
+
+    \@@OneToMany@@/(fetch = FetchType.LAZY)
+    \@@JoinTable@@/(name="ServicePkgOffersOptional",
+            joinColumns = \@@JoinColumn@@/(name = "Pkg_ID"),
+            inverseJoinColumns = \@@JoinColumn@@/(name = "Optional_ID")
+    )
+    private List<OptionalProduct> optionalProducts;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Users", schema = "db2telco")
+\@@NamedQuery@@/(name = "User.findByUsername", query = "SELECT u " + 
+                                                  "FROM User u " + 
+                                                  "WHERE u.username = :usr"
+)
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@Column@@/(name="Mail")
+    private String mail;
+
+    \@@Column@@/(name="Username")
+    private String username;
+
+    \@@Column@@/(name="Password")
+    \@@JsonIgnore@@/
+    private String password;
+
+    \@@Column@@/(name="Failed_Payments")
+    \@@JsonIgnore@@/
+    private int failed_payments;
+
+    \@@Column@@/(name="Insolvent")
+    \@@JsonIgnore@@/
+    private boolean is_insolvent;
+
+    \@@OneToMany@@/(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Order> orders;
+
+    \@@OneToMany@@/(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ServiceActivationSchedule> schedules;
+    
+    ...
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style = JPA]
+\@@Entity@@/
+\@@Table@@/(name= "Validity_Periods", schema = "db2telco")
+public class ValidityPeriod implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    \@@Id@@/
+    \@@GeneratedValue@@/(strategy = GenerationType.IDENTITY)
+    \@@Column@@/(name = "ID")
+    private int id;
+
+    \@@ManyToOne@@/
+    \@@JoinColumn@@/(name = "Pkg_ID")
+    \@@JsonBackReference@@/
+    private ServicePackage servicePackage;
+
+    \@@Column@@/(name="Months")
+    private int months;
+
+    \@@Column@@/(name="Monthly_Fee")
+    private float fee;
+    
+    ...
+
+}
+\end{lstlisting}
