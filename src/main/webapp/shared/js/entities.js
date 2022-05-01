@@ -12,14 +12,15 @@ class ServicePackage {
     }
 
     visListClickable() {
-        this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {innerHTML: this.name});
+        this.packageDIV = appendElement(this.parent, "table", {style: "border: 0.1rem solid #e1e1e1;padding: 0px 25px 5px 25px;border-radius: 10px;"});
 
-        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
+        appendElement(this.packageDIV, "th", {innerHTML: this.name});
+
+        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "tr"),
             null, FixedPhoneSvc.prototype.visList);
-        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.packageDIV, "div"),
+        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.packageDIV, "tr"),
             null, MobilePhoneSvc.prototype.visList);
-        let internetList = new ObjectList(InternetSvc, appendElement(this.packageDIV, "div"),
+        let internetList = new ObjectList(InternetSvc, appendElement(this.packageDIV, "tr"),
             null, InternetSvc.prototype.visList);
 
         fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
@@ -35,14 +36,13 @@ class ServicePackage {
     }
 
     visSummaryServices() {
-        this.packageDIV = appendElement(this.parent, "div");
-        appendElement(this.packageDIV, "div", {innerHTML: this.name});
+        appendElement(this.parent, "th", {innerHTML: this.name});
 
-        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.packageDIV, "div"),
+        let fixedPhoneList = new ObjectList(FixedPhoneSvc, appendElement(this.parent, "tr"),
             null, FixedPhoneSvc.prototype.visList);
-        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.packageDIV, "div"),
+        let mobilePhoneList = new ObjectList(MobilePhoneSvc, appendElement(this.parent, "tr"),
             null, MobilePhoneSvc.prototype.visList);
-        let internetList = new ObjectList(InternetSvc, appendElement(this.packageDIV, "div"),
+        let internetList = new ObjectList(InternetSvc, appendElement(this.parent, "tr"),
             null, InternetSvc.prototype.visList);
 
         fixedPhoneList.update(fixedPhoneList, this.fixedPhone);
@@ -236,18 +236,18 @@ class Order {
     }
 
     visRejectedList() {
-        let orderDIV = appendElement(this.parent, "div");
+        let orderDIV = appendElement(this.parent, "table", {style: "border: 0.1rem solid #e1e1e1;padding: 0px 25px 5px 25px;border-radius: 10px; width:40%; margin:2px"});
 
-        appendElement(orderDIV, "div", {innerHTML: this.id});
+        appendElement(orderDIV, "caption", {innerHTML: this.id});
 
         this.servicePackage.parent = orderDIV;
         this.servicePackage.visSummaryServices();
 
         let date = formatDateTime(tsToDate(this.timestamp));
 
-        appendElement(orderDIV, "div", {innerHTML: date});
-        appendElement(orderDIV, "div", {innerHTML: "Status: " + this.status});
-        appendElement(orderDIV, "div", {innerHTML: "Total: " + this.total + "€"});
+        appendElement(orderDIV, "tr", {innerHTML: date});
+        appendElement(orderDIV, "tr", {innerHTML: "Status: " + this.status});
+        appendElement(orderDIV, "tr", {innerHTML: "Total: " + this.total + "€"});
 
         // Clickable rejected order
         orderDIV.addEventListener("click", () => {
