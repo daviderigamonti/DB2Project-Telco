@@ -11,8 +11,6 @@ This chapter contains an overview of all the components that are contained in th
 
 As far as the \texttt{back-end} components are concerned, we tried to associate a service to each relevant entity defined by the \textbf{JPA} mapping; in the case of materialized views, however, we though that it would be more appropriate to have a single service capable of interacting with all the entities dedicated to the \textit{Sales Report} since that is the only purpose of their existence.
 
-\todo{maybe expand notes}
-
 
 \section{Front end}
 \label{sec:front_end}
@@ -154,7 +152,5 @@ Entities and their mappings are discussed more in depth inside the \hyperref[cha
         \begin{itemize}[label = {$\circ$}]
             \item \texttt{User \textttbf{checkCredentials}(String username, String password)}
             \item \texttt{void \textttbf{createUser}(String mail, String username, String password)}
-        \end{itemize}
-    \item \textbf{ValidityPeriodService} \texttt{@Stateless}    
-    \todo{remove ValidityPeriodService??????? (from code also)}
+        \end{itemize}  
 \end{itemize}

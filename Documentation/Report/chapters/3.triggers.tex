@@ -37,7 +37,7 @@ INNER JOIN Validity_Periods ON Orders.Validity_Period_ID=Validity_Periods.ID
 GROUP BY Orders.Pkg_ID, Validity_Period_ID;
 \end{lstlisting}
 
-Similar to the one above, it requires an extra join to group by the selected validity period as well. In the trigger it is still implemented by \texttt{OrderCompleted} in a similar fashion as before, while the creation of the entry in the \texttt{PurchasePerPackagePeriod} table is delegated to the trigger \texttt{NewPeriod}. \\
+Similar to the one above, it requires an extra join to group by the selected validity period as well. In the trigger it is still implemented by \texttt{OrderCompleted} in a similar fashion as before, while the creation of the entry in the \texttt{PurchasePerPackagePeriod} table is delegated to the trigger \texttt{NewPeriod}.
 
 This reflects the fact that the Validity\_Periods table is the one containing the join column with respect to the service packages, and therefore validity periods are created after the service package they refer to: the \texttt{NewPackage} trigger would not have all the information needed to create an entry yet.
 
@@ -63,7 +63,7 @@ GROUP BY Orders.Pkg_ID;
 
 \end{lstlisting}
 
-All of the information included in an order have to be used to calculate the results of this view, making it one of the most complex. The calculation is done from scratch, not using the calculated value in the \texttt{Total}  column of the \texttt{Orders}  table as to not complicate the query further ( since it is not a value dependent on on the group by column, using it would have required a nested query).\\
+All of the information included in an order have to be used to calculate the results of this view, making it one of the most complex. The calculation is done from scratch, not using the calculated value in the \texttt{Total}  column of the \texttt{Orders}  table as to not complicate the query further ( since it is not a value dependent on on the group by column, using it would have required a nested query).
 
 The entry creation in the homonym table is handled by the trigger \texttt{NewPackage}, while the updates is found in the \texttt{OrderCompleted} trigger. There, having the option of running two separate updates, the one for the complete total uses the value in the \texttt{Total} column for ease, while the total before the optionals cost is computed by a simplified version of the query above.
 
@@ -84,8 +84,7 @@ GROUP BY Pkg_ID;
 \end{lstlisting}
 
 The query uses a nested select statement to return an intermediate table where each row reflects an order and the number of optionals it includes.
-The coalesce function is used to account for the NULL value that packages with no optionals would have in the join table. The average is then
-computed on the values of this table.\\
+The coalesce function is used to account for the NULL value that packages with no optionals would have in the join table. The average is then computed on the values of this table.
 
 The triggers relating to this table are the same ones as above. The query is reused pretty much untouched inside the \texttt{OrderCompleted}
 trigger to update to the new value the entry for each service package.
@@ -123,7 +122,7 @@ ORDER BY TotalSales DESC
 LIMIT 1;
 \end{lstlisting}
 
-The view computes the number of sales per optional product and sorts it, returning only the highest record.\\
+The view computes the number of sales per optional product and sorts it, returning only the highest record.
 
 Having only one entry at any time, the updating of the materialized view is completely handled by the \texttt{OrderCompleted} trigger.
 
@@ -207,7 +206,8 @@ BEGIN
         UPDATE AvgOptPerPackage SET AvgOptPerPackage.AvgOptionals =
             ( SELECT AVG(OptNum) FROM
                 (SELECT Orders.ID as ID, Service_Pkgs.ID as Pkg_ID,
-                    COUNT(coalesce(OrderComprehendsOptional.Optional_ID, 0)) as OptNum
+                    COUNT(coalesce(OrderComprehendsOptional.Optional_ID, 0)) 
+                        as OptNum
                     FROM Orders
                     INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
                     LEFT JOIN OrderComprehendsOptional
@@ -265,7 +265,8 @@ BEGIN
 
         IF (SELECT Insolvent FROM Users WHERE ID=new.User_ID)=FALSE THEN
             UPDATE Users SET Insolvent=TRUE WHERE ID=new.User_ID;
-            INSERT INTO InsolventUsers (ID, Mail, Username, Failed_Payments, Insolvent)
+            INSERT INTO InsolventUsers (
+            ID, Mail, Username, Failed_Payments, Insolvent)
                 SELECT ID, Mail, Username, Failed_Payments, Insolvent
                 FROM Users WHERE ID=new.User_ID;
         END IF;
