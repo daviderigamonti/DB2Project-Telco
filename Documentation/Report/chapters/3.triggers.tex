@@ -3,12 +3,17 @@
 %---------------------------------------------------------------------
 
 \chapter{Views and triggers}
+\label{chap:views_triggers}
+
 This section will address the behaviour of the triggers developed for the project. Most of them were developed with
 the aim of operating on the materialized view tables, as per the specification of the project, but some include functionalities
 that we chose to implement via triggers, such as the handling of the insolvent flag, the failed payments and audits mechanism
 and the service activation schedule creation.
 
+
 \section{SQL View Code}
+\label{sec:sql_views}
+
 Since most of the triggers are related to the materialized views required for the sales report, this section prefaces
 the actual implementation with the code that would have been used for the actual views, had they not been materialized.
 Most of the code can still be found reused in the actual triggers, and the views share their name with the materialized
@@ -127,7 +132,9 @@ The view computes the number of sales per optional product and sorts it, returni
 
 Having only one entry at any time, the updating of the materialized view is completely handled by the \verb OrderCompleted  trigger.
 
+
 \section{Triggers}
+\label{sec:triggers}
 
 This section illustrates the aforementioned triggers. All of the triggers rely on the \verb DELIMITER  command to change
 the delimiting character in order to contain multiple statements.
@@ -249,7 +256,5 @@ BEGIN
     END IF;
 END $$
 \end{lstlisting}
-
-
 
 \blindtext

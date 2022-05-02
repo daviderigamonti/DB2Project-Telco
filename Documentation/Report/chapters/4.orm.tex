@@ -4,12 +4,142 @@
 
 \chapter{Object Relational Mapping (ORM)}
 \label{chap:orm}
-\todo{ORM}
+
 
 \section{ORM relationship design}
-\blindtext
+\label{sec:rel_design}
+
+\subsection*{Relationship 'Owns'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_User_SAC.svg}
+        \caption{'Owns' relationship}
+        \label{fig:orm_u_sac}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Places'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_User_Order.svg}
+        \caption{'Places' relationship}
+        \label{fig:orm_u_o}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Schedules'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_SAC_Order.svg}
+        \caption{'Schedules' relationship}
+        \label{fig:orm_sac_o}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Comprises'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_Order_SP.svg}
+        \caption{'Comprises' relationship}
+        \label{fig:orm_o_sp}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Comprehends'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_Order_OP.svg}
+        \caption{'Comprehends' relationship}
+        \label{fig:orm_o_sp}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Lasts'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_Order_VP.svg}
+        \caption{'Lasts' relationship}
+        \label{fig:orm_o_vp}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Offers'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_SP_OP.svg}
+        \caption{'Offers' relationship}
+        \label{fig:orm_sp_op}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Provides'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_SP_VP.svg}
+        \caption{'Provides' relationship}
+        \label{fig:orm_sp_vp}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
+\subsection*{Relationship 'Includes'}
+
+\begin{minipage}[h]{0.5\textwidth}
+    \begin{figure}[H]
+        \includesvg[scale=0.69]{img/ORM_SP_Service.svg}
+        \caption{'Includes' relationship}
+        \label{fig:orm_sp_s}
+    \end{figure}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.45\textwidth}
+    \blindtext
+\end{minipage}
+
 
 \section{Java entities}
+\label{sec:java_ent}
+
+\subsection*{Audit}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
@@ -41,6 +171,8 @@ public class Audit implements Serializable {
 }
 \end{lstlisting}
 
+\subsection*{Employee}
+
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
 \@@Table@@/(name= "Employees", schema = "db2telco")
@@ -68,6 +200,8 @@ public class Employee implements Serializable {
 }
 \end{lstlisting}
 
+\subsection*{Fixed phone}
+
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
 \@@Table@@/(name= "Fixed_Phone", schema = "db2telco")
@@ -88,6 +222,8 @@ public class FixedPhone implements Serializable {
 
 }
 \end{lstlisting}
+
+\subsection*{Internet}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
@@ -118,6 +254,8 @@ public class Internet implements Serializable {
 
 }
 \end{lstlisting}
+
+\subsection*{Mobile phone}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
@@ -152,6 +290,8 @@ public class MobilePhone implements Serializable {
 }
 \end{lstlisting}
 
+\subsection*{Optional product}
+
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
 \@@Table@@/(name= "Optional_Products", schema = "db2telco")
@@ -176,6 +316,8 @@ public class OptionalProduct implements Serializable {
 
 }
 \end{lstlisting}
+
+\subsection*{Order}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
@@ -233,6 +375,8 @@ public class Order implements Serializable {
 }
 \end{lstlisting}
 
+\subsection*{Service activation schedule}
+
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
 \@@IdClass@@/(ScheduleID.class)
@@ -257,6 +401,8 @@ public class ServiceActivationSchedule implements Serializable {
 
 }
 \end{lstlisting}
+
+\subsection*{Service package}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
@@ -307,6 +453,8 @@ public class ServicePackage implements Serializable {
 }
 \end{lstlisting}
 
+\subsection*{User}
+
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
 \@@Table@@/(name= "Users", schema = "db2telco")
@@ -350,6 +498,8 @@ public class User implements Serializable {
 
 }
 \end{lstlisting}
+
+\subsection*{Validity period}
 
 \begin{lstlisting}[style = JPA]
 \@@Entity@@/
