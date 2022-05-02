@@ -162,12 +162,11 @@ BEGIN
 END $$
 \end{lstlisting}
 
-Both of these packages trigger after an insertion on the respective tables, and behave the same way, creating an entry
-for the corresponding package or package-period combination inside the affected tables.
+Both of these packages trigger after an insertion on the respective tables, and behave the same way, creating an entry for the corresponding package or package-period combination inside the affected tables.
 
-Consequently, these triggers fire only when an employee is configuring new packages, and only once per package. They
-must act for each new record inserted, hence the for each row. Since if the trigger is firing the package is new, all
-counts are set to zero.
+Consequently, these triggers fire only when an employee is configuring new packages, and only once per package. They must act for each new record inserted, hence the for each row. Since if the trigger is firing the package is new, all counts are set to zero.
+
+The trigger \texttt{NewPeriod} also implicitly enforces the constraint that no package has two validity periods of the same length, as trying to insert one such period would raise a duplicate primary key error on the \texttt{PurchasesPerPacakgePeriod} table.
 
 \subsection{OrderCompleted}
 
