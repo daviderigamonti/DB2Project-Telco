@@ -4,6 +4,10 @@ target/*
 .idea/*
 
 # LATEX
+*.dvi
+*.fdb_latexmk
+*.fls
+*.tdo
 *.aux
 *.idx
 *.log
@@ -13,3 +17,5 @@ target/*
 *.mtc
 *.out
 *.synctex.gz
+**/svg-inkscape/*
+main.pdf
