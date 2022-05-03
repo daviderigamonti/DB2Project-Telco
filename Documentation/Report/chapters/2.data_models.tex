@@ -34,7 +34,7 @@ It's important to notice that, when an \textit{Employee} tries to create a new \
 \section{Logical model}
 \label{sec:logical_model}
 
-What follows here is the definition of the tables in the database. It adheres to the ER diagram proposed above, resolving the ISA of the various service types into three different tables (\texttt{Internet, Mobile_Phone, Fixed_Phone}). A hybrid approach has been chosen, simplifying the two kinds of internet services into one, but leaving the other services as separate. This was a compromise between keeping the tables slim and the database scalable and optimizing the complexity away into a single table.
+What follows here is the definition of the tables in the database. It adheres to the ER diagram proposed above, resolving the ISA of the various service types into three different tables (\texttt{Internet, Mobile\_Phone, Fixed\_Phone}). A hybrid approach has been chosen, simplifying the two kinds of internet services into one, but leaving the other services as separate. This was a compromise between keeping the tables slim and the database scalable and optimizing the complexity away into a single table.
 
 Simple constraints and checks are already enforced at this level, while some more complex one are left to the triggers or to java (as checking that the optionals and validity period selected for a package are indeed in the list of features that package offers).
 
