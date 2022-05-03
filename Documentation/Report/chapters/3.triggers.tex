@@ -5,13 +5,13 @@
 \chapter{Views and triggers}
 \label{chap:views_triggers}
 
-This section will address the behaviour of the triggers developed for the project. Most of them were developed with the aim of operating on the materialized view tables, as per the specification of the project, but some include functionalities that we chose to implement via triggers, such as the handling of the insolvent flag, the failed payments and audits mechanism and the service activation schedule creation.
+This section will address the behaviour of the triggers developed for the project, most of them were developed with the aim of operating on the materialized view tables (as per the project specification) but some include additional functionalities that we deliberately chose to implement via triggers such as the handling of the insolvent flag, failed payments, auditing mechanism and the service activation schedule creation.
 
 
 \section{SQL View Code}
 \label{sec:sql_views}
 
-Since most of the triggers are related to the materialized views required for the sales report, this section prefaces the actual implementation with the code that would have been used for the actual views, had they not been materialized. Most of the code can still be found reused in the actual triggers, and the views share their name with the materialized view table so that they are easier to trace.
+Since most of the triggers are related to the materialized views required for the sales report, this section prefaces the actual implementation with the code that would have been used for the actual views, had they not been materialized. Most of the code can still be reused in the actual triggers and the views share their name with their materialized counterpart for easier tracking.
 
 \subsection{Number of total purchases per package}
 
@@ -22,7 +22,7 @@ FROM Orders INNER JOIN Service_Pkgs ON Orders.Pkg_ID=Service_Pkgs.ID
 GROUP BY Pkg_ID;
 \end{lstlisting}
 
-In the triggers, it is mapped by \texttt{NewPackage} and \texttt{OrderCompleted}, which respectively create an entry in the \texttt{PurchasesPerPackage}table with zero purchases and increment it by one for each successful order containing the package.
+In the triggers, it is mapped by \texttt{NewPackage} and \texttt{OrderCompleted}, which respectively create an entry in the \texttt{PurchasesPerPackage} table with zero purchases and increment it by one for each successful order containing the package.
 
 \subsection{Number of total purchases per package and validity period}
 
@@ -63,7 +63,7 @@ GROUP BY Orders.Pkg_ID;
 
 \end{lstlisting}
 
-All of the information included in an order have to be used to calculate the results of this view, making it one of the most complex. The calculation is done from scratch, not using the calculated value in the \texttt{Total}  column of the \texttt{Orders}  table as to not complicate the query further ( since it is not a value dependent on on the group by column, using it would have required a nested query).
+All of the information included in an order have to be used to calculate the results of this view, making it one of the most complex. The calculation is done from scratch, not using the calculated value in the \texttt{Total}  column of the \texttt{Orders}  table as to not complicate the query further (since it is not a value that depends on the GROUP BY column, using it would have required a nested query).
 
 The entry creation in the homonym table is handled by the trigger \texttt{NewPackage}, while the updates is found in the \texttt{OrderCompleted} trigger. There, having the option of running two separate updates, the one for the complete total uses the value in the \texttt{Total} column for ease, while the total before the optionals cost is computed by a simplified version of the query above.
 
@@ -80,7 +80,6 @@ SELECT Pkg_ID, Name, AVG(OptNum) FROM (
                 ON Orders.ID=OrderComprehendsOptional.Order_ID
         GROUP BY Pkg_ID, Orders.ID) as Numbers
 GROUP BY Pkg_ID;
-
 \end{lstlisting}
 
 The query uses a nested select statement to return an intermediate table where each row reflects an order and the number of optionals it includes.
@@ -101,11 +100,9 @@ SELECT * FROM Orders
 WHERE Status='Failed';
 \end{lstlisting}
 
-The views are pretty simple select statements. A view for the alerts has not been created because it would coincide exactly with the
-whole \texttt{Audits} table.
+The views are pretty simple select statements. A view for the alerts has not been created because it would coincide exactly with the whole \texttt{Audits} table.
 
-All of the views are implemented as conditional statements in the \texttt{OrderFailed}  trigger, while deletion of records from the tables are
-inside the \texttt{OrderCompleted} trigger.
+All of the views are implemented as conditional statements in the \texttt{OrderFailed}  trigger, while deletion of records from the tables are inside the \texttt{OrderCompleted} trigger.
 
 \subsection{Best seller optional product}
 
@@ -132,7 +129,7 @@ Having only one entry at any time, the updating of the materialized view is comp
 
 This section illustrates the aforementioned triggers. All of the triggers rely on the \texttt{DELIMITER \$\$} command to change the delimiting character in order to contain multiple statements.
 
-Also, all the triggers here are row level triggers - while this would have been the choice anyway, since each trigger acts on the data of a single record, mysql does not support statement level triggers, so there was no other alternative.
+Also, all the triggers here are row level triggers - while this would have been the choice anyway, since each trigger acts on the data of a single record, MySQL does not support statement level triggers, so there was no other alternative.
 
 \subsection {NewPackage and NewPeriod}
 
@@ -144,11 +141,11 @@ FOR EACH ROW
 BEGIN
     INSERT INTO PurchasesPerPackage VALUES ( new.ID,  new.Name, 0 );
     INSERT INTO TotalPerPackage VALUES ( new.ID,  new.Name, 0, 0 );
-    INSERT INTO  AvgOptPerPackage VALUES ( new.ID,  new.Name, 0 );
+    INSERT INTO AvgOptPerPackage VALUES ( new.ID,  new.Name, 0 );
 END $$
 \end{lstlisting}
 
-The last trigger fires on the same condition as the above one: after an update of orders. They have been separated both for readability, as they are the longest triggers in the project already, and for logical reasons: while \texttt{OrderCompleted} fires upon an order being marked valid, this one deals with what must happen when a payment is rejected.
+The last trigger fires on the same condition as the one above: after an update of orders. They have been separated both for readability, as they are the longest triggers in the project already, and for logical reasons: while \texttt{OrderCompleted} fires upon an order being marked valid, this one deals with what should happen when a payment is rejected.
 
 \begin{lstlisting}[style=SQL]
 CREATE TRIGGER NewPeriod
@@ -242,7 +239,7 @@ END $$
 
 \end{lstlisting}
 
-This is the biggest trigger in the project, as it handles everything that happens when an order is marked valid. Only orders that have been paid for are taken into account for the statistics shown in the sale report, therefore this trigger handles the insertion of data in most of the materialized views, and the removal of data from the list of rejected orders and insolvent users.
+This is the biggest trigger in the project, as it handles everything that happens when an order is marked valid. Only orders that have been paid for are taken into account for the statistics shown in the sales report, therefore this trigger handles the insertion of data in most of the materialized views, and the removal of data from the list of rejected orders and insolvent users.
 
 Since \texttt{BestSellerOptional} always contains only one row, the trigger deletes the whole table before computing the new best seller.
 

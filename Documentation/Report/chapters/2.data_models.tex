@@ -43,7 +43,6 @@ The code for the materialized views is omitted, as they are simple mirrors of th
 As for the foreign key constraint, we have imagined that when a service package is deleted, all the associated services would be deleted as well, but the orders related to it would remain, to keep a trace of the financial movements. Conversely, if a user were to be deleted, we assume that all of their data, including past transaction, is no longer relevant, and delete their orders as well.
 
 \begin{lstlisting}[style=SQL]
-
 CREATE TABLE IF NOT EXISTS Users (
     ID INT NOT NULL AUTO_INCREMENT,
     Mail varchar(255) UNIQUE NOT NULL,
@@ -188,8 +187,6 @@ CREATE TABLE IF NOT EXISTS Audits (
     Amount FLOAT NOT NULL,
     PRIMARY KEY ( User_ID, Timestamp )
 );
-
-
 \end{lstlisting}
 
 
