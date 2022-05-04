@@ -142,7 +142,7 @@
 \begin{minipage}[h]{0.48\textwidth}
     \begin{itemize}
         \item \textbf{ServicePackage → ValidityPeriod} \\ \texttt{@OneToMany} is necessary for each service package to be associated with the possible validity periods that the user may pick; fetch mode is \texttt{LAZY} since the information about which validity periods are available is relevant only during the subscription and creation phase, in addition, the cascading type is set to \texttt{PERSIST} in order to automatically create the validity period when we persist the service package.
-        \item The relationship is unidirectional since there is no need to actively track in which service packages is offered a given validity period.
+        \item \texttt{@ManytoOne} is not required by the specification, however, mapping the relationship as bidirectional and using only the needed side is preferable; fetch mode is therefore \texttt{LAZY}.
     \end{itemize}
 \end{minipage}
 
@@ -160,7 +160,7 @@
     In order to avoid replicating three times the same relationship, the generic \texttt{'Service'} represents the three types of services: \texttt{MobilePhone}, \texttt{FixedPhone} and \texttt{Internet}.
     \begin{itemize}
         \item \textbf{ServicePackage → Service} \\ \texttt{@OneToMany} is necessary for each service package to be associated with the services it contains; fetch mode is \texttt{EAGER} because this is the main information inside the service package and it would be pointless to load it without its services, in addition, the cascading type is set to \texttt{PERSIST} in order to automatically create the services when we persist the service package. 
-        \item \textbf{Service → ServicePackage} \\ \texttt{@ManytoOne} is not required by the specification, however, mapping the relationship as bidirectional and using only the needed side is preferable; fetch mode is therefore \texttt{LAZY} by default.
+        \item \textbf{Service → ServicePackage} \\ \texttt{@ManytoOne} is not required by the specification, however, mapping the relationship as bidirectional and using only the needed side is preferable; fetch mode is therefore \texttt{LAZY}.
     \end{itemize}
 \end{minipage}
 
@@ -244,7 +244,7 @@ public class FixedPhone implements Serializable {
     \@@Column@@/(name = "ID")
     private int id;
 
-    \@@ManyToOne@@/
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
     \@@JoinColumn@@/(name = "Pkg_ID")
     \@@JsonBackReference@@/
     private ServicePackage servicePackage;
@@ -267,7 +267,7 @@ public class Internet implements Serializable {
     \@@Column@@/(name = "ID")
     private int id;
 
-    \@@ManyToOne@@/
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
     \@@JoinColumn@@/(name = "Pkg_ID")
     \@@JsonBackReference@@/
     private ServicePackage servicePackage;
@@ -299,7 +299,7 @@ public class MobilePhone implements Serializable {
     \@@Column@@/(name = "ID")
     private int id;
 
-    \@@ManyToOne@@/
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
     \@@JoinColumn@@/(name = "Pkg_ID")
     \@@JsonBackReference@@/
     private ServicePackage servicePackage;
@@ -543,7 +543,7 @@ public class ValidityPeriod implements Serializable {
     \@@Column@@/(name = "ID")
     private int id;
 
-    \@@ManyToOne@@/
+    \@@ManyToOne@@/(fetch = FetchType.LAZY)
     \@@JoinColumn@@/(name = "Pkg_ID")
     \@@JsonBackReference@@/
     private ServicePackage servicePackage;
