@@ -14,13 +14,14 @@ INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('Free video calls', 10
 INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('You and me', 5);
 INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('New phone', 15);
 INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('Trip to Avalon', 100);
+INSERT INTO Optional_Products (Name, Monthly_Fee) VALUES ('Paper weight', 2);
 
 -- Packages
 
 INSERT INTO Service_Pkgs (Name) VALUES ('Spring Package');
-INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,1,20);
-INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,3,15);
-INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,12,12);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,12,20);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,24,15);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (1,36,12);
 INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,500,20, TRUE);
 INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,200,10, FALSE);
 INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (1,300,15, FALSE);
@@ -47,3 +48,14 @@ INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (3,300,15, FALSE);
 INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (3,1);
 INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (3,4);
 
+INSERT INTO Service_Pkgs (Name) VALUES ('Winter Package');
+
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (4,12,20);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (4,24,15);
+INSERT INTO Validity_Periods (Pkg_ID, Months, Monthly_Fee) VALUES (4,36,10);
+INSERT INTO Fixed_Phone (Pkg_ID) VALUES (4);
+INSERT INTO Mobile_Phone (Pkg_ID, Minutes_N, SMS_N, Minutes_Fee, SMS_Fee) VALUES (4,1000,3,1000,5);
+INSERT INTO Internet (Pkg_ID, GB_N, GB_Fee, Fixed) VALUES (4,-1,0, FALSE);
+INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (4,2);
+INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (4,3);
+INSERT INTO ServicePkgOffersOptional (Pkg_ID, Optional_ID) VALUES (4,5);
