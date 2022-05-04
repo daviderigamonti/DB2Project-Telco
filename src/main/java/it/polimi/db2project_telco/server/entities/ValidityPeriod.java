@@ -16,7 +16,7 @@ public class ValidityPeriod implements Serializable {
     @Column(name = "ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Pkg_ID")
     @JsonBackReference
     private ServicePackage servicePackage;
